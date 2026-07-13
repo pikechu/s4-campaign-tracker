@@ -74,14 +74,17 @@ int RunRuntimePolicyTests() {
     const auto policy = ReadText(sourceRoot / "config" /
                                  "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.2.3", "FixedMapLoadHook=1",
+             "Version=0.2.4", "FixedMapLoadHook=1",
              "HookSiteRva=0x000FEFA5", "HookCount=1",
              "CodePatchBytes=5", "GameDataWrites=0",
              "UnrelatedInternalCalls=0", "CompletionDetection=0",
-             "CompletionStorage=0", "CompletionMarkers=0"}) {
+             "CompletionStorage=0", "CompletionMarkers=0",
+             "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
-                "phase 2.3 INI policy field missing");
+                "phase 2.4 INI policy field missing");
     }
+    Require(policy.find("CaptureTraceRoot=F:") == std::string::npos,
+            "packaged trace root must remain empty");
     Require(policy.find("MemoryWrites=") == std::string::npos,
             "misleading generic memory-write policy is forbidden");
     Require(policy.find("InternalHooks=") == std::string::npos,
@@ -89,13 +92,16 @@ int RunRuntimePolicyTests() {
 
     const auto runtime = ReadText(sourceRoot / "src" / "runtime" /
                                   "DiagnosticRuntime.cpp");
-    Require(runtime.find("version=0.2.3") != std::string::npos &&
+    Require(runtime.find("version=0.2.4") != std::string::npos &&
                 runtime.find("hook-mode=single-call-site") != std::string::npos,
-            "runtime header identifies single-call-site phase");
+            "runtime header identifies phase 2.4 single-call-site mode");
     const auto hookStop = runtime.find("fixedMapHook_.Stop()");
     const auto listenerStop = runtime.find("listeners_.Stop()");
+    const auto traceClose = runtime.find("captureTrace_.Close()");
     Require(hookStop != std::string::npos && listenerStop != std::string::npos &&
                 hookStop < listenerStop,
             "internal hook stop precedes public listener stop");
+    Require(traceClose != std::string::npos && listenerStop < traceClose,
+            "capture trace closes after hook and public listeners");
     return 0;
 }
