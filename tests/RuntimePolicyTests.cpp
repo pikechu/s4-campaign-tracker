@@ -106,10 +106,10 @@ int RunRuntimePolicyTests() {
                                   "DiagnosticRuntime.cpp");
     const auto runtimeHeader = ReadText(sourceRoot / "src" / "runtime" /
                                         "DiagnosticRuntime.h");
-    Require(runtime.find("version=0.3.0") != std::string::npos &&
-                runtime.find("mode=victory-ui-calibration-public") !=
+    Require(runtime.find("version=0.3.1") != std::string::npos &&
+                runtime.find("mode=native-event-calibration") !=
                     std::string::npos,
-            "runtime header identifies phase 3A public calibration mode");
+            "runtime header identifies phase 3B native event calibration");
     for (const auto* forbidden : {
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout",
              "fixedMapHook_", "hookBackend_", "originalInvoker_",
@@ -118,6 +118,13 @@ int RunRuntimePolicyTests() {
                     std::string::npos,
                 "runtime must not own, start, or stop a process Hook");
     }
+    Require(runtimeHeader.find("NativeEventAdmission") != std::string::npos &&
+                runtimeHeader.find("NativeEventRegistration") !=
+                    std::string::npos &&
+                runtimeHeader.find("NativeVictoryEventSubscriber") !=
+                    std::string::npos &&
+                runtimeHeader.find("VictoryEventProbe") != std::string::npos,
+            "runtime owns process-lifetime native subscription components");
     Require(runtimeHeader.find("S4LuaApi") != std::string::npos &&
                 runtimeHeader.find("S4LuaMapBridge") != std::string::npos &&
                 runtimeHeader.find("MapIdentityCoordinator") !=
@@ -163,6 +170,11 @@ int RunRuntimePolicyTests() {
                 "void FinishSettlementIfDue(std::uint64_t nowMs);") !=
                 std::string::npos,
             "listener declares common settlement deadline operation");
+    Require(listenerHeader.find("NativeVictoryEventSubscriber& subscriber") !=
+                std::string::npos &&
+                listenerHeader.find("VictoryEventProbe& victoryProbe") !=
+                    std::string::npos,
+            "listener start receives native subscriber and probe");
     const auto uiBegin = listeners.find("void S4Listeners::ObserveUiFrame(");
     const auto mapBegin = listeners.find("void S4Listeners::ObserveMapInit(");
     const auto tickBegin = listeners.find("void S4Listeners::ObserveTick(");
@@ -179,6 +191,34 @@ int RunRuntimePolicyTests() {
                         .find("FinishSettlementIfDue(now);") !=
                     std::string::npos,
             "non-delayed Tick retains settlement deadline fallback");
+    const auto uiSection = listeners.substr(uiBegin, mapBegin - uiBegin);
+    const auto uiService = uiSection.find("ServiceNativeSubscription();");
+    const auto uiLock = uiSection.find("std::lock_guard<std::mutex>");
+    Require(uiService != std::string::npos && uiLock != std::string::npos &&
+                uiService < uiLock,
+            "UI frame services native subscription before listener mutex");
+    const auto tickSection = listeners.substr(tickBegin, mouseBegin - tickBegin);
+    const auto tickService = tickSection.find("ServiceNativeSubscription();");
+    const auto tickLock = tickSection.find("std::lock_guard<std::mutex>");
+    Require(tickService != std::string::npos && tickLock != std::string::npos &&
+                tickService < tickLock,
+            "non-delayed Tick services native subscription before listener mutex");
+    const auto luaOpenBegin = listeners.find("void S4Listeners::ObserveLuaOpen(");
+    Require(mapBegin != std::string::npos && luaOpenBegin != std::string::npos &&
+                listeners.substr(mapBegin, luaOpenBegin - mapBegin)
+                        .find("victoryProbe_->BeginSession(activeSessionId_);") !=
+                    std::string::npos,
+            "map init starts the native event session");
+    Require(listeners.find("event-id=\" << snapshot.fields.eventId") !=
+                std::string::npos &&
+                listeners.find("local-result=\" << NativeResultName(") !=
+                    std::string::npos &&
+                listeners.find("return \"won\"") != std::string::npos &&
+                listeners.find("return \"lost\"") != std::string::npos,
+            "native trace uses decimal event id and neutral local result");
+    Require(listeners.find("0x261") == std::string::npos &&
+                listeners.find("victory-confirmed") == std::string::npos,
+            "native trace contains no forbidden event or decision spelling");
     Require(CountOccurrences(listeners, "api_->GetLocalPlayer()") == 1u,
             "settlement completion reads the local player exactly once");
     Require((runtime + runtimeHeader + listeners)
@@ -225,5 +265,33 @@ int RunRuntimePolicyTests() {
     Require(listeners.find("coordinator_->ObserveTick(inGame, now, *bridge_)") !=
                 std::string::npos,
             "bridge is delegated only through the bounded Tick path");
+
+    const auto dllMain = ReadText(sourceRoot / "src" / "dllmain.cpp");
+    Require(dllMain.find("RuntimeInstance().RequestControlledStop()") !=
+                std::string::npos &&
+                dllMain.find("RuntimeInstance().Stop()") == std::string::npos,
+            "exported stop requests control-loop shutdown only");
+    const auto requestDetach = runtime.find("nativeSubscriber_.RequestDetach()");
+    const auto detachedCheck = runtime.find("nativeSubscriber_.Detached()",
+                                             requestDetach);
+    const auto controlledFailure = runtime.find(
+        "controlled-stop-flush=failed", detachedCheck);
+    const auto finalListenerStop = runtime.find("listeners_.Stop()",
+                                                 detachedCheck);
+    const auto finalTraceClose = runtime.find("phase3Trace_.Close()",
+                                               finalListenerStop);
+    Require(runtimeHeader.find("RequestControlledStop()") !=
+                std::string::npos &&
+                requestDetach != std::string::npos &&
+                detachedCheck != std::string::npos &&
+                requestDetach < detachedCheck,
+            "controlled stop requests and confirms native detach first");
+    Require(controlledFailure != std::string::npos &&
+                finalListenerStop != std::string::npos &&
+                controlledFailure < finalListenerStop,
+            "detach timeout records failure before any public listener stop");
+    Require(finalTraceClose != std::string::npos &&
+                finalListenerStop < finalTraceClose,
+            "successful controlled stop closes trace after public listeners");
     return 0;
 }
