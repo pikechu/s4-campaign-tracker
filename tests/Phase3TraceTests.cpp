@@ -82,7 +82,7 @@ int RunPhase3TraceTests() {
                          "origin-source=bad\nvalue"),
             "line breaks are rejected");
     Require(!first.Write(Phase3TraceChannel::Origin,
-                         std::string(1025u, 'a')),
+                         "origin-status=" + std::string(1025u, 'a')),
             "oversized records are rejected");
     first.Close();
 
