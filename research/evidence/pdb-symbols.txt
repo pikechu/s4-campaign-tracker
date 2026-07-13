@@ -1,0 +1,3336 @@
+﻿# Normalized PDB candidate symbols
+generated_utc=2026-07-13T03:29:20Z
+tool_version=Ubuntu LLVM version 14.0.6;   Optimized build.;   Default target: x86_64-pc-linux-gnu;   Host CPU: alderlake
+pdb_sha256=702df42ef4d7e8f6ba39aee96b5c83780c3266a7e9a174f81db13c6934050ae6
+exe_sha256=3b561269fb7ce4c281959f8f0db691cebf7cd36a04ad3594461b94290c5d3816
+address_format=CodeView section:offset; convert to RVA only with committed section headers
+name_format=LLVM-rendered public name; decorated RTTI names are preserved verbatim
+
+---
+           flags = code, addr = 0001:1184657
+  2585168 | S_PUB32 [size = 56] `storm::echo::CTransmissionId::sub_6FDF30`
+           flags = function, addr = 0001:7327536
+---
+           flags = code, addr = 0001:2661393
+  291252 | S_PUB32 [size = 52] `??_R0?AVCStateAOCampaignTrojan@@@8`
+           flags = none, addr = 0003:910956
+---
+           flags = code, addr = 0001:5581756
+  291356 | S_PUB32 [size = 44] `??_R0?AVCStateAOCampaigns@@@8`
+           flags = none, addr = 0003:910884
+---
+           flags = code, addr = 0001:5885279
+   15060 | S_PUB32 [size = 116] `??_7?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:548256
+---
+           flags = code, addr = 0001:7981022
+  1266048 | S_PUB32 [size = 48] `CStateLobbyConnect::sub_11B590`
+           flags = function, addr = 0001:1156496
+---
+           flags = function, addr = 0001:10199118
+  291540 | S_PUB32 [size = 44] `??_R0?AVCStateCampaign3X3@@@8`
+           flags = none, addr = 0003:911100
+---
+           flags = function, addr = 0001:1030736
+  695620 | S_PUB32 [size = 48] `??_R2CStateMDCampaignViking@@8`
+           flags = none, addr = 0002:1621052
+---
+           flags = function, addr = 0001:10420576
+  488536 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateCampaignDark@@8`
+           flags = none, addr = 0002:1619360
+---
+           flags = function, addr = 0001:10461152
+  548544 | S_PUB32 [size = 64] `??_R1A@?0A@AE@PeerTransmissionAgent@echo@storm@@8`
+           flags = none, addr = 0002:1455308
+---
+           flags = function, addr = 0001:10490256
+  1266996 | S_PUB32 [size = 68] `CStateLobbyMultiplayerType::sub_121C10:::def_121C51`
+           flags = code, addr = 0001:1183025
+---
+           flags = function, addr = 0001:10682880
+  912820 | S_PUB32 [size = 64] `??_R3ITransmissionHistoryObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452744
+---
+           flags = function, addr = 0001:10685184
+  1268528 | S_PUB32 [size = 52] `CStateMDCampaignViking::sub_125C60`
+           flags = function, addr = 0001:1199200
+---
+           flags = function, addr = 0001:1082512
+  727360 | S_PUB32 [size = 56] `??_R2ITransmissionObserver@echo@storm@@8`
+           flags = none, addr = 0002:1483084
+---
+           flags = function, addr = 0001:10836944
+  2583212 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_70F4E0`
+           flags = function, addr = 0001:7398624
+---
+           flags = function, addr = 0001:1086032
+   88528 | S_PUB32 [size = 52] `??_7CTransmissionId@echo@storm@@6B@`
+           flags = none, addr = 0002:539624
+---
+           flags = function, addr = 0001:1089920
+  1264052 | S_PUB32 [size = 44] `CStateAOCampaigns::sub_10F2F0`
+           flags = function, addr = 0001:1106672
+---
+           flags = function, addr = 0001:10988320
+  491544 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CTransmission@echo@storm@@8`
+           flags = none, addr = 0002:1463264
+---
+           flags = function, addr = 0001:11013264
+  2581848 | S_PUB32 [size = 68] `storm::echo::CSingleTransmissionHistory::nullsub_180`
+           flags = function, addr = 0001:7402304
+---
+           flags = function, addr = 0001:11026224
+  1073764 | S_PUB32 [size = 80] `??_R4CTransmissionTouchedBits@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487328
+---
+           flags = function, addr = 0001:11089792
+  2582588 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_70BB40`
+           flags = function, addr = 0001:7383872
+---
+           flags = function, addr = 0001:11090000
+  2585280 | S_PUB32 [size = 60] `storm::echo::CTransmissionMessage::sub_6FDFB0`
+           flags = function, addr = 0001:7327664
+---
+           flags = function, addr = 0001:11094144
+  2583348 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_72A990`
+           flags = function, addr = 0001:7510416
+---
+           flags = function, addr = 0001:11104224
+   87468 | S_PUB32 [size = 64] `??_7CTransmissionHistoryMessage@echo@storm@@6B@`
+           flags = none, addr = 0002:539788
+---
+           flags = function, addr = 0001:11111616
+  2582188 | S_PUB32 [size = 56] `storm::echo::CTransmission::nullsub_169`
+           flags = function, addr = 0001:7199008
+---
+           flags = function, addr = 0001:1112432
+  1263852 | S_PUB32 [size = 52] `CStateAOCampaignViking::sub_10FE30`
+           flags = function, addr = 0001:1109552
+---
+           flags = function, addr = 0001:11467231
+  2036872 | S_PUB32 [size = 28] `aLobbys4_ini`
+           flags = none, addr = 0003:123832
+---
+           flags = function, addr = 0001:11479410
+  1563824 | S_PUB32 [size = 32] `aAfterlobbyconn`
+           flags = none, addr = 0002:1355176
+---
+           flags = function, addr = 0001:11514115
+  1642432 | S_PUB32 [size = 32] `aAvcmissioncd3`
+           flags = none, addr = 0003:910024
+---
+           flags = function, addr = 0001:11516357
+  2058832 | S_PUB32 [size = 32] `aMapCampaignTro`
+           flags = none, addr = 0002:1315568
+---
+           flags = function, addr = 0001:11524432
+  2398612 | S_PUB32 [size = 28] `lobbyInfoList`
+           flags = none, addr = 0003:3498084
+---
+           flags = function, addr = 0001:11532112
+  2102592 | S_PUB32 [size = 28] `aMultiplayer`
+           flags = none, addr = 0002:1311752
+---
+           flags = function, addr = 0001:11561040
+  1664404 | S_PUB32 [size = 32] `aAvirandommaps`
+           flags = none, addr = 0003:910620
+---
+           flags = function, addr = 0001:11582994
+  1642372 | S_PUB32 [size = 28] `aAvcmissioncd`
+           flags = none, addr = 0003:910104
+---
+           flags = function, addr = 0001:11583024
+  1642400 | S_PUB32 [size = 32] `aAvcmissioncd2`
+           flags = none, addr = 0003:910052
+---
+           flags = function, addr = 0001:11584881
+  1957260 | S_PUB32 [size = 32] `aHasplayerlost`
+           flags = none, addr = 0002:1382200
+---
+           flags = function, addr = 0001:11586448
+  1523984 | S_PUB32 [size = 32] `SetLobbyState_SEH`
+           flags = function, addr = 0001:11223867
+---
+           flags = function, addr = 0001:11592368
+  2176036 | S_PUB32 [size = 28] `aPlayerlost`
+           flags = none, addr = 0002:1382348
+---
+           flags = function, addr = 0001:11592448
+  2306288 | S_PUB32 [size = 28] `aTransmission`
+           flags = none, addr = 0002:618344
+---
+           flags = function, addr = 0001:11611264
+  1642068 | S_PUB32 [size = 28] `aAvcmapfileS4`
+           flags = none, addr = 0003:906012
+---
+           flags = function, addr = 0001:1192480
+  1069500 | S_PUB32 [size = 48] `??_R4CStateAOCampaignViking@@6B@`
+           flags = none, addr = 0002:1619084
+---
+           flags = function, addr = 0001:1192656
+  1266472 | S_PUB32 [size = 44] `CStateLobbyLoadMP::sub_11F8D0`
+           flags = function, addr = 0001:1173712
+---
+           flags = function, addr = 0001:1256688
+  1266560 | S_PUB32 [size = 44] `CStateLobbyLoadMP::sub_11FC00`
+           flags = function, addr = 0001:1174528
+---
+           flags = function, addr = 0001:1258496
+   84556 | S_PUB32 [size = 48] `??_7CStateAOCampaignTrojan@@6B@`
+           flags = none, addr = 0002:1315216
+---
+           flags = function, addr = 0001:1269984
+  324984 | S_PUB32 [size = 60] `??_R0?AVITransmissionObserver@echo@storm@@@8`
+           flags = none, addr = 0003:803288
+---
+           flags = function, addr = 0001:1286336
+  291400 | S_PUB32 [size = 52] `??_R0?AVCStateAOCampaignsSettle@@@8`
+           flags = none, addr = 0003:910916
+---
+           flags = function, addr = 0001:1288336
+  1069308 | S_PUB32 [size = 48] `??_R4CStateAOCampaignBonus@@6B@`
+           flags = none, addr = 0002:1618604
+---
+           flags = function, addr = 0001:1288352
+  1196232 | S_PUB32 [size = 56] `CAIAgentGlobalSuicideMission::sub_334B0`
+           flags = function, addr = 0001:206000
+---
+           flags = function, addr = 0001:1324624
+  1263496 | S_PUB32 [size = 48] `CStateAOCampaignRoman::sub_10F180`
+           flags = function, addr = 0001:1106304
+---
+           flags = function, addr = 0001:1327184
+  1263800 | S_PUB32 [size = 52] `CStateAOCampaignViking::sub_10FE20`
+           flags = function, addr = 0001:1109536
+---
+           flags = function, addr = 0001:1327328
+  1070556 | S_PUB32 [size = 48] `??_R4CStateMDCampaignViking@@6B@`
+           flags = none, addr = 0002:1621084
+---
+           flags = function, addr = 0001:1335824
+  1196888 | S_PUB32 [size = 52] `CAIAgentSuicideMissions::sub_41670`
+           flags = function, addr = 0001:263792
+---
+           flags = function, addr = 0001:1337888
+  489412 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateMDCampaignRoman@@8`
+           flags = none, addr = 0002:1620800
+---
+           flags = function, addr = 0001:1344368
+  1325484 | S_PUB32 [size = 44] `LobbyPlayerCountIdStartIndex`
+           flags = none, addr = 0002:951016
+---
+           flags = function, addr = 0001:1370096
+  683484 | S_PUB32 [size = 48] `??_R2CAIAgentSuicideMissions@@8`
+           flags = none, addr = 0002:1603996
+---
+           flags = function, addr = 0001:1406224
+  488880 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateLobbyConnect@@8`
+           flags = none, addr = 0002:1619916
+---
+           flags = function, addr = 0001:1416448
+   80668 | S_PUB32 [size = 36] `??_7CMissionCD3@@6B@`
+           flags = none, addr = 0002:1171592
+---
+           flags = function, addr = 0001:1419808
+  488988 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateLobbyLoadMP@@8`
+           flags = none, addr = 0002:1620080
+---
+           flags = function, addr = 0001:1421680
+  292236 | S_PUB32 [size = 48] `??_R0?AVCStateMD2Campaigns@@@8`
+           flags = none, addr = 0003:911648
+---
+           flags = function, addr = 0001:1440592
+  2582244 | S_PUB32 [size = 56] `storm::echo::CTransmission::sub_6B6500`
+           flags = function, addr = 0001:7034112
+---
+           flags = function, addr = 0001:1441664
+  1269376 | S_PUB32 [size = 68] `CStateMDRandomMapParameters::sub_1265A0:::def_12691C`
+           flags = code, addr = 0001:1203823
+---
+           flags = function, addr = 0001:1445280
+  1070704 | S_PUB32 [size = 52] `??_R4CStateMDRandomMapParameters@@6B@`
+           flags = none, addr = 0002:1621164
+---
+           flags = function, addr = 0001:1445504
+  1069592 | S_PUB32 [size = 48] `??_R4CStateAOCampaignsSettle@@6B@`
+           flags = none, addr = 0002:1618924
+---
+           flags = function, addr = 0001:1475440
+  695268 | S_PUB32 [size = 48] `??_R2CStateLobbyMapSettings@@8`
+           flags = none, addr = 0002:1620144
+---
+           flags = function, addr = 0001:1479840
+  1331932 | S_PUB32 [size = 36] `RandomMapMenuCallback`
+           flags = function, addr = 0001:618928
+---
+           flags = function, addr = 0001:1496432
+  1263304 | S_PUB32 [size = 48] `CStateAOCampaignMayan::sub_10EE60`
+           flags = function, addr = 0001:1105504
+---
+           flags = function, addr = 0001:1498720
+  695576 | S_PUB32 [size = 44] `??_R2CStateMDCampaignRoman@@8`
+           flags = none, addr = 0002:1620784
+---
+           flags = function, addr = 0001:1513552
+  697336 | S_PUB32 [size = 48] `??_R2CTransmission@echo@storm@@8`
+           flags = none, addr = 0002:1463248
+---
+           flags = function, addr = 0001:1514720
+  695668 | S_PUB32 [size = 40] `??_R2CStateMDCampaigns@@8`
+           flags = none, addr = 0002:1620864
+---
+           flags = function, addr = 0001:1514800
+  694596 | S_PUB32 [size = 48] `??_R2CStateAOCampaignViking@@8`
+           flags = none, addr = 0002:1619024
+---
+           flags = function, addr = 0001:1514848
+  292632 | S_PUB32 [size = 44] `??_R0?AVCStateMainMenu@@@8`
+           flags = none, addr = 0003:911584
+---
+           flags = function, addr = 0001:1522160
+  291944 | S_PUB32 [size = 52] `??_R0?AVCStateLobbyGameSettings@@@8`
+           flags = none, addr = 0003:911396
+---
+           flags = function, addr = 0001:1525216
+  881680 | S_PUB32 [size = 44] `??_R3CStateXMD3Campaigns@@8`
+           flags = none, addr = 0002:1621700
+---
+           flags = function, addr = 0001:1602288
+  1269684 | S_PUB32 [size = 44] `CStateMainMenu::sub_122EF0`
+           flags = function, addr = 0001:1187568
+---
+           flags = function, addr = 0001:1643216
+  2584916 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_7107B0`
+           flags = function, addr = 0001:7403440
+---
+           flags = function, addr = 0001:1646176
+   84868 | S_PUB32 [size = 44] `??_7CStateCampaignDark@@6B@`
+           flags = none, addr = 0002:1315912
+---
+           flags = function, addr = 0001:1646704
+  1306256 | S_PUB32 [size = 40] `CreateCStateLobbyConnect`
+           flags = function, addr = 0001:1155920
+---
+           flags = function, addr = 0001:1647232
+  1649752 | S_PUB32 [size = 36] `aAvctransmissionmess`
+           flags = none, addr = 0003:803344
+---
+           flags = function, addr = 0001:1733136
+  1247372 | S_PUB32 [size = 40] `CMissionCD3::sub_FD6C0`
+           flags = function, addr = 0001:1033920
+---
+           flags = function, addr = 0001:1738288
+  1268972 | S_PUB32 [size = 56] `CStateMDCampaignsEcoConflict::sub_125910`
+           flags = function, addr = 0001:1198352
+---
+           flags = function, addr = 0001:1742400
+  292040 | S_PUB32 [size = 52] `??_R0?AVCStateLobbyMapSettings@@@8`
+           flags = none, addr = 0003:911468
+---
+           flags = function, addr = 0001:1896752
+  1247484 | S_PUB32 [size = 36] `CMissionCD::sub_FD480`
+           flags = function, addr = 0001:1033344
+---
+           flags = function, addr = 0001:1924240
+  491664 | S_PUB32 [size = 72] `??_R1A@?0A@AE@CTransmissionHistoryMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483284
+---
+           flags = function, addr = 0001:1930000
+  1105684 | S_PUB32 [size = 60] `??_R4ITransmissionObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:1483048
+---
+           flags = function, addr = 0001:1945872
+  1216784 | S_PUB32 [size = 60] `CConfigManager::SetAfterLobbyConnectTimeout`
+           flags = function, addr = 0001:149888
+---
+           flags = function, addr = 0001:2010016
+  1127976 | S_PUB32 [size = 92] `??_R4PeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@6B@`
+           flags = none, addr = 0002:1432916
+---
+           flags = function, addr = 0001:207312
+  1072192 | S_PUB32 [size = 52] `??_R4CTransmission@echo@storm@@6B@`
+           flags = none, addr = 0002:1463212
+---
+           flags = function, addr = 0001:2249440
+   72456 | S_PUB32 [size = 48] `??_7CAIAgentSuicideMissions@@6B@`
+           flags = none, addr = 0002:1139404
+---
+           flags = function, addr = 0001:2249600
+  1267700 | S_PUB32 [size = 48] `CStateMD2Campaigns::sub_124060`
+           flags = function, addr = 0001:1192032
+---
+           flags = function, addr = 0001:226144
+  1253568 | S_PUB32 [size = 40] `CRandomMaps::sub_10B3B0`
+           flags = function, addr = 0001:1090480
+---
+           flags = function, addr = 0001:2261808
+  483520 | S_PUB32 [size = 44] `??_R1A@?0A@AE@CMapFile@S4@@8`
+           flags = none, addr = 0002:1608452
+---
+           flags = function, addr = 0001:2355456
+  1330576 | S_PUB32 [size = 40] `OpenMainMenu:::def_122632`
+           flags = code, addr = 0001:1186170
+---
+           flags = function, addr = 0001:2396352
+  1325332 | S_PUB32 [size = 44] `LobbyMenuCallback:::def_8BB06`
+           flags = code, addr = 0001:570623
+---
+           flags = function, addr = 0001:2396560
+   84604 | S_PUB32 [size = 48] `??_7CStateAOCampaignViking@@6B@`
+           flags = none, addr = 0002:1315236
+---
+           flags = function, addr = 0001:2399648
+  694548 | S_PUB32 [size = 48] `??_R2CStateAOCampaignTrojan@@8`
+           flags = none, addr = 0002:1618944
+---
+           flags = function, addr = 0001:2415872
+  1072312 | S_PUB32 [size = 56] `??_R4CTransmissionHistory@echo@storm@@6B@`
+           flags = none, addr = 0002:1482948
+---
+           flags = function, addr = 0001:2415936
+  2581984 | S_PUB32 [size = 68] `storm::echo::CSingleTransmissionHistory::sub_70F4D0`
+           flags = function, addr = 0001:7398608
+---
+           flags = function, addr = 0001:2454224
+  1266376 | S_PUB32 [size = 52] `CStateLobbyGameSettings::sub_11F690`
+           flags = function, addr = 0001:1173136
+---
+           flags = function, addr = 0001:2513808
+  1253528 | S_PUB32 [size = 40] `CRandomMaps::sub_10B380`
+           flags = function, addr = 0001:1090432
+---
+           flags = function, addr = 0001:259520
+  1268144 | S_PUB32 [size = 48] `CStateMDCampaignMayan::sub_124E60`
+           flags = function, addr = 0001:1195616
+---
+           flags = function, addr = 0001:2639424
+  690748 | S_PUB32 [size = 36] `??_R2CMapFile@S4@@8`
+           flags = none, addr = 0002:1608480
+---
+           flags = function, addr = 0001:2647072
+  2058480 | S_PUB32 [size = 32] `aMapCampaignM_1`
+           flags = none, addr = 0002:1319604
+---
+           flags = function, addr = 0001:268976
+  292424 | S_PUB32 [size = 52] `??_R0?AVCStateMDCampaignViking@@@8`
+           flags = none, addr = 0003:911864
+---
+           flags = function, addr = 0001:277408
+   87968 | S_PUB32 [size = 72] `??_7CTransmissionHistoryTouchedBitsBase@echo@storm@@6B@`
+           flags = none, addr = 0002:541836
+---
+           flags = function, addr = 0001:283808
+  1266220 | S_PUB32 [size = 52] `CStateLobbyGameSettings::sub_11C6A0`
+           flags = function, addr = 0001:1160864
+---
+           flags = function, addr = 0001:284448
+  489356 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateMDCampaignMayan@@8`
+           flags = none, addr = 0002:1620704
+---
+           flags = function, addr = 0001:314464
+   85668 | S_PUB32 [size = 44] `??_7CStateMDCampaigns@@6B@`
+           flags = none, addr = 0002:1320248
+---
+           flags = function, addr = 0001:321216
+  483964 | S_PUB32 [size = 44] `??_R1A@?0A@AE@CMissionCD2@@8`
+           flags = none, addr = 0002:1616616
+---
+           flags = function, addr = 0001:324560
+  1070144 | S_PUB32 [size = 44] `??_R4CStateLobbyLoadMP@@6B@`
+           flags = none, addr = 0002:1620124
+---
+           flags = function, addr = 0001:325488
+  1247092 | S_PUB32 [size = 40] `CMissionCD2::sub_FCE70`
+           flags = function, addr = 0001:1031792
+---
+           flags = function, addr = 0001:364784
+  1263748 | S_PUB32 [size = 52] `CStateAOCampaignTrojan::sub_10FD80`
+           flags = function, addr = 0001:1109376
+---
+           flags = function, addr = 0001:6309030
+  881396 | S_PUB32 [size = 40] `??_R3CStateMainMenu@@8`
+           flags = none, addr = 0002:1620428
+---
+           flags = function, addr = 0001:6359360
+  1116420 | S_PUB32 [size = 92] `??_R4MessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@6B@`
+           flags = none, addr = 0002:1459072
+---
+           flags = function, addr = 0001:6394688
+  1052516 | S_PUB32 [size = 84] `??_R4Agent@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1503016
+---
+           flags = function, addr = 0001:6410048
+  2586192 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_703E00`
+           flags = function, addr = 0001:7351808
+---
+           flags = function, addr = 0001:6451152
+  922196 | S_PUB32 [size = 84] `??_R3MessageTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504828
+---
+           flags = function, addr = 0001:6453840
+   87616 | S_PUB32 [size = 96] `??_7CTransmissionHistoryMessage@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:539860
+---
+           flags = function, addr = 0001:6473088
+  921452 | S_PUB32 [size = 84] `??_R3MementoTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504744
+---
+           flags = function, addr = 0001:6493504
+  536844 | S_PUB32 [size = 100] `??_R1A@?0A@AE@MessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459128
+---
+           flags = function, addr = 0001:6494112
+  2677436 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdClear::sub_777DE0`
+           flags = function, addr = 0001:7826912
+---
+           flags = function, addr = 0001:6496448
+   88636 | S_PUB32 [size = 76] `??_7CTransmissionMessage@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:539776
+---
+           flags = function, addr = 0001:6496576
+   83720 | S_PUB32 [size = 80] `??_7CSingleTransmissionHistory@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:541704
+---
+           flags = function, addr = 0001:6497984
+  2693684 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_638CA0`
+           flags = function, addr = 0001:6519968
+---
+           flags = function, addr = 0001:6527216
+   88040 | S_PUB32 [size = 92] `??_7CTransmissionHistoryTouchedBitsBase@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:541900
+---
+           flags = function, addr = 0001:6535616
+  220604 | S_PUB32 [size = 108] `??_R0?AV?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@@8`
+           flags = none, addr = 0003:814680
+---
+           flags = function, addr = 0001:6636160
+  1073116 | S_PUB32 [size = 108] `??_R4CTransmissionHistoryTouchedBitsBase@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:1487456
+---
+           flags = function, addr = 0001:6645504
+  883024 | S_PUB32 [size = 64] `??_R3CTransmissionHistoryMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483244
+---
+           flags = function, addr = 0001:6664016
+  2630820 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_630930`
+           flags = function, addr = 0001:6486320
+---
+           flags = function, addr = 0001:6669232
+  2676976 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_777DC0`
+           flags = function, addr = 0001:7826880
+---
+           flags = function, addr = 0001:6669360
+  812724 | S_PUB32 [size = 104] `??_R3?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498108
+---
+           flags = function, addr = 0001:6671072
+  2582768 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_722C70`
+           flags = function, addr = 0001:7478384
+---
+           flags = function, addr = 0001:6693088
+  332876 | S_PUB32 [size = 88] `??_R0?AVMementoTransmissionThresholdRaise@outEvent@object@echo@storm@@@8`
+           flags = none, addr = 0003:819544
+---
+           flags = function, addr = 0001:6961664
+  220712 | S_PUB32 [size = 120] `??_R0?AV?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@@8`
+           flags = none, addr = 0003:814864
+---
+           flags = function, addr = 0001:6964032
+   83656 | S_PUB32 [size = 64] `??_7CSingleTransmissionHistory@echo@storm@@6B@`
+           flags = none, addr = 0002:541644
+---
+           flags = function, addr = 0001:6965856
+  2584276 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_72AA60`
+           flags = function, addr = 0001:7510624
+---
+           flags = function, addr = 0001:6972208
+  1116512 | S_PUB32 [size = 88] `??_R4MessageTransmissionThresholdRaise@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:1504808
+---
+           flags = function, addr = 0001:7011424
+  2631204 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_624060`
+           flags = function, addr = 0001:6434912
+---
+           flags = function, addr = 0001:7013424
+  1216956 | S_PUB32 [size = 72] `CConfigManager::SetHostWaitAfterLobbyForClientsTimeout`
+           flags = function, addr = 0001:150208
+---
+           flags = function, addr = 0001:7059024
+  2631396 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_630970`
+           flags = function, addr = 0001:6486384
+---
+           flags = function, addr = 0001:7093968
+  1073628 | S_PUB32 [size = 76] `??_R4CTransmissionMessage@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1483204
+---
+           flags = function, addr = 0001:7109424
+  324920 | S_PUB32 [size = 64] `??_R0?AVITransmissionIdObserver@echo@storm@@@8`
+           flags = none, addr = 0003:777616
+---
+           flags = function, addr = 0001:7165312
+  2584832 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_70F500`
+           flags = function, addr = 0001:7398656
+---
+           flags = function, addr = 0001:7194256
+   14856 | S_PUB32 [size = 100] `??_7?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:516936
+---
+           flags = function, addr = 0001:7328896
+  746120 | S_PUB32 [size = 88] `??_R2PeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432952
+---
+           flags = function, addr = 0001:7337168
+  1073908 | S_PUB32 [size = 84] `??_R4CTransmissionTouchedBitsBase@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487220
+---
+           flags = function, addr = 0001:7363808
+  127692 | S_PUB32 [size = 84] `??_7MessageTransmissionThresholdRaise@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:553760
+---
+           flags = function, addr = 0001:7365616
+  697956 | S_PUB32 [size = 72] `??_R2CTransmissionTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487644
+---
+           flags = function, addr = 0001:7377600
+  127024 | S_PUB32 [size = 84] `??_7MementoTransmissionThresholdRaise@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:553664
+---
+           flags = function, addr = 0001:7394000
+   87780 | S_PUB32 [size = 88] `??_7CTransmissionHistoryTouchedBits@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:541988
+---
+           flags = function, addr = 0001:7396016
+  1053388 | S_PUB32 [size = 92] `??_R4AgentMessage@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1503476
+---
+           flags = function, addr = 0001:7409664
+  2693972 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_65D630`
+           flags = function, addr = 0001:6669872
+---
+           flags = function, addr = 0001:7413120
+  1072760 | S_PUB32 [size = 88] `??_R4CTransmissionHistoryTouchedBits@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487568
+---
+           flags = function, addr = 0001:7415920
+  1073404 | S_PUB32 [size = 116] `??_R4CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:1487828
+---
+           flags = function, addr = 0001:7470176
+  526160 | S_PUB32 [size = 72] `??_R1A@?0A@AE@ITransmissionHistoryObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452768
+---
+           flags = function, addr = 0001:7477712
+  2582828 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_72A970`
+           flags = function, addr = 0001:7510384
+---
+           flags = function, addr = 0001:7477760
+  492040 | S_PUB32 [size = 64] `??_R1A@?0A@AE@CTransmissionMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483176
+---
+           flags = function, addr = 0001:7479664
+  2583008 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::nullsub_178`
+           flags = function, addr = 0001:7402320
+---
+           flags = function, addr = 0001:756608
+  1270180 | S_PUB32 [size = 48] `CStateVictoryScreen::sub_127FE0`
+           flags = function, addr = 0001:1208288
+---
+           flags = function, addr = 0001:7582928
+  1270792 | S_PUB32 [size = 60] `CStateXMD3Campaigns::sub_129710:::def_1297CC`
+           flags = code, addr = 0001:1214601
+---
+           flags = function, addr = 0001:7604560
+  2585460 | S_PUB32 [size = 60] `storm::echo::CTransmissionMessage::sub_72A4B0`
+           flags = function, addr = 0001:7509168
+---
+           flags = function, addr = 0001:7618912
+  883476 | S_PUB32 [size = 64] `??_R3CTransmissionTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487156
+---
+           flags = function, addr = 0001:7747136
+  1264140 | S_PUB32 [size = 60] `CStateAOCampaigns::sub_10F4D0:::def_10F5A8`
+           flags = code, addr = 0001:1107576
+---
+           flags = function, addr = 0001:7748288
+  2676240 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_76AF10`
+           flags = function, addr = 0001:7773968
+---
+           flags = function, addr = 0001:7749168
+  746208 | S_PUB32 [size = 88] `??_R2PeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432872
+---
+           flags = function, addr = 0001:7756144
+  116980 | S_PUB32 [size = 64] `??_7ITransmissionHistoryObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:516912
+---
+           flags = function, addr = 0001:7761088
+  536196 | S_PUB32 [size = 92] `??_R1A@?0A@AE@MementoTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504696
+---
+           flags = function, addr = 0001:7774000
+  2631492 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_632FC0`
+           flags = function, addr = 0001:6496192
+---
+           flags = function, addr = 0001:7792032
+  413520 | S_PUB32 [size = 108] `??_R1A@?0A@AE@?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1452844
+---
+           flags = function, addr = 0001:7792128
+  1053480 | S_PUB32 [size = 96] `??_R4AgentMessage@echo@storm@@6BTransmissionHistoryMessageObserver@echo@storm@@@`
+           flags = none, addr = 0002:1503516
+---
+           flags = function, addr = 0001:7793584
+  1074064 | S_PUB32 [size = 92] `??_R4CTransmissionTouchedBitsHierarchical@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487696
+---
+           flags = function, addr = 0001:7841792
+  395592 | S_PUB32 [size = 72] `??_R13?0A@AE@ITransmissionHistoryObserver@echo@storm@@8`
+           flags = none, addr = 0002:1502960
+---
+           flags = function, addr = 0001:7873360
+  2693204 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdClear::sub_65AF10`
+           flags = function, addr = 0001:6659856
+---
+           flags = function, addr = 0001:7895296
+  2583280 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_710780`
+           flags = function, addr = 0001:7403392
+---
+           flags = function, addr = 0001:803472
+  1266428 | S_PUB32 [size = 44] `CStateLobbyLoadMP::sub_11F890`
+           flags = function, addr = 0001:1173648
+---
+           flags = function, addr = 0001:8040048
+  1263256 | S_PUB32 [size = 48] `CStateAOCampaignMayan::sub_10ECB0`
+           flags = function, addr = 0001:1105072
+---
+           flags = function, addr = 0001:8238272
+  526232 | S_PUB32 [size = 68] `??_R1A@?0A@AE@ITransmissionIdObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452696
+---
+           flags = function, addr = 0001:8240160
+  1266716 | S_PUB32 [size = 64] `CStateLobbyMapSettings::Callbacks:::def_12109A`
+           flags = code, addr = 0001:1179754
+---
+           flags = function, addr = 0001:8258112
+  1269196 | S_PUB32 [size = 56] `CStateMDRandomMapParameters::sub_125F80`
+           flags = function, addr = 0001:1200000
+---
+           flags = function, addr = 0001:8261056
+  2693012 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdClear::sub_62B180`
+           flags = function, addr = 0001:6463872
+---
+           flags = function, addr = 0001:8264128
+  488332 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignsSettle@@8`
+           flags = none, addr = 0002:1618880
+---
+           flags = function, addr = 0001:8265520
+  883228 | S_PUB32 [size = 80] `??_R3CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487736
+---
+           flags = function, addr = 0001:8271392
+  1073704 | S_PUB32 [size = 60] `??_R4CTransmissionTouchedBits@echo@storm@@6B@`
+           flags = none, addr = 0002:1487240
+---
+           flags = function, addr = 0001:8283120
+   87868 | S_PUB32 [size = 100] `??_7CTransmissionHistoryTouchedBits@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:542000
+---
+           flags = function, addr = 0001:8297120
+  608612 | S_PUB32 [size = 68] `??_R1AC@?0A@AE@ITransmissionObserver@echo@storm@@8`
+           flags = none, addr = 0002:1483312
+---
+           flags = function, addr = 0001:8298624
+   88416 | S_PUB32 [size = 112] `??_7CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:542156
+---
+           flags = function, addr = 0001:8311232
+  2583552 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_72B570`
+           flags = function, addr = 0001:7513456
+---
+           flags = function, addr = 0001:8328176
+  2582120 | S_PUB32 [size = 68] `storm::echo::CSingleTransmissionHistory::sub_72B520`
+           flags = function, addr = 0001:7513376
+---
+           flags = function, addr = 0001:8341184
+  117104 | S_PUB32 [size = 56] `??_7ITransmissionObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:539660
+---
+           flags = function, addr = 0001:8444432
+  693872 | S_PUB32 [size = 60] `??_R2CSingleTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1487068
+---
+           flags = function, addr = 0001:8481680
+   88772 | S_PUB32 [size = 80] `??_7CTransmissionTouchedBits@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:541824
+---
+           flags = function, addr = 0001:8497984
+  1266652 | S_PUB32 [size = 64] `CStateLobbyMapSettings::Callbacks:::def_120CE7`
+           flags = code, addr = 0001:1180674
+---
+           flags = function, addr = 0001:8511840
+  294900 | S_PUB32 [size = 68] `??_R0?AVCTransmissionTouchedBitsBase@echo@storm@@@8`
+           flags = none, addr = 0003:806128
+---
+           flags = function, addr = 0001:8516704
+  2584504 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_72B580`
+           flags = function, addr = 0001:7513472
+---
+           flags = function, addr = 0001:8519184
+  294420 | S_PUB32 [size = 68] `??_R0?AVCTransmissionHistoryMessage@echo@storm@@@8`
+           flags = none, addr = 0003:803384
+---
+           flags = function, addr = 0001:8534096
+  746736 | S_PUB32 [size = 56] `??_R2PeerTransmissionAgent@echo@storm@@8`
+           flags = none, addr = 0002:1455300
+---
+           flags = function, addr = 0001:8593024
+  880720 | S_PUB32 [size = 44] `??_R3CStateLobbyConnect@@8`
+           flags = none, addr = 0002:1619944
+---
+           flags = function, addr = 0001:8608000
+  2585400 | S_PUB32 [size = 60] `storm::echo::CTransmissionMessage::sub_722C90`
+           flags = function, addr = 0001:7478416
+---
+           flags = function, addr = 0001:8614768
+  2586572 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_72BDC0`
+           flags = function, addr = 0001:7515584
+---
+           flags = function, addr = 0001:8623664
+  2676516 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_62B0C0`
+           flags = function, addr = 0001:6463680
+---
+           flags = function, addr = 0001:8702336
+   68220 | S_PUB32 [size = 84] `??_7Agent@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:552516
+---
+           flags = function, addr = 0001:8711488
+  2693876 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_65AFC0`
+           flags = function, addr = 0001:6660032
+---
+           flags = function, addr = 0001:8712016
+  1264952 | S_PUB32 [size = 48] `CStateCampaignDark::sub_1116F0`
+           flags = function, addr = 0001:1115888
+---
+           flags = function, addr = 0001:8717632
+  491812 | S_PUB32 [size = 80] `??_R1A@?0A@AE@CTransmissionHistoryTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487408
+---
+           flags = function, addr = 0001:8719360
+  1266516 | S_PUB32 [size = 44] `CStateLobbyLoadMP::sub_11F8E0`
+           flags = function, addr = 0001:1173728
+---
+           flags = function, addr = 0001:8719376
+   86100 | S_PUB32 [size = 44] `??_7CStateXMD3Campaigns@@6B@`
+           flags = none, addr = 0002:1322092
+---
+           flags = function, addr = 0001:8719424
+  1263112 | S_PUB32 [size = 48] `CStateAOCampaignBonus::sub_10EB60`
+           flags = function, addr = 0001:1104736
+---
+           flags = function, addr = 0001:8859296
+  1266152 | S_PUB32 [size = 68] `CStateLobbyGameSettings::SetLobbyState:::def_11D4C6`
+           flags = code, addr = 0001:1165925
+---
+           flags = function, addr = 0001:8861872
+  2585084 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_72AA80`
+           flags = function, addr = 0001:7510656
+---
+           flags = function, addr = 0001:8865952
+  492244 | S_PUB32 [size = 80] `??_R1A@?0A@AE@CTransmissionTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487668
+---
+           flags = function, addr = 0001:8872576
+  1115740 | S_PUB32 [size = 88] `??_R4MementoTransmissionThresholdClear@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:1504724
+---
+           flags = function, addr = 0001:8872992
+  1072244 | S_PUB32 [size = 68] `??_R4CTransmission@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1463320
+---
+           flags = function, addr = 0001:8886864
+   69168 | S_PUB32 [size = 96] `??_7AgentMessage@echo@storm@@6BTransmissionHistoryMessageObserver@echo@storm@@@`
+           flags = none, addr = 0002:552688
+---
+           flags = function, addr = 0001:8946128
+  536752 | S_PUB32 [size = 92] `??_R1A@?0A@AE@MessageTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504948
+---
+           flags = function, addr = 0001:9032928
+  1068576 | S_PUB32 [size = 84] `??_R4CSingleTransmissionHistory@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487116
+---
+           flags = function, addr = 0001:9058416
+  488112 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignRoman@@8`
+           flags = none, addr = 0002:1618720
+---
+           flags = function, addr = 0001:9179872
+  735952 | S_PUB32 [size = 84] `??_R2MementoTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504676
+---
+           flags = function, addr = 0001:9180016
+   89072 | S_PUB32 [size = 92] `??_7CTransmissionTouchedBitsHierarchical@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:542068
+---
+           flags = function, addr = 0001:9180368
+  609316 | S_PUB32 [size = 80] `??_R1AK@?0A@AE@TransmissionHistoryMessageObserver@echo@storm@@8`
+           flags = none, addr = 0002:1503448
+---
+           flags = function, addr = 0001:9184720
+  2677896 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdRaise::sub_777E00`
+           flags = function, addr = 0001:7826944
+---
+           flags = function, addr = 0001:9185840
+   88916 | S_PUB32 [size = 84] `??_7CTransmissionTouchedBitsBase@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:541764
+---
+           flags = function, addr = 0001:9212160
+  736696 | S_PUB32 [size = 88] `??_R2MessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459024
+---
+           flags = function, addr = 0001:9220384
+  1125664 | S_PUB32 [size = 104] `??_R4PeerChannelManager_Network@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1456708
+---
+           flags = function, addr = 0001:9226224
+  594264 | S_PUB32 [size = 80] `??_R1A@?0A@AE@TransmissionHistoryMessageObserver@echo@storm@@8`
+           flags = none, addr = 0002:1503100
+---
+           flags = function, addr = 0001:9227216
+  2583620 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::nullsub_181`
+           flags = function, addr = 0001:7402336
+---
+           flags = function, addr = 0001:9228144
+  220500 | S_PUB32 [size = 104] `??_R0?AV?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@@8`
+           flags = none, addr = 0003:777728
+---
+           flags = function, addr = 0001:9243680
+  2584352 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_72B0F0`
+           flags = function, addr = 0001:7512304
+---
+           flags = function, addr = 0001:9266912
+  2586116 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_703DE0`
+           flags = function, addr = 0001:7351776
+---
+           flags = function, addr = 0001:929216
+  1649788 | S_PUB32 [size = 36] `aAvctransmissiontouc`
+           flags = none, addr = 0003:806136
+---
+           flags = function, addr = 0001:929792
+  1647288 | S_PUB32 [size = 36] `aAvcstateaocampaignt`
+           flags = none, addr = 0003:910964
+---
+           flags = function, addr = 0001:929904
+  1647212 | S_PUB32 [size = 36] `aAvcstateaocampaigns`
+           flags = none, addr = 0003:910892
+---
+           flags = function, addr = 0001:939824
+  292376 | S_PUB32 [size = 48] `??_R0?AVCStateMDCampaignRoman@@@8`
+           flags = none, addr = 0003:911752
+---
+           flags = function, addr = 0001:9584384
+  2631012 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_6134F0`
+           flags = function, addr = 0001:6366448
+---
+           flags = function, addr = 0001:9612656
+  2583980 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_7244F0`
+           flags = function, addr = 0001:7484656
+---
+           flags = function, addr = 0001:9614528
+   89000 | S_PUB32 [size = 72] `??_7CTransmissionTouchedBitsHierarchical@echo@storm@@6B@`
+           flags = none, addr = 0002:542012
+---
+           flags = function, addr = 0001:9617536
+  2584664 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_6FDED0`
+           flags = function, addr = 0001:7327440
+---
+           flags = function, addr = 0001:9658302
+  1536408 | S_PUB32 [size = 36] `UpdateLobbyStringsB`
+           flags = function, addr = 0001:495856
+---
+           flags = function, addr = 0001:9674601
+  1072368 | S_PUB32 [size = 76] `??_R4CTransmissionHistory@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1483028
+---
+           flags = function, addr = 0001:9739883
+  1073572 | S_PUB32 [size = 56] `??_R4CTransmissionMessage@echo@storm@@6B@`
+           flags = none, addr = 0002:1483120
+---
+           flags = function, addr = 0001:9817670
+  2585520 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_6FE050`
+           flags = function, addr = 0001:7327824
+---
+           flags = function, addr = 0001:9825226
+  2582052 | S_PUB32 [size = 68] `storm::echo::CSingleTransmissionHistory::sub_710770`
+           flags = function, addr = 0001:7403376
+---
+           flags = function, addr = 0001:9904556
+  922280 | S_PUB32 [size = 88] `??_R3MessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459008
+---
+           flags = function, addr = 0001:9917363
+  869068 | S_PUB32 [size = 48] `??_R3CAIAgentSuicideMissions@@8`
+           flags = none, addr = 0002:1604396
+---
+           flags = function, addr = 0001:9966595
+  1263696 | S_PUB32 [size = 52] `CStateAOCampaignTrojan::sub_10FCA0`
+           flags = function, addr = 0001:1109152
+---
+           flags = none, addr = 0001:745552
+  2585340 | S_PUB32 [size = 60] `storm::echo::CTransmissionMessage::sub_722A00`
+           flags = function, addr = 0001:7477760
+---
+           flags = none, addr = 0002:0008
+  1253648 | S_PUB32 [size = 40] `CRandomMaps::sub_10B4E0`
+           flags = function, addr = 0001:1090784
+---
+           flags = none, addr = 0002:0320
+  1263448 | S_PUB32 [size = 48] `CStateAOCampaignRoman::sub_10EFD0`
+           flags = function, addr = 0001:1105872
+---
+           flags = none, addr = 0002:0528
+  876720 | S_PUB32 [size = 36] `??_R3CMissionCD3@@8`
+           flags = none, addr = 0002:1616784
+---
+           flags = none, addr = 0002:0704
+  1268736 | S_PUB32 [size = 44] `CStateMDCampaigns::sub_1254A0`
+           flags = function, addr = 0001:1197216
+---
+           flags = none, addr = 0002:0912
+   84508 | S_PUB32 [size = 48] `??_7CStateAOCampaignRoman@@6B@`
+           flags = none, addr = 0002:1315156
+---
+           flags = none, addr = 0002:1052
+   84652 | S_PUB32 [size = 44] `??_7CStateAOCampaigns@@6B@`
+           flags = none, addr = 0002:1315176
+---
+           flags = none, addr = 0002:111988
+  2058928 | S_PUB32 [size = 32] `aMapCampaignX_1`
+           flags = none, addr = 0002:1321900
+---
+           flags = none, addr = 0002:112016
+  2058960 | S_PUB32 [size = 32] `aMapCampaignX_2`
+           flags = none, addr = 0002:1321968
+---
+           flags = none, addr = 0002:112788
+  881252 | S_PUB32 [size = 40] `??_R3CStateMDCampaigns@@8`
+           flags = none, addr = 0002:1620908
+---
+           flags = none, addr = 0002:1135948
+   85976 | S_PUB32 [size = 44] `??_7CStateVictoryScreen@@6B@`
+           flags = none, addr = 0002:1320492
+---
+           flags = none, addr = 0002:1136312
+  1935532 | S_PUB32 [size = 32] `aGui_msg_lobbyb`
+           flags = none, addr = 0002:1262088
+---
+           flags = none, addr = 0002:1136500
+  1935596 | S_PUB32 [size = 32] `aGui_msg_lobbyn`
+           flags = none, addr = 0002:1262112
+---
+           flags = none, addr = 0002:1137680
+  2058448 | S_PUB32 [size = 32] `aMapCampaignM_0`
+           flags = none, addr = 0002:1319504
+---
+           flags = none, addr = 0002:1139688
+  695448 | S_PUB32 [size = 44] `??_R2CStateMD2Campaigns@@8`
+           flags = none, addr = 0002:1620544
+---
+           flags = none, addr = 0002:1142892
+   85212 | S_PUB32 [size = 44] `??_7CStateLobbyLoadMP@@6B@`
+           flags = none, addr = 0002:1318324
+---
+           flags = none, addr = 0002:1143368
+  1253408 | S_PUB32 [size = 40] `CRandomMaps::sub_10B290`
+           flags = function, addr = 0001:1090192
+---
+           flags = none, addr = 0002:1150712
+  2058864 | S_PUB32 [size = 32] `aMapCampaignVik`
+           flags = none, addr = 0002:1315292
+---
+           flags = none, addr = 0002:1151720
+  2392516 | S_PUB32 [size = 32] `g_isCampaignMap`
+           flags = none, addr = 0003:3297448
+---
+           flags = none, addr = 0002:1152268
+  2361556 | S_PUB32 [size = 32] `aVictory_condit`
+           flags = none, addr = 0002:1383316
+---
+           flags = none, addr = 0002:115416
+  691172 | S_PUB32 [size = 36] `??_R2CMissionCD@@8`
+           flags = none, addr = 0002:1616564
+---
+           flags = none, addr = 0002:1155240
+  294836 | S_PUB32 [size = 64] `??_R0?AVCTransmissionTouchedBits@echo@storm@@@8`
+           flags = none, addr = 0003:806184
+---
+           flags = none, addr = 0002:1161260
+  1253768 | S_PUB32 [size = 40] `CRandomMaps::sub_10B7A0`
+           flags = function, addr = 0001:1091488
+---
+           flags = none, addr = 0002:1161636
+  139756 | S_PUB32 [size = 56] `??_7PeerTransmissionAgent@echo@storm@@6B@`
+           flags = none, addr = 0002:523008
+---
+           flags = none, addr = 0002:1162800
+  695972 | S_PUB32 [size = 44] `??_R2CStateVictoryScreen@@8`
+           flags = none, addr = 0002:1621464
+---
+           flags = none, addr = 0002:1167488
+  1935564 | S_PUB32 [size = 32] `aGui_msg_lobbyc`
+           flags = none, addr = 0002:1262068
+---
+           flags = none, addr = 0002:1168228
+  2257728 | S_PUB32 [size = 32] `aSndCampaignS_2`
+           flags = none, addr = 0002:1314720
+---
+           flags = none, addr = 0002:1169084
+  1522936 | S_PUB32 [size = 36] `SelectedPlayerIdLobby`
+           flags = none, addr = 0003:120748
+---
+           flags = none, addr = 0002:1173812
+  2058992 | S_PUB32 [size = 32] `aMapCampaignXmd`
+           flags = none, addr = 0002:1321728
+---
+           flags = none, addr = 0002:1185660
+  2058672 | S_PUB32 [size = 32] `aMapCampaignM_7`
+           flags = none, addr = 0002:1320132
+---
+           flags = none, addr = 0002:1185688
+  2058576 | S_PUB32 [size = 32] `aMapCampaignM_4`
+           flags = none, addr = 0002:1319780
+---
+           flags = none, addr = 0002:1185744
+  2058512 | S_PUB32 [size = 32] `aMapCampaignM_2`
+           flags = none, addr = 0002:1319672
+---
+           flags = none, addr = 0002:1189984
+  2058800 | S_PUB32 [size = 32] `aMapCampaignRom`
+           flags = none, addr = 0002:1315348
+---
+           flags = none, addr = 0002:1192076
+  1056840 | S_PUB32 [size = 48] `??_R4CAIAgentSuicideMissions@@6B@`
+           flags = none, addr = 0002:1604564
+---
+           flags = none, addr = 0002:1205700
+  2167824 | S_PUB32 [size = 32] `aPermissionDeni`
+           flags = none, addr = 0002:671472
+---
+           flags = none, addr = 0002:1213656
+  1065404 | S_PUB32 [size = 36] `??_R4CMissionCD2@@6B@`
+           flags = none, addr = 0002:1616920
+---
+           flags = none, addr = 0002:1214304
+  1253368 | S_PUB32 [size = 40] `CRandomMaps::sub_10B1D0`
+           flags = function, addr = 0001:1090000
+---
+           flags = none, addr = 0002:1216824
+  1188412 | S_PUB32 [size = 32] `AOCampaignsSettle`
+           flags = function, addr = 0001:1108112
+---
+           flags = none, addr = 0002:122908
+  2151868 | S_PUB32 [size = 32] `aOpenMapFileOk`
+           flags = none, addr = 0002:1172784
+---
+           flags = none, addr = 0002:1241260
+  877988 | S_PUB32 [size = 36] `??_R3CRandomMaps@@8`
+           flags = none, addr = 0002:1618096
+---
+           flags = none, addr = 0002:1242256
+  2058768 | S_PUB32 [size = 32] `aMapCampaignMd_`
+           flags = none, addr = 0002:1319904
+---
+           flags = none, addr = 0002:1243008
+  1954628 | S_PUB32 [size = 32] `aGui_warn_lobby`
+           flags = none, addr = 0002:1274144
+---
+           flags = none, addr = 0002:1244556
+  1525044 | S_PUB32 [size = 44] `SetupSingleplayerLobbyMenu`
+           flags = function, addr = 0001:1159584
+---
+           flags = none, addr = 0002:1245436
+  1647908 | S_PUB32 [size = 32] `aAvcstatemainmenu`
+           flags = none, addr = 0003:911592
+---
+           flags = none, addr = 0002:1249036
+  1935660 | S_PUB32 [size = 32] `aGui_msg_lobbys`
+           flags = none, addr = 0002:1262156
+---
+           flags = none, addr = 0002:1250084
+  2099168 | S_PUB32 [size = 32] `aMissioncd2MapS`
+           flags = none, addr = 0002:1319572
+---
+           flags = none, addr = 0002:1250496
+  881032 | S_PUB32 [size = 44] `??_R3CStateMD2Campaigns@@8`
+           flags = none, addr = 0002:1620588
+---
+           flags = none, addr = 0002:1250736
+  1536340 | S_PUB32 [size = 32] `UpdateLobbyInfos`
+           flags = function, addr = 0001:1733136
+---
+           flags = none, addr = 0002:1255704
+   85620 | S_PUB32 [size = 48] `??_7CStateMDCampaignViking@@6B@`
+           flags = none, addr = 0002:1320288
+---
+           flags = none, addr = 0002:1257656
+  880268 | S_PUB32 [size = 48] `??_R3CStateAOCampaignsSettle@@8`
+           flags = none, addr = 0002:1618908
+---
+           flags = none, addr = 0002:1260224
+  1935628 | S_PUB32 [size = 32] `aGui_msg_lobbyo`
+           flags = none, addr = 0002:1262176
+---
+           flags = none, addr = 0002:1262964
+  1648232 | S_PUB32 [size = 36] `aAvcstatemdrandommap`
+           flags = none, addr = 0003:911912
+---
+           flags = none, addr = 0002:1264460
+  2058352 | S_PUB32 [size = 32] `aMapCampaignA_4`
+           flags = none, addr = 0002:1314468
+---
+           flags = none, addr = 0002:1265216
+  1648120 | S_PUB32 [size = 36] `aAvcstatemdcampaigns`
+           flags = none, addr = 0003:911796
+---
+           flags = none, addr = 0002:1267696
+  2058640 | S_PUB32 [size = 32] `aMapCampaignM_6`
+           flags = none, addr = 0002:1320064
+---
+           flags = none, addr = 0002:1267712
+  2031868 | S_PUB32 [size = 32] `aLanlobbyPlayer`
+           flags = none, addr = 0002:1355364
+---
+           flags = none, addr = 0002:1271796
+  2058544 | S_PUB32 [size = 32] `aMapCampaignM_3`
+           flags = none, addr = 0002:1319964
+---
+           flags = none, addr = 0002:1276656
+  1647176 | S_PUB32 [size = 36] `aAvcstateaocampaignr`
+           flags = none, addr = 0003:910856
+---
+           flags = none, addr = 0002:1278212
+  2099200 | S_PUB32 [size = 32] `aMissioncd3MapS`
+           flags = none, addr = 0002:1322036
+---
+           flags = none, addr = 0002:1279248
+  911332 | S_PUB32 [size = 36] `??_R3IRandomMaps@@8`
+           flags = none, addr = 0002:1618112
+---
+           flags = none, addr = 0002:1279324
+  725748 | S_PUB32 [size = 36] `??_R2IRandomMaps@@8`
+           flags = none, addr = 0002:1618032
+---
+           flags = none, addr = 0002:1280668
+  2257664 | S_PUB32 [size = 32] `aSndCampaignS_0`
+           flags = none, addr = 0002:1314584
+---
+           flags = none, addr = 0002:1280768
+  2257792 | S_PUB32 [size = 32] `aSndCampaignS_4`
+           flags = none, addr = 0002:1314852
+---
+           flags = none, addr = 0002:1281788
+  1268192 | S_PUB32 [size = 48] `CStateMDCampaignMayan::sub_124E70`
+           flags = function, addr = 0001:1195632
+---
+           flags = none, addr = 0002:1282040
+  2285324 | S_PUB32 [size = 32] `aSuicideMission`
+           flags = none, addr = 0002:1138836
+---
+           flags = none, addr = 0002:1282972
+  876332 | S_PUB32 [size = 36] `??_R3CMapFile@S4@@8`
+           flags = none, addr = 0002:1608488
+---
+           flags = none, addr = 0002:1285440
+  2257632 | S_PUB32 [size = 32] `aSndCampaignSVi`
+           flags = none, addr = 0002:1315680
+---
+           flags = none, addr = 0002:1285772
+   80148 | S_PUB32 [size = 36] `??_7CMapFile@S4@@6B@`
+           flags = none, addr = 0002:1149592
+---
+           flags = none, addr = 0002:1286924
+  1070756 | S_PUB32 [size = 40] `??_R4CStateMainMenu@@6B@`
+           flags = none, addr = 0002:1620444
+---
+           flags = none, addr = 0002:1293488
+  2257440 | S_PUB32 [size = 32] `aSndCampaignAo_`
+           flags = none, addr = 0002:1148096
+---
+           flags = none, addr = 0002:1293656
+  2257600 | S_PUB32 [size = 32] `aSndCampaignSTr`
+           flags = none, addr = 0002:1315740
+---
+           flags = none, addr = 0002:1296212
+  1328360 | S_PUB32 [size = 32] `MPLobbyRedrawTime`
+           flags = none, addr = 0003:4984912
+---
+           flags = none, addr = 0002:1302180
+  1268632 | S_PUB32 [size = 52] `CStateMDCampaignViking::sub_125E20`
+           flags = function, addr = 0001:1199648
+---
+           flags = none, addr = 0002:1303972
+  1648156 | S_PUB32 [size = 40] `aAvcstatemdcampaigns_0`
+           flags = none, addr = 0003:911828
+---
+           flags = none, addr = 0002:1304044
+  1269028 | S_PUB32 [size = 56] `CStateMDCampaignsEcoConflict::sub_125920`
+           flags = function, addr = 0001:1198368
+---
+           flags = none, addr = 0002:1306184
+  1647248 | S_PUB32 [size = 40] `aAvcstateaocampaigns_0`
+           flags = none, addr = 0003:910924
+---
+           flags = none, addr = 0002:1315256
+  695316 | S_PUB32 [size = 52] `??_R2CStateLobbyMultiplayerType@@8`
+           flags = none, addr = 0002:1620224
+---
+           flags = none, addr = 0002:1316340
+  2257568 | S_PUB32 [size = 32] `aSndCampaignSRo`
+           flags = none, addr = 0002:1315508
+---
+           flags = none, addr = 0002:1316620
+  2306316 | S_PUB32 [size = 32] `aTransmissionid`
+           flags = none, addr = 0002:629032
+---
+           flags = none, addr = 0002:1320380
+  1263352 | S_PUB32 [size = 48] `CStateAOCampaignMayan::sub_10EF20`
+           flags = function, addr = 0001:1105696
+---
+           flags = none, addr = 0002:132508
+  1325376 | S_PUB32 [size = 40] `LobbyMenuUIContainerId`
+           flags = none, addr = 0003:3498372
+---
+           flags = none, addr = 0002:1325440
+  881292 | S_PUB32 [size = 52] `??_R3CStateMDCampaignsEcoConflict@@8`
+           flags = none, addr = 0002:1620988
+---
+           flags = none, addr = 0002:1332400
+  2058256 | S_PUB32 [size = 32] `aMapCampaignA_1`
+           flags = none, addr = 0002:1314408
+---
+           flags = none, addr = 0002:1333096
+  882920 | S_PUB32 [size = 48] `??_R3CTransmission@echo@storm@@8`
+           flags = none, addr = 0002:1463232
+---
+           flags = none, addr = 0002:1338136
+  1648196 | S_PUB32 [size = 36] `aAvcstatemdcampaignv`
+           flags = none, addr = 0003:911872
+---
+           flags = none, addr = 0002:1354100
+  2058608 | S_PUB32 [size = 32] `aMapCampaignM_5`
+           flags = none, addr = 0002:1319840
+---
+           flags = none, addr = 0002:1363716
+  1247172 | S_PUB32 [size = 40] `CMissionCD2::sub_FD5F0`
+           flags = function, addr = 0001:1033712
+---
+           flags = none, addr = 0002:136380
+  1648048 | S_PUB32 [size = 36] `aAvcstatemdcampaignm`
+           flags = none, addr = 0003:911724
+---
+           flags = none, addr = 0002:1382288
+  1644992 | S_PUB32 [size = 32] `aAvcrandommaps`
+           flags = none, addr = 0003:910592
+---
+           flags = none, addr = 0002:1383936
+  2058384 | S_PUB32 [size = 32] `aMapCampaignAo_`
+           flags = none, addr = 0002:1314284
+---
+           flags = none, addr = 0002:1386349
+   81968 | S_PUB32 [size = 36] `??_7CRandomMaps@@6B@`
+           flags = none, addr = 0002:1313156
+---
+           flags = none, addr = 0002:1390568
+  1648084 | S_PUB32 [size = 36] `aAvcstatemdcampaignr`
+           flags = none, addr = 0003:911760
+---
+           flags = none, addr = 0002:1390836
+  697384 | S_PUB32 [size = 56] `??_R2CTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1482984
+---
+           flags = none, addr = 0002:1392280
+  2257504 | S_PUB32 [size = 32] `aSndCampaignSDa`
+           flags = none, addr = 0002:1315800
+---
+           flags = none, addr = 0002:1396276
+  1647800 | S_PUB32 [size = 36] `aAvcstatelobbymapset`
+           flags = none, addr = 0003:911476
+---
+           flags = none, addr = 0002:1397132
+  489696 | S_PUB32 [size = 48] `??_R1A@?0A@AE@CStateMainMenu@@8`
+           flags = none, addr = 0002:1620400
+---
+           flags = none, addr = 0002:1397476
+  524460 | S_PUB32 [size = 44] `??_R1A@?0A@AE@IRandomMaps@@8`
+           flags = none, addr = 0002:1618068
+---
+           flags = none, addr = 0002:1398516
+  695180 | S_PUB32 [size = 48] `??_R2CStateLobbyGameSettings@@8`
+           flags = none, addr = 0002:1619980
+---
+           flags = none, addr = 0002:1400732
+  2583416 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_72B0A0`
+           flags = function, addr = 0001:7512224
+---
+           flags = none, addr = 0002:1400928
+  1253288 | S_PUB32 [size = 40] `CRandomMaps::sub_10B120`
+           flags = function, addr = 0001:1089824
+---
+           flags = none, addr = 0002:1410804
+  1792376 | S_PUB32 [size = 32] `aDefaultgameend`
+           flags = none, addr = 0002:1381932
+---
+           flags = none, addr = 0002:1411104
+  323684 | S_PUB32 [size = 40] `??_R0?AVIRandomMaps@@@8`
+           flags = none, addr = 0003:910612
+---
+           flags = none, addr = 0002:1415700
+  489524 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateMDCampaigns@@8`
+           flags = none, addr = 0002:1620880
+---
+           flags = none, addr = 0002:1416964
+  1325452 | S_PUB32 [size = 32] `LobbyPageOffset`
+           flags = none, addr = 0003:1366196
+---
+           flags = none, addr = 0002:1422588
+  692404 | S_PUB32 [size = 36] `??_R2CRandomMaps@@8`
+           flags = none, addr = 0002:1618020
+---
+           flags = none, addr = 0002:1430548
+  138900 | S_PUB32 [size = 92] `??_7PeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@6B@`
+           flags = none, addr = 0002:507660
+---
+           flags = none, addr = 0002:1431396
+   88236 | S_PUB32 [size = 80] `??_7CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6B@`
+           flags = none, addr = 0002:542080
+---
+           flags = none, addr = 0002:1431732
+  2630532 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_61DA60`
+           flags = function, addr = 0001:6408800
+---
+           flags = none, addr = 0002:1432228
+  2676332 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_76FC60`
+           flags = function, addr = 0001:7793760
+---
+           flags = none, addr = 0002:1433176
+  343648 | S_PUB32 [size = 92] `??_R0?AVPeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@@8`
+           flags = none, addr = 0003:763096
+---
+           flags = none, addr = 0002:1433712
+  2583692 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_6FDE30`
+           flags = function, addr = 0001:7327280
+---
+           flags = none, addr = 0002:1433944
+  294968 | S_PUB32 [size = 76] `??_R0?AVCTransmissionTouchedBitsHierarchical@echo@storm@@@8`
+           flags = none, addr = 0003:806360
+---
+           flags = none, addr = 0002:1435800
+  333576 | S_PUB32 [size = 88] `??_R0?AVMessageTransmissionThresholdRaise@outEvent@object@echo@storm@@@8`
+           flags = none, addr = 0003:819704
+---
+           flags = none, addr = 0002:1435996
+  491600 | S_PUB32 [size = 64] `??_R1A@?0A@AE@CTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1483000
+---
+           flags = none, addr = 0002:1436080
+  727236 | S_PUB32 [size = 64] `??_R2ITransmissionHistoryObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452760
+---
+           flags = none, addr = 0002:1436388
+  127776 | S_PUB32 [size = 92] `??_7MessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@6B@`
+           flags = none, addr = 0002:523540
+---
+           flags = none, addr = 0002:1440252
+  343556 | S_PUB32 [size = 92] `??_R0?AVPeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@@8`
+           flags = none, addr = 0003:763176
+---
+           flags = none, addr = 0002:1441404
+   88132 | S_PUB32 [size = 104] `??_7CTransmissionHistoryTouchedBitsBase@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:541912
+---
+           flags = none, addr = 0002:1444264
+  2677344 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdClear::sub_76AF50`
+           flags = function, addr = 0001:7774032
+---
+           flags = none, addr = 0002:1445756
+  736524 | S_PUB32 [size = 88] `??_R2MessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459108
+---
+           flags = none, addr = 0002:1446404
+  2677252 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdClear::sub_7692B0`
+           flags = function, addr = 0001:7766704
+---
+           flags = none, addr = 0002:1446768
+  3513072 | S_PUB32 [size = 76] `sub_6FCF22:::storm__echo__CTransmissionHistory__loc_6FDD60`
+           flags = code, addr = 0001:7327072
+---
+           flags = none, addr = 0002:1447352
+  697504 | S_PUB32 [size = 68] `??_R2CTransmissionHistoryTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487512
+---
+           flags = none, addr = 0002:1447388
+  1072692 | S_PUB32 [size = 68] `??_R4CTransmissionHistoryTouchedBits@echo@storm@@6B@`
+           flags = none, addr = 0002:1487476
+---
+           flags = none, addr = 0002:1448272
+  2586420 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_72B9E0`
+           flags = function, addr = 0001:7514592
+---
+           flags = none, addr = 0002:1451432
+  2582412 | S_PUB32 [size = 56] `storm::echo::CTransmission::sub_6DFF00`
+           flags = function, addr = 0001:7204608
+---
+           flags = none, addr = 0002:1451844
+   87336 | S_PUB32 [size = 56] `??_7CTransmissionHistory@echo@storm@@6B@`
+           flags = none, addr = 0002:539672
+---
+           flags = none, addr = 0002:1452272
+  1267604 | S_PUB32 [size = 48] `CStateMD2Campaigns::sub_123E70`
+           flags = function, addr = 0001:1191536
+---
+           flags = none, addr = 0002:1452696
+  697572 | S_PUB32 [size = 72] `??_R2CTransmissionHistoryTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487384
+---
+           flags = none, addr = 0002:1453044
+  1196176 | S_PUB32 [size = 56] `CAIAgentGlobalSuicideMission::sub_33420`
+           flags = function, addr = 0001:205856
+---
+           flags = none, addr = 0002:1453136
+  1267808 | S_PUB32 [size = 48] `CStateMD2Campaigns::sub_124220`
+           flags = function, addr = 0001:1192480
+---
+           flags = none, addr = 0002:1453324
+  1264296 | S_PUB32 [size = 52] `CStateAOCampaignsSettle::sub_10F7D0`
+           flags = function, addr = 0001:1107920
+---
+           flags = none, addr = 0002:1453592
+  2583144 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_70F040`
+           flags = function, addr = 0001:7397440
+---
+           flags = none, addr = 0002:1455540
+  383740 | S_PUB32 [size = 72] `??_R0?AVTransmissionHistoryMessageObserver@echo@storm@@@8`
+           flags = none, addr = 0003:818472
+---
+           flags = none, addr = 0002:1455688
+  1269444 | S_PUB32 [size = 56] `CStateMDRandomMapParameters::sub_126F70`
+           flags = function, addr = 0001:1204080
+---
+           flags = none, addr = 0002:1456456
+  492172 | S_PUB32 [size = 72] `??_R1A@?0A@AE@CTransmissionTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487192
+---
+           flags = none, addr = 0002:1457456
+  1269628 | S_PUB32 [size = 56] `CStateMainMenu::sub_122B70:::def_122BBE`
+           flags = code, addr = 0001:1187332
+---
+           flags = none, addr = 0002:1457496
+  1196120 | S_PUB32 [size = 56] `CAIAgentGlobalSuicideMission::sub_33210`
+           flags = function, addr = 0001:205328
+---
+           flags = none, addr = 0002:1458612
+  998640 | S_PUB32 [size = 104] `??_R4?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:1498088
+---
+           flags = none, addr = 0002:145952
+  1649520 | S_PUB32 [size = 36] `aAvctransmissionhist`
+           flags = none, addr = 0003:803248
+---
+           flags = none, addr = 0002:1461848
+  2630436 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_613490`
+           flags = function, addr = 0001:6366352
+---
+           flags = none, addr = 0002:1462456
+  2693492 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_625720`
+           flags = function, addr = 0001:6440736
+---
+           flags = none, addr = 0002:1462540
+  694684 | S_PUB32 [size = 48] `??_R2CStateAOCampaignsSettle@@8`
+           flags = none, addr = 0002:1618864
+---
+           flags = none, addr = 0002:1462636
+  1269540 | S_PUB32 [size = 44] `CStateMainMenu::sub_1224B0`
+           flags = function, addr = 0001:1184944
+---
+           flags = none, addr = 0002:1462840
+  489636 | S_PUB32 [size = 60] `??_R1A@?0A@AE@CStateMDRandomMapParameters@@8`
+           flags = none, addr = 0002:1621120
+---
+           flags = none, addr = 0002:1465064
+  1269308 | S_PUB32 [size = 68] `CStateMDRandomMapParameters::sub_1265A0:::def_12669B`
+           flags = code, addr = 0001:1201776
+---
+           flags = none, addr = 0002:1465500
+  1105560 | S_PUB32 [size = 64] `??_R4ITransmissionHistoryObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:1452724
+---
+           flags = none, addr = 0002:1466692
+  536104 | S_PUB32 [size = 92] `??_R1A@?0A@AE@MementoTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504780
+---
+           flags = none, addr = 0002:1469388
+  1174936 | S_PUB32 [size = 72] `??_R4TransmissionHistoryMessageObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:1503056
+---
+           flags = none, addr = 0002:1470032
+  2677068 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdClear::sub_62B120`
+           flags = function, addr = 0001:6463776
+---
+           flags = none, addr = 0002:1471588
+  2676700 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_7691D0`
+           flags = function, addr = 0001:7766480
+---
+           flags = none, addr = 0002:1471868
+  2677620 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdRaise::sub_7655C0`
+           flags = function, addr = 0001:7751104
+---
+           flags = none, addr = 0002:1472364
+  127600 | S_PUB32 [size = 92] `??_7MessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@6B@`
+           flags = none, addr = 0002:523572
+---
+           flags = none, addr = 0002:1474008
+  2631300 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_62B7E0`
+           flags = function, addr = 0001:6465504
+---
+           flags = none, addr = 0002:1474072
+  2584428 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_72B1B0`
+           flags = function, addr = 0001:7512496
+---
+           flags = none, addr = 0002:1475180
+  2693396 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdClear::sub_669C00`
+           flags = function, addr = 0001:6720512
+---
+           flags = none, addr = 0002:1484360
+  332788 | S_PUB32 [size = 88] `??_R0?AVMementoTransmissionThresholdClear@outEvent@object@echo@storm@@@8`
+           flags = none, addr = 0003:819624
+---
+           flags = none, addr = 0002:1484472
+  136536 | S_PUB32 [size = 104] `??_7PeerChannelManager_Network@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:522324
+---
+           flags = none, addr = 0002:1485364
+  921536 | S_PUB32 [size = 84] `??_R3MementoTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504660
+---
+           flags = none, addr = 0002:1485616
+  2676056 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_765430`
+           flags = function, addr = 0001:7750704
+---
+           flags = none, addr = 0002:1487300
+  609588 | S_PUB32 [size = 68] `??_R1EB@?0A@AE@ITransmissionIdObserver@echo@storm@@8`
+           flags = none, addr = 0002:1456576
+---
+           flags = none, addr = 0002:1489388
+  883540 | S_PUB32 [size = 72] `??_R3CTransmissionTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487628
+---
+           flags = none, addr = 0002:1489840
+  697644 | S_PUB32 [size = 80] `??_R2CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487752
+---
+           flags = none, addr = 0002:1490092
+  333484 | S_PUB32 [size = 92] `??_R0?AVMessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@@8`
+           flags = none, addr = 0003:781904
+---
+           flags = none, addr = 0002:1491876
+  627040 | S_PUB32 [size = 100] `??_R2?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1452832
+---
+           flags = none, addr = 0002:1491912
+  998540 | S_PUB32 [size = 100] `??_R4?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:1452796
+---
+           flags = none, addr = 0002:1496316
+  294636 | S_PUB32 [size = 84] `??_R0?AVCTransmissionHistoryTouchedBitsHierarchical@echo@storm@@@8`
+           flags = none, addr = 0003:806424
+---
+           flags = none, addr = 0002:1500316
+  1263400 | S_PUB32 [size = 48] `CStateAOCampaignRoman::sub_10EFC0`
+           flags = function, addr = 0001:1105856
+---
+           flags = none, addr = 0002:1500792
+  2593544 | S_PUB32 [size = 68] `storm::echo::ITransmissionHistoryObserver::sub_653FB0`
+           flags = function, addr = 0001:6631344
+---
+           flags = none, addr = 0002:1501688
+  2586040 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_6FE0E0`
+           flags = function, addr = 0001:7327968
+---
+           flags = none, addr = 0002:1502724
+  1128068 | S_PUB32 [size = 92] `??_R4PeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@6B@`
+           flags = none, addr = 0002:1432836
+---
+           flags = none, addr = 0002:1503792
+  1068512 | S_PUB32 [size = 64] `??_R4CSingleTransmissionHistory@echo@storm@@6B@`
+           flags = none, addr = 0002:1487032
+---
+           flags = none, addr = 0002:1507376
+  487328 | S_PUB32 [size = 72] `??_R1A@?0A@AE@CSingleTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1487088
+---
+           flags = none, addr = 0002:1508220
+  998744 | S_PUB32 [size = 116] `??_R4?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:1498240
+---
+           flags = none, addr = 0002:1508896
+  413740 | S_PUB32 [size = 124] `??_R1A@?0A@AE@?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498288
+---
+           flags = none, addr = 0002:1510096
+  2677712 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdRaise::sub_769380`
+           flags = function, addr = 0001:7766912
+---
+           flags = none, addr = 0002:1511124
+  627244 | S_PUB32 [size = 116] `??_R2?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498276
+---
+           flags = none, addr = 0002:1511140
+  812828 | S_PUB32 [size = 116] `??_R3?$ObjectPool@VCTransmissionTouchedBitsHierarchical@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498260
+---
+           flags = none, addr = 0002:1512352
+  333396 | S_PUB32 [size = 88] `??_R0?AVMessageTransmissionThresholdClear@outEvent@object@echo@storm@@@8`
+           flags = none, addr = 0003:819784
+---
+           flags = none, addr = 0002:1512856
+   68864 | S_PUB32 [size = 100] `??_7AgentMementoHierarchical@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:557020
+---
+           flags = none, addr = 0002:1514172
+  1115828 | S_PUB32 [size = 88] `??_R4MementoTransmissionThresholdRaise@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:1504640
+---
+           flags = none, addr = 0002:1514472
+  2676424 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_777DA0`
+           flags = function, addr = 0001:7826848
+---
+           flags = none, addr = 0002:1514812
+  2677528 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdRaise::sub_62B1E0`
+           flags = function, addr = 0001:6463968
+---
+           flags = none, addr = 0002:1515220
+  488932 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateLobbyGameSettings@@8`
+           flags = none, addr = 0002:1619996
+---
+           flags = none, addr = 0002:1517236
+  474260 | S_PUB32 [size = 60] `??_R1A@?0A@AE@CAIAgentGlobalSuicideMission@@8`
+           flags = none, addr = 0002:1602132
+---
+           flags = none, addr = 0002:1517568
+  922108 | S_PUB32 [size = 88] `??_R3MessageTransmissionThresholdClear@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459092
+---
+           flags = none, addr = 0002:1518940
+  812624 | S_PUB32 [size = 100] `??_R3?$ObjectPool@VCTransmissionMessage@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1452816
+---
+           flags = none, addr = 0002:1520968
+  333664 | S_PUB32 [size = 92] `??_R0?AVMessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@@8`
+           flags = none, addr = 0003:781824
+---
+           flags = none, addr = 0002:1526336
+  474628 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CAIAgentSuicideMissions@@8`
+           flags = none, addr = 0002:1604216
+---
+           flags = none, addr = 0002:1526568
+  2582356 | S_PUB32 [size = 56] `storm::echo::CTransmission::sub_6D5C90`
+           flags = function, addr = 0001:7163024
+---
+           flags = none, addr = 0002:1526892
+  537036 | S_PUB32 [size = 100] `??_R1A@?0A@AE@MessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@8`
+           flags = none, addr = 0002:1459044
+---
+           flags = none, addr = 0002:1526940
+  1269252 | S_PUB32 [size = 56] `CStateMDRandomMapParameters::sub_1265A0`
+           flags = function, addr = 0001:1201568
+---
+           flags = none, addr = 0002:1527728
+  2694068 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_669C20`
+           flags = function, addr = 0001:6720544
+---
+           flags = none, addr = 0002:1527808
+  2581916 | S_PUB32 [size = 68] `storm::echo::CSingleTransmissionHistory::sub_70BB20`
+           flags = function, addr = 0001:7383840
+---
+           flags = none, addr = 0002:1528500
+  1269084 | S_PUB32 [size = 56] `CStateMDCampaignsEcoConflict::sub_125AE0`
+           flags = function, addr = 0001:1198816
+---
+           flags = none, addr = 0002:1530124
+  1052932 | S_PUB32 [size = 96] `??_R4AgentMementoBase@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1505796
+---
+           flags = none, addr = 0002:1532136
+  1072952 | S_PUB32 [size = 72] `??_R4CTransmissionHistoryTouchedBitsBase@echo@storm@@6B@`
+           flags = none, addr = 0002:1487348
+---
+           flags = none, addr = 0002:1532248
+  2585648 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_72B680`
+           flags = function, addr = 0001:7513728
+---
+           flags = none, addr = 0002:1532960
+  1268780 | S_PUB32 [size = 44] `CStateMDCampaigns::sub_1254B0`
+           flags = function, addr = 0001:1197232
+---
+           flags = none, addr = 0002:1533364
+  491892 | S_PUB32 [size = 88] `??_R1A@?0A@AE@CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@8`
+           flags = none, addr = 0002:1487780
+---
+           flags = none, addr = 0002:1533380
+  127516 | S_PUB32 [size = 84] `??_7MessageTransmissionThresholdClear@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:553804
+---
+           flags = none, addr = 0002:1534308
+  290508 | S_PUB32 [size = 64] `??_R0?AVCSingleTransmissionHistory@echo@storm@@@8`
+           flags = none, addr = 0003:806076
+---
+           flags = none, addr = 0002:1534624
+  1266272 | S_PUB32 [size = 52] `CStateLobbyGameSettings::sub_11CA70`
+           flags = function, addr = 0001:1161840
+---
+           flags = none, addr = 0002:1536000
+  922024 | S_PUB32 [size = 84] `??_R3MessageTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504912
+---
+           flags = none, addr = 0002:1536500
+  1073024 | S_PUB32 [size = 92] `??_R4CTransmissionHistoryTouchedBitsBase@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487436
+---
+           flags = none, addr = 0002:1537440
+  547948 | S_PUB32 [size = 100] `??_R1A@?0A@AE@PeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432888
+---
+           flags = none, addr = 0002:1537680
+   87532 | S_PUB32 [size = 84] `??_7CTransmissionHistoryMessage@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:539848
+---
+           flags = none, addr = 0002:1538092
+  294308 | S_PUB32 [size = 52] `??_R0?AVCTransmission@echo@storm@@@8`
+           flags = none, addr = 0003:785680
+---
+           flags = none, addr = 0002:1538600
+  1329512 | S_PUB32 [size = 52] `NetworkingFunction::ConnectToLobby`
+           flags = function, addr = 0001:493936
+---
+           flags = none, addr = 0002:1538628
+  1073520 | S_PUB32 [size = 52] `??_R4CTransmissionId@echo@storm@@6B@`
+           flags = none, addr = 0002:1482792
+---
+           flags = none, addr = 0002:1539776
+  2585972 | S_PUB32 [size = 68] `storm::echo::CTransmissionTouchedBitsBase::sub_722B80`
+           flags = function, addr = 0001:7478144
+---
+           flags = none, addr = 0002:1541784
+  536944 | S_PUB32 [size = 92] `??_R1A@?0A@AE@MessageTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504864
+---
+           flags = none, addr = 0002:1541972
+  735868 | S_PUB32 [size = 84] `??_R2MementoTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504760
+---
+           flags = none, addr = 0002:1542084
+  491736 | S_PUB32 [size = 76] `??_R1A@?0A@AE@CTransmissionHistoryTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487540
+---
+           flags = none, addr = 0002:1544804
+  695760 | S_PUB32 [size = 52] `??_R2CStateMDRandomMapParameters@@8`
+           flags = none, addr = 0002:1621104
+---
+           flags = none, addr = 0002:1544916
+  1069764 | S_PUB32 [size = 44] `??_R4CStateCampaignDark@@6B@`
+           flags = none, addr = 0002:1619404
+---
+           flags = none, addr = 0002:1545868
+  1128944 | S_PUB32 [size = 60] `??_R4PeerTransmissionAgent@echo@storm@@6B@`
+           flags = none, addr = 0002:1455264
+---
+           flags = none, addr = 0002:1546656
+  883416 | S_PUB32 [size = 60] `??_R3CTransmissionTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487260
+---
+           flags = none, addr = 0002:1547080
+   88712 | S_PUB32 [size = 60] `??_7CTransmissionTouchedBits@echo@storm@@6B@`
+           flags = none, addr = 0002:541776
+---
+           flags = none, addr = 0002:1547268
+  1268336 | S_PUB32 [size = 48] `CStateMDCampaignRoman::sub_125180`
+           flags = function, addr = 0001:1196416
+---
+           flags = none, addr = 0002:1547412
+  1070236 | S_PUB32 [size = 52] `??_R4CStateLobbyMultiplayerType@@6B@`
+           flags = none, addr = 0002:1620268
+---
+           flags = none, addr = 0002:1547448
+  1268928 | S_PUB32 [size = 44] `CStateMDCampaigns::sub_125840`
+           flags = function, addr = 0001:1198144
+---
+           flags = none, addr = 0002:1548200
+  488484 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateCampaign3X3@@8`
+           flags = none, addr = 0002:1619280
+---
+           flags = none, addr = 0002:1549208
+  2582948 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_72B140`
+           flags = function, addr = 0001:7512384
+---
+           flags = none, addr = 0002:1555632
+  294488 | S_PUB32 [size = 72] `??_R0?AVCTransmissionHistoryTouchedBits@echo@storm@@@8`
+           flags = none, addr = 0003:806300
+---
+           flags = none, addr = 0002:1557596
+  931704 | S_PUB32 [size = 88] `??_R3PeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432936
+---
+           flags = none, addr = 0002:1557728
+  2585584 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_722CB0`
+           flags = function, addr = 0001:7478448
+---
+           flags = none, addr = 0002:1558316
+  727300 | S_PUB32 [size = 60] `??_R2ITransmissionIdObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452688
+---
+           flags = none, addr = 0002:1559804
+  2630916 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_632FA0`
+           flags = function, addr = 0001:6496160
+---
+           flags = none, addr = 0002:1560488
+  1053168 | S_PUB32 [size = 104] `??_R4AgentMementoHierarchical@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1509044
+---
+           flags = none, addr = 0002:1560884
+  2676792 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_76AF30`
+           flags = function, addr = 0001:7774000
+---
+           flags = none, addr = 0002:1561004
+  786928 | S_PUB32 [size = 68] `??_R2TransmissionHistoryMessageObserver@echo@storm@@8`
+           flags = none, addr = 0002:1503092
+---
+           flags = none, addr = 0002:1561020
+  972512 | S_PUB32 [size = 68] `??_R3TransmissionHistoryMessageObserver@echo@storm@@8`
+           flags = none, addr = 0002:1503076
+---
+           flags = none, addr = 0002:1563508
+  2676148 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_7690F0`
+           flags = function, addr = 0001:7766256
+---
+           flags = none, addr = 0002:1563528
+  2676884 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_76FC70`
+           flags = function, addr = 0001:7793776
+---
+           flags = none, addr = 0002:1563760
+  1072592 | S_PUB32 [size = 100] `??_R4CTransmissionHistoryMessage@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:1483360
+---
+           flags = none, addr = 0002:1564340
+  2593676 | S_PUB32 [size = 64] `storm::echo::ITransmissionObserver::sub_6FEE70`
+           flags = function, addr = 0001:7331440
+---
+           flags = none, addr = 0002:1567128
+   14956 | S_PUB32 [size = 104] `??_7?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@6B@`
+           flags = none, addr = 0002:548236
+---
+           flags = none, addr = 0002:1570596
+  1265928 | S_PUB32 [size = 64] `CStateLobbyConnect::EventCallbacks:::def_11BA95`
+           flags = code, addr = 0001:1158911
+---
+           flags = none, addr = 0002:1570944
+  1266096 | S_PUB32 [size = 56] `CStateLobbyGameSettings::SetLobbyState`
+           flags = function, addr = 0001:1164384
+---
+           flags = none, addr = 0002:1571312
+  2631108 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullRaise::sub_61DAE0`
+           flags = function, addr = 0001:6408928
+---
+           flags = none, addr = 0002:157212
+  1330616 | S_PUB32 [size = 32] `OpenMainMenu_SEH`
+           flags = function, addr = 0001:11225787
+---
+           flags = none, addr = 0002:1572348
+  488168 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignTrojan@@8`
+           flags = none, addr = 0002:1618960
+---
+           flags = none, addr = 0002:1572668
+  2630724 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_62B780`
+           flags = function, addr = 0001:6465408
+---
+           flags = none, addr = 0002:1573348
+  880852 | S_PUB32 [size = 48] `??_R3CStateLobbyMapSettings@@8`
+           flags = none, addr = 0002:1620188
+---
+           flags = none, addr = 0002:1574092
+  2693780 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_654340`
+           flags = function, addr = 0001:6632256
+---
+           flags = none, addr = 0002:1574232
+  1070604 | S_PUB32 [size = 44] `??_R4CStateMDCampaigns@@6B@`
+           flags = none, addr = 0002:1620924
+---
+           flags = none, addr = 0002:1576620
+  1070508 | S_PUB32 [size = 48] `??_R4CStateMDCampaignRoman@@6B@`
+           flags = none, addr = 0002:1620844
+---
+           flags = none, addr = 0002:1577344
+  3478960 | S_PUB32 [size = 68] `sub_6A2195:::storm__echo__CTransmission__loc_6A4530`
+           flags = code, addr = 0001:6960432
+---
+           flags = none, addr = 0002:1578236
+  1069452 | S_PUB32 [size = 48] `??_R4CStateAOCampaignTrojan@@6B@`
+           flags = none, addr = 0002:1619004
+---
+           flags = none, addr = 0002:1578876
+  2585712 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_72B900`
+           flags = function, addr = 0001:7514368
+---
+           flags = none, addr = 0002:1583304
+  1071044 | S_PUB32 [size = 44] `??_R4CStateXMD3Campaigns@@6B@`
+           flags = none, addr = 0002:1621716
+---
+           flags = none, addr = 0002:1584344
+  2585840 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_72BD90`
+           flags = function, addr = 0001:7515536
+---
+           flags = none, addr = 0002:1585656
+  1265992 | S_PUB32 [size = 56] `CStateLobbyConnect::PrepareLobbyScreen`
+           flags = function, addr = 0001:1156992
+---
+           flags = none, addr = 0002:1587752
+  1264400 | S_PUB32 [size = 52] `CStateAOCampaignsSettle::sub_10FA40`
+           flags = function, addr = 0001:1108544
+---
+           flags = none, addr = 0002:1587988
+  1266940 | S_PUB32 [size = 56] `CStateLobbyMultiplayerType::sub_121C10`
+           flags = function, addr = 0001:1182736
+---
+           flags = none, addr = 0002:1589616
+  1268684 | S_PUB32 [size = 52] `CStateMDCampaignViking::sub_125EE0`
+           flags = function, addr = 0001:1199840
+---
+           flags = none, addr = 0002:1589944
+   85256 | S_PUB32 [size = 48] `??_7CStateLobbyMapSettings@@6B@`
+           flags = none, addr = 0002:1318352
+---
+           flags = none, addr = 0002:1590708
+   84824 | S_PUB32 [size = 44] `??_7CStateCampaign3X3@@6B@`
+           flags = none, addr = 0002:1315892
+---
+           flags = none, addr = 0002:1592440
+  1253728 | S_PUB32 [size = 40] `CRandomMaps::sub_10B690`
+           flags = function, addr = 0001:1091216
+---
+           flags = none, addr = 0002:1592804
+   87392 | S_PUB32 [size = 76] `??_7CTransmissionHistory@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:539732
+---
+           flags = none, addr = 0002:1592840
+  2583764 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_703190`
+           flags = function, addr = 0001:7348624
+---
+           flags = none, addr = 0002:1593100
+  126940 | S_PUB32 [size = 84] `??_7MementoTransmissionThresholdClear@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:553712
+---
+           flags = none, addr = 0002:159400
+  1675804 | S_PUB32 [size = 36] `aAvpeertransmissiona`
+           flags = none, addr = 0003:779312
+---
+           flags = none, addr = 0002:1594292
+  1072444 | S_PUB32 [size = 64] `??_R4CTransmissionHistoryMessage@echo@storm@@6B@`
+           flags = none, addr = 0002:1483224
+---
+           flags = none, addr = 0002:1594380
+  883360 | S_PUB32 [size = 56] `??_R3CTransmissionMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483140
+---
+           flags = none, addr = 0002:1594396
+  697776 | S_PUB32 [size = 56] `??_R2CTransmissionMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483156
+---
+           flags = none, addr = 0002:1596272
+  1329808 | S_PUB32 [size = 48] `NetworkingFunction::SetLobbyNames`
+           flags = function, addr = 0001:494112
+---
+           flags = none, addr = 0002:1597536
+  1267064 | S_PUB32 [size = 56] `CStateLobbyMultiplayerType::sub_121F20`
+           flags = function, addr = 0001:1183520
+---
+           flags = none, addr = 0002:1597772
+  2582468 | S_PUB32 [size = 56] `storm::echo::CTransmission::sub_6E0110`
+           flags = function, addr = 0001:7205136
+---
+           flags = none, addr = 0002:1601360
+  1649484 | S_PUB32 [size = 36] `aAvctransmissionEcho`
+           flags = none, addr = 0003:785688
+---
+           flags = none, addr = 0002:1601712
+  1270276 | S_PUB32 [size = 48] `CStateVictoryScreen::sub_1281C0`
+           flags = function, addr = 0001:1208768
+---
+           flags = none, addr = 0002:1601948
+  1070920 | S_PUB32 [size = 44] `??_R4CStateVictoryScreen@@6B@`
+           flags = none, addr = 0002:1621480
+---
+           flags = none, addr = 0002:1602496
+  1070096 | S_PUB32 [size = 48] `??_R4CStateLobbyGameSettings@@6B@`
+           flags = none, addr = 0002:1620040
+---
+           flags = none, addr = 0002:1602600
+  1264904 | S_PUB32 [size = 48] `CStateCampaignDark::sub_111540`
+           flags = function, addr = 0001:1115456
+---
+           flags = none, addr = 0002:1602704
+  288912 | S_PUB32 [size = 40] `??_R0?AVCRandomMaps@@@8`
+           flags = none, addr = 0003:910584
+---
+           flags = none, addr = 0002:1603372
+  1268432 | S_PUB32 [size = 48] `CStateMDCampaignRoman::sub_125340`
+           flags = function, addr = 0001:1196864
+---
+           flags = none, addr = 0002:1605796
+  1247332 | S_PUB32 [size = 40] `CMissionCD3::sub_FD690`
+           flags = function, addr = 0001:1033872
+---
+           flags = none, addr = 0002:1609752
+  1247132 | S_PUB32 [size = 40] `CMissionCD2::sub_FD5C0`
+           flags = function, addr = 0001:1033664
+---
+           flags = none, addr = 0002:1611748
+  1649636 | S_PUB32 [size = 40] `aAvctransmissionhist_2`
+           flags = none, addr = 0003:806308
+---
+           flags = none, addr = 0002:1612328
+  880044 | S_PUB32 [size = 44] `??_R3CStateAOCampaignMayan@@8`
+           flags = none, addr = 0002:1618668
+---
+           flags = none, addr = 0002:1612508
+  1247292 | S_PUB32 [size = 40] `CMissionCD3::sub_FD330`
+           flags = function, addr = 0001:1033008
+---
+           flags = none, addr = 0002:1612544
+  485564 | S_PUB32 [size = 44] `??_R1A@?0A@AE@CRandomMaps@@8`
+           flags = none, addr = 0002:1618040
+---
+           flags = none, addr = 0002:1613792
+  694460 | S_PUB32 [size = 44] `??_R2CStateAOCampaignMayan@@8`
+           flags = none, addr = 0002:1618624
+---
+           flags = none, addr = 0002:1613952
+  1264348 | S_PUB32 [size = 52] `CStateAOCampaignsSettle::sub_10F980`
+           flags = function, addr = 0001:1108352
+---
+           flags = none, addr = 0002:1615004
+  2583484 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_72B160`
+           flags = function, addr = 0001:7512416
+---
+           flags = none, addr = 0002:1616328
+  1267652 | S_PUB32 [size = 48] `CStateMD2Campaigns::sub_123E80`
+           flags = function, addr = 0001:1191552
+---
+           flags = none, addr = 0002:1617096
+  1331360 | S_PUB32 [size = 44] `PrepareStormMultiplayerEngine`
+           flags = function, addr = 0001:2015152
+---
+           flags = none, addr = 0002:1617480
+  1263904 | S_PUB32 [size = 52] `CStateAOCampaignViking::sub_10FFE0`
+           flags = function, addr = 0001:1109984
+---
+           flags = none, addr = 0002:1617512
+  484008 | S_PUB32 [size = 44] `??_R1A@?0A@AE@CMissionCD3@@8`
+           flags = none, addr = 0002:1616644
+---
+           flags = none, addr = 0002:1618276
+   85164 | S_PUB32 [size = 48] `??_7CStateLobbyGameSettings@@6B@`
+           flags = none, addr = 0002:1317696
+---
+           flags = none, addr = 0002:1618604
+  292328 | S_PUB32 [size = 48] `??_R0?AVCStateMDCampaignMayan@@@8`
+           flags = none, addr = 0003:911716
+---
+           flags = none, addr = 0002:1619068
+  1268480 | S_PUB32 [size = 48] `CStateMDCampaignRoman::sub_125400`
+           flags = function, addr = 0001:1197056
+---
+           flags = none, addr = 0002:1620304
+  1070372 | S_PUB32 [size = 44] `??_R4CStateMD2Campaigns@@6B@`
+           flags = none, addr = 0002:1620604
+---
+           flags = none, addr = 0002:1620764
+  1270852 | S_PUB32 [size = 48] `CStateXMD3Campaigns::sub_1298D0`
+           flags = function, addr = 0001:1214672
+---
+           flags = none, addr = 0002:1620864
+  1266832 | S_PUB32 [size = 52] `CStateLobbyMapSettings::sub_120C10`
+           flags = function, addr = 0001:1178640
+---
+           flags = none, addr = 0002:1620880
+  292576 | S_PUB32 [size = 56] `??_R0?AVCStateMDRandomMapParameters@@@8`
+           flags = none, addr = 0003:911904
+---
+           flags = none, addr = 0002:1620908
+  879456 | S_PUB32 [size = 60] `??_R3CSingleTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1487052
+---
+           flags = none, addr = 0002:1622076
+  1263592 | S_PUB32 [size = 52] `CStateAOCampaignTrojan::sub_10FAE0`
+           flags = function, addr = 0001:1108704
+---
+           flags = none, addr = 0002:1622988
+  694644 | S_PUB32 [size = 40] `??_R2CStateAOCampaigns@@8`
+           flags = none, addr = 0002:1618784
+---
+           flags = none, addr = 0002:1623120
+  294720 | S_PUB32 [size = 56] `??_R0?AVCTransmissionId@echo@storm@@@8`
+           flags = none, addr = 0003:803148
+---
+           flags = none, addr = 0002:1623476
+  491980 | S_PUB32 [size = 60] `??_R1A@?0A@AE@CTransmissionId@echo@storm@@8`
+           flags = none, addr = 0002:1482840
+---
+           flags = none, addr = 0002:1623540
+  880228 | S_PUB32 [size = 40] `??_R3CStateAOCampaigns@@8`
+           flags = none, addr = 0002:1618828
+---
+           flags = none, addr = 0002:1623700
+  1069548 | S_PUB32 [size = 44] `??_R4CStateAOCampaigns@@6B@`
+           flags = none, addr = 0002:1618844
+---
+           flags = none, addr = 0002:1623876
+  1264008 | S_PUB32 [size = 44] `CStateAOCampaigns::sub_10F2E0`
+           flags = function, addr = 0001:1106656
+---
+           flags = none, addr = 0002:1624328
+   84412 | S_PUB32 [size = 48] `??_7CStateAOCampaignBonus@@6B@`
+           flags = none, addr = 0002:1315116
+---
+           flags = none, addr = 0002:1624508
+  695708 | S_PUB32 [size = 52] `??_R2CStateMDCampaignsEcoConflict@@8`
+           flags = none, addr = 0002:1620972
+---
+           flags = none, addr = 0002:1625352
+  1306112 | S_PUB32 [size = 32] `CreateAOCampaigns`
+           flags = function, addr = 0001:1106784
+---
+           flags = none, addr = 0002:1625604
+  294360 | S_PUB32 [size = 60] `??_R0?AVCTransmissionHistory@echo@storm@@@8`
+           flags = none, addr = 0003:803240
+---
+           flags = none, addr = 0002:1626436
+  1247448 | S_PUB32 [size = 36] `CMissionCD::sub_FD450`
+           flags = function, addr = 0001:1033296
+---
+           flags = none, addr = 0002:1627404
+  278752 | S_PUB32 [size = 56] `??_R0?AVCAIAgentGlobalSuicideMission@@@8`
+           flags = none, addr = 0003:902816
+---
+           flags = none, addr = 0002:1627616
+  1269584 | S_PUB32 [size = 44] `CStateMainMenu::sub_122B70`
+           flags = function, addr = 0001:1186672
+---
+           flags = none, addr = 0002:1627856
+   85572 | S_PUB32 [size = 48] `??_7CStateMDCampaignRoman@@6B@`
+           flags = none, addr = 0002:1320228
+---
+           flags = none, addr = 0002:1629360
+  1264860 | S_PUB32 [size = 44] `CStateCampaign3X3::sub_1114C0`
+           flags = function, addr = 0001:1115328
+---
+           flags = none, addr = 0002:1629564
+  1268240 | S_PUB32 [size = 48] `CStateMDCampaignMayan::sub_125020`
+           flags = function, addr = 0001:1196064
+---
+           flags = none, addr = 0002:1632004
+  1266780 | S_PUB32 [size = 52] `CStateLobbyMapSettings::sub_120120`
+           flags = function, addr = 0001:1175840
+---
+           flags = none, addr = 0002:1632348
+  1269140 | S_PUB32 [size = 56] `CStateMDCampaignsEcoConflict::sub_125BC0`
+           flags = function, addr = 0001:1199040
+---
+           flags = none, addr = 0002:1633116
+  881344 | S_PUB32 [size = 52] `??_R3CStateMDRandomMapParameters@@8`
+           flags = none, addr = 0002:1621148
+---
+           flags = none, addr = 0002:1638164
+  1264244 | S_PUB32 [size = 52] `CStateAOCampaignsSettle::sub_10F7C0`
+           flags = function, addr = 0001:1107904
+---
+           flags = none, addr = 0002:1638384
+  279092 | S_PUB32 [size = 52] `??_R0?AVCAIAgentSuicideMissions@@@8`
+           flags = none, addr = 0003:903780
+---
+           flags = none, addr = 0002:1640168
+  292520 | S_PUB32 [size = 56] `??_R0?AVCStateMDCampaignsEcoConflict@@@8`
+           flags = none, addr = 0003:911820
+---
+           flags = none, addr = 0002:1641644
+  1325236 | S_PUB32 [size = 28] `LobbyCount`
+           flags = none, addr = 0003:3498076
+---
+           flags = none, addr = 0002:1641820
+  1270448 | S_PUB32 [size = 56] `CStateXMD3Briefing::PrepareXMD3Mission`
+           flags = function, addr = 0001:1212192
+---
+           flags = none, addr = 0002:1643540
+  2677804 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdRaise::sub_76AF70`
+           flags = function, addr = 0001:7774064
+---
+           flags = none, addr = 0002:1643852
+  1265000 | S_PUB32 [size = 48] `CStateCampaignDark::sub_1117F0`
+           flags = function, addr = 0001:1116144
+---
+           flags = none, addr = 0002:1644360
+  488224 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignViking@@8`
+           flags = none, addr = 0002:1619040
+---
+           flags = none, addr = 0002:1645732
+  344208 | S_PUB32 [size = 60] `??_R0?AVPeerTransmissionAgent@echo@storm@@@8`
+           flags = none, addr = 0003:779304
+---
+           flags = none, addr = 0002:1645836
+  1070188 | S_PUB32 [size = 48] `??_R4CStateLobbyMapSettings@@6B@`
+           flags = none, addr = 0002:1620204
+---
+           flags = none, addr = 0002:1647992
+  1266324 | S_PUB32 [size = 52] `CStateLobbyGameSettings::sub_11D100`
+           flags = function, addr = 0001:1163520
+---
+           flags = none, addr = 0002:1648776
+  1332872 | S_PUB32 [size = 40] `S4::CMapFile::sub_B11B0`
+           flags = function, addr = 0001:721328
+---
+           flags = none, addr = 0002:1649020
+  2393416 | S_PUB32 [size = 52] `hostWaitAfterLobbyForClientsTimeout`
+           flags = none, addr = 0003:558356
+---
+           flags = none, addr = 0002:1650204
+  881204 | S_PUB32 [size = 48] `??_R3CStateMDCampaignViking@@8`
+           flags = none, addr = 0002:1621068
+---
+           flags = none, addr = 0002:1650616
+  2614048 | S_PUB32 [size = 64] `storm::echo::PeerTransmissionAgent::sub_654670`
+           flags = function, addr = 0001:6633072
+---
+           flags = none, addr = 0002:1651384
+  1064908 | S_PUB32 [size = 36] `??_R4CMapFile@S4@@6B@`
+           flags = none, addr = 0002:1608504
+---
+           flags = none, addr = 0002:1651400
+  1665304 | S_PUB32 [size = 36] `aAvitransmissionidob`
+           flags = none, addr = 0003:777624
+---
+           flags = none, addr = 0002:166784
+  1268384 | S_PUB32 [size = 48] `CStateMDCampaignRoman::sub_125190`
+           flags = function, addr = 0001:1196432
+---
+           flags = none, addr = 0002:1728
+   72144 | S_PUB32 [size = 52] `??_7CAIAgentGlobalSuicideMission@@6B@`
+           flags = none, addr = 0002:1137076
+---
+           flags = none, addr = 0002:182680
+  2099232 | S_PUB32 [size = 32] `aMissioncdMapSN`
+           flags = none, addr = 0002:1320028
+---
+           flags = none, addr = 0002:1828
+  292808 | S_PUB32 [size = 48] `??_R0?AVCStateVictoryScreen@@@8`
+           flags = none, addr = 0003:912044
+---
+           flags = none, addr = 0002:182904
+  2058416 | S_PUB32 [size = 32] `aMapCampaignDar`
+           flags = none, addr = 0002:1315404
+---
+           flags = none, addr = 0002:184616
+  2332884 | S_PUB32 [size = 32] `aUnableMapFile_`
+           flags = none, addr = 0002:1402772
+---
+           flags = none, addr = 0002:186488
+   80632 | S_PUB32 [size = 36] `??_7CMissionCD2@@6B@`
+           flags = none, addr = 0002:1171664
+---
+           flags = none, addr = 0002:195736
+  2195908 | S_PUB32 [size = 28] `aRandomMaps`
+           flags = none, addr = 0002:1147528
+---
+           flags = none, addr = 0002:2020
+  1649676 | S_PUB32 [size = 40] `aAvctransmissionhist_3`
+           flags = none, addr = 0003:806432
+---
+           flags = none, addr = 0002:2100
+  1263956 | S_PUB32 [size = 52] `CStateAOCampaignViking::sub_1100A0`
+           flags = function, addr = 0001:1110176
+---
+           flags = none, addr = 0002:2279442
+  1318292 | S_PUB32 [size = 32] `GlobalMissionCD`
+           flags = none, addr = 0003:1370036
+---
+           flags = none, addr = 0002:233624
+  2058288 | S_PUB32 [size = 32] `aMapCampaignA_2`
+           flags = none, addr = 0002:1314344
+---
+           flags = none, addr = 0002:234936
+  2058320 | S_PUB32 [size = 32] `aMapCampaignA_3`
+           flags = none, addr = 0002:1314520
+---
+           flags = none, addr = 0002:246636
+  2059024 | S_PUB32 [size = 32] `aMapMultiplayer`
+           flags = none, addr = 0002:1147792
+---
+           flags = none, addr = 0002:28528
+  1269500 | S_PUB32 [size = 40] `CStateMainMenu::Create`
+           flags = function, addr = 0001:1186480
+---
+           flags = none, addr = 0002:319000
+   84460 | S_PUB32 [size = 48] `??_7CStateAOCampaignMayan@@6B@`
+           flags = none, addr = 0002:1315136
+---
+           flags = none, addr = 0002:320048
+   85816 | S_PUB32 [size = 40] `??_7CStateMainMenu@@6B@`
+           flags = none, addr = 0002:1319424
+---
+           flags = none, addr = 0002:320916
+  1647324 | S_PUB32 [size = 36] `aAvcstateaocampaignv`
+           flags = none, addr = 0003:911004
+---
+           flags = none, addr = 0002:321604
+  2257696 | S_PUB32 [size = 32] `aSndCampaignS_1`
+           flags = none, addr = 0002:1314788
+---
+           flags = none, addr = 0002:321984
+  2058224 | S_PUB32 [size = 32] `aMapCampaignA_0`
+           flags = none, addr = 0002:1314220
+---
+           flags = none, addr = 0002:324208
+  1647140 | S_PUB32 [size = 36] `aAvcstateaocampaignm`
+           flags = none, addr = 0003:910820
+---
+           flags = none, addr = 0002:324464
+  1744268 | S_PUB32 [size = 32] `aCfileMapfileCa`
+           flags = none, addr = 0002:1402692
+---
+           flags = none, addr = 0002:325224
+  1253488 | S_PUB32 [size = 40] `CRandomMaps::sub_10B360`
+           flags = function, addr = 0001:1090400
+---
+           flags = none, addr = 0002:336512
+  695812 | S_PUB32 [size = 40] `??_R2CStateMainMenu@@8`
+           flags = none, addr = 0002:1620384
+---
+           flags = none, addr = 0002:337292
+  1253688 | S_PUB32 [size = 40] `CRandomMaps::sub_10B510`
+           flags = function, addr = 0001:1090832
+---
+           flags = none, addr = 0002:337532
+   85440 | S_PUB32 [size = 44] `??_7CStateMD2Campaigns@@6B@`
+           flags = none, addr = 0002:1319764
+---
+           flags = none, addr = 0002:337772
+   85304 | S_PUB32 [size = 52] `??_7CStateLobbyMultiplayerType@@6B@`
+           flags = none, addr = 0002:1318484
+---
+           flags = none, addr = 0002:337944
+  287476 | S_PUB32 [size = 40] `??_R0?AVCMissionCD2@@@8`
+           flags = none, addr = 0003:910044
+---
+           flags = none, addr = 0002:338460
+  1065440 | S_PUB32 [size = 36] `??_R4CMissionCD3@@6B@`
+           flags = none, addr = 0002:1616880
+---
+           flags = none, addr = 0002:343360
+  694812 | S_PUB32 [size = 40] `??_R2CStateCampaign3X3@@8`
+           flags = none, addr = 0002:1619264
+---
+           flags = none, addr = 0002:344588
+  2257536 | S_PUB32 [size = 32] `aSndCampaignSMa`
+           flags = none, addr = 0002:1315624
+---
+           flags = none, addr = 0002:345124
+  1265832 | S_PUB32 [size = 44] `CStateLobbyConnect::Callbacks`
+           flags = function, addr = 0001:496688
+---
+           flags = none, addr = 0002:347844
+  695228 | S_PUB32 [size = 40] `??_R2CStateLobbyLoadMP@@8`
+           flags = none, addr = 0002:1620060
+---
+           flags = none, addr = 0002:350956
+  2257408 | S_PUB32 [size = 32] `aSndCampaignA_0`
+           flags = none, addr = 0002:1148032
+---
+           flags = none, addr = 0002:388832
+  1736844 | S_PUB32 [size = 32] `aCampaignMapSNo`
+           flags = none, addr = 0002:1315856
+---
+           flags = none, addr = 0002:404832
+  291204 | S_PUB32 [size = 48] `??_R0?AVCStateAOCampaignRoman@@@8`
+           flags = none, addr = 0003:910848
+---
+           flags = none, addr = 0002:405592
+  2058896 | S_PUB32 [size = 32] `aMapCampaignX_0`
+           flags = none, addr = 0002:1321792
+---
+           flags = none, addr = 0002:411356
+  876756 | S_PUB32 [size = 36] `??_R3CMissionCD@@8`
+           flags = none, addr = 0002:1616832
+---
+           flags = none, addr = 0002:414164
+  1776276 | S_PUB32 [size = 32] `aCstatemainmenu`
+           flags = none, addr = 0002:1318784
+---
+           flags = none, addr = 0002:422104
+  2306348 | S_PUB32 [size = 32] `aTransmissions`
+           flags = none, addr = 0002:525456
+---
+           flags = none, addr = 0002:422532
+  691100 | S_PUB32 [size = 36] `??_R2CMissionCD2@@8`
+           flags = none, addr = 0002:1616532
+---
+           flags = none, addr = 0002:423376
+  880900 | S_PUB32 [size = 52] `??_R3CStateLobbyMultiplayerType@@8`
+           flags = none, addr = 0002:1620288
+---
+           flags = none, addr = 0002:424168
+  2058736 | S_PUB32 [size = 32] `aMapCampaignMcd`
+           flags = none, addr = 0002:1319440
+---
+           flags = none, addr = 0002:427708
+  291156 | S_PUB32 [size = 48] `??_R0?AVCStateAOCampaignMayan@@@8`
+           flags = none, addr = 0003:910812
+---
+           flags = none, addr = 0002:427928
+  1330548 | S_PUB32 [size = 28] `OpenMainMenu`
+           flags = function, addr = 0001:1185088
+---
+           flags = none, addr = 0002:42796
+  1647104 | S_PUB32 [size = 36] `aAvcstateaocampaignb`
+           flags = none, addr = 0003:910784
+---
+           flags = none, addr = 0002:428372
+  2257760 | S_PUB32 [size = 32] `aSndCampaignS_3`
+           flags = none, addr = 0002:1314912
+---
+           flags = none, addr = 0002:430392
+  1528352 | S_PUB32 [size = 32] `TargetLobbyNumber`
+           flags = none, addr = 0003:3498080
+---
+           flags = none, addr = 0002:433464
+  1647976 | S_PUB32 [size = 36] `aAvcstatemd2campaign`
+           flags = none, addr = 0003:911656
+---
+           flags = none, addr = 0002:435288
+  287556 | S_PUB32 [size = 40] `??_R0?AVCMissionCD@@@8`
+           flags = none, addr = 0003:910096
+---
+           flags = none, addr = 0002:446240
+  694852 | S_PUB32 [size = 44] `??_R2CStateCampaignDark@@8`
+           flags = none, addr = 0002:1619344
+---
+           flags = none, addr = 0002:450780
+  2195880 | S_PUB32 [size = 28] `aRandomMap`
+           flags = none, addr = 0002:1313128
+---
+           flags = none, addr = 0002:507940
+  2626788 | S_PUB32 [size = 76] `storm::echo::TransmissionHistoryMessageObserver::sub_765BD0`
+           flags = function, addr = 0001:7752656
+---
+           flags = none, addr = 0002:508852
+  2582708 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_7229D0`
+           flags = function, addr = 0001:7477712
+---
+           flags = none, addr = 0002:511436
+   87712 | S_PUB32 [size = 68] `??_7CTransmissionHistoryTouchedBits@echo@storm@@6B@`
+           flags = none, addr = 0002:541924
+---
+           flags = none, addr = 0002:51756
+  2257472 | S_PUB32 [size = 32] `aSndCampaignSAo`
+           flags = none, addr = 0002:1314656
+---
+           flags = none, addr = 0002:517960
+  138808 | S_PUB32 [size = 92] `??_7PeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@6B@`
+           flags = none, addr = 0002:507696
+---
+           flags = none, addr = 0002:524304
+  1070648 | S_PUB32 [size = 56] `??_R4CStateMDCampaignsEcoConflict@@6B@`
+           flags = none, addr = 0002:1621004
+---
+           flags = none, addr = 0002:530848
+  294560 | S_PUB32 [size = 76] `??_R0?AVCTransmissionHistoryTouchedBitsBase@echo@storm@@@8`
+           flags = none, addr = 0003:806236
+---
+           flags = none, addr = 0002:534624
+  2585000 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_724510`
+           flags = function, addr = 0001:7484688
+---
+           flags = none, addr = 0002:535912
+  184800 | S_PUB32 [size = 72] `??_7TransmissionHistoryMessageObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:552544
+---
+           flags = none, addr = 0002:536944
+  1665340 | S_PUB32 [size = 36] `aAvitransmissionobse`
+           flags = none, addr = 0003:803296
+---
+           flags = none, addr = 0002:538764
+  627140 | S_PUB32 [size = 104] `??_R2?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498124
+---
+           flags = none, addr = 0002:540512
+  2584052 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_72AA10`
+           flags = function, addr = 0001:7510544
+---
+           flags = none, addr = 0002:544760
+  292476 | S_PUB32 [size = 44] `??_R0?AVCStateMDCampaigns@@@8`
+           flags = none, addr = 0003:911788
+---
+           flags = none, addr = 0002:547332
+  1052716 | S_PUB32 [size = 92] `??_R4AgentMemento@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:1505928
+---
+           flags = none, addr = 0002:547996
+  2583836 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_70F4F0`
+           flags = function, addr = 0001:7398640
+---
+           flags = none, addr = 0002:550768
+  1270744 | S_PUB32 [size = 48] `CStateXMD3Campaigns::sub_129710`
+           flags = function, addr = 0001:1214224
+---
+           flags = none, addr = 0002:550900
+  695136 | S_PUB32 [size = 44] `??_R2CStateLobbyConnect@@8`
+           flags = none, addr = 0002:1619900
+---
+           flags = none, addr = 0002:554788
+  2593612 | S_PUB32 [size = 64] `storm::echo::ITransmissionIdObserver::sub_653FD0`
+           flags = function, addr = 0001:6631376
+---
+           flags = none, addr = 0002:555912
+  2676608 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdRaise::sub_765460`
+           flags = function, addr = 0001:7750752
+---
+           flags = none, addr = 0002:557036
+   88316 | S_PUB32 [size = 100] `??_7CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:542144
+---
+           flags = none, addr = 0002:558080
+  413628 | S_PUB32 [size = 112] `??_R1A@?0A@AE@?$ObjectPool@VCTransmissionTouchedBits@echo@storm@@UNulLock@3@$0EBCAAAAA@@storm@@8`
+           flags = none, addr = 0002:1498136
+---
+           flags = none, addr = 0002:584892
+  1196836 | S_PUB32 [size = 52] `CAIAgentSuicideMissions::sub_329D0`
+           flags = function, addr = 0001:203216
+---
+           flags = none, addr = 0002:588952
+  694504 | S_PUB32 [size = 44] `??_R2CStateAOCampaignRoman@@8`
+           flags = none, addr = 0002:1618704
+---
+           flags = none, addr = 0002:590492
+  1196288 | S_PUB32 [size = 56] `CAIAgentGlobalSuicideMission::sub_39700`
+           flags = function, addr = 0001:231168
+---
+           flags = none, addr = 0002:604612
+  2582524 | S_PUB32 [size = 64] `storm::echo::CTransmissionHistory::nullsub_177`
+           flags = function, addr = 0001:7484640
+---
+           flags = none, addr = 0002:605092
+  883088 | S_PUB32 [size = 68] `??_R3CTransmissionHistoryTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487496
+---
+           flags = none, addr = 0002:607608
+  697892 | S_PUB32 [size = 64] `??_R2CTransmissionTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487172
+---
+           flags = none, addr = 0002:607800
+  324852 | S_PUB32 [size = 68] `??_R0?AVITransmissionHistoryObserver@echo@storm@@@8`
+           flags = none, addr = 0003:777668
+---
+           flags = none, addr = 0002:612392
+  1265876 | S_PUB32 [size = 52] `CStateLobbyConnect::EventCallbacks`
+           flags = function, addr = 0001:1157712
+---
+           flags = none, addr = 0002:612420
+  2583908 | S_PUB32 [size = 72] `storm::echo::CTransmissionHistoryTouchedBits::sub_710790`
+           flags = function, addr = 0001:7403408
+---
+           flags = none, addr = 0002:620588
+  2586496 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_72BD60`
+           flags = function, addr = 0001:7515488
+---
+           flags = none, addr = 0002:621552
+  3512992 | S_PUB32 [size = 80] `sub_6FCF22:::storm__echo__CSingleTransmissionHistory__loc_6FDD20`
+           flags = code, addr = 0001:7327008
+---
+           flags = none, addr = 0002:624064
+  1056520 | S_PUB32 [size = 56] `??_R4CAIAgentGlobalSuicideMission@@6B@`
+           flags = none, addr = 0002:1602416
+---
+           flags = none, addr = 0002:636312
+  1104012 | S_PUB32 [size = 36] `??_R4IRandomMaps@@6B@`
+           flags = none, addr = 0002:1618148
+---
+           flags = none, addr = 0002:636488
+  2583076 | S_PUB32 [size = 68] `storm::echo::CTransmissionHistoryMessage::sub_6FDD90`
+           flags = function, addr = 0001:7327120
+---
+           flags = none, addr = 0002:6380
+  1647764 | S_PUB32 [size = 36] `aAvcstatelobbyloadmp`
+           flags = none, addr = 0003:911444
+---
+           flags = none, addr = 0002:63888
+  1307108 | S_PUB32 [size = 40] `CreateMultiplayerEngine`
+           flags = function, addr = 0001:2014032
+---
+           flags = none, addr = 0002:641796
+   68420 | S_PUB32 [size = 88] `??_7AgentMemento@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:554284
+---
+           flags = none, addr = 0002:645596
+  287516 | S_PUB32 [size = 40] `??_R0?AVCMissionCD3@@@8`
+           flags = none, addr = 0003:910016
+---
+           flags = none, addr = 0002:653488
+   68632 | S_PUB32 [size = 92] `??_7AgentMementoBase@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:554156
+---
+           flags = none, addr = 0002:653588
+  115720 | S_PUB32 [size = 36] `??_7IRandomMaps@@6B@`
+           flags = none, addr = 0002:1313228
+---
+           flags = none, addr = 0002:669004
+  1264096 | S_PUB32 [size = 44] `CStateAOCampaigns::sub_10F4D0`
+           flags = function, addr = 0001:1107152
+---
+           flags = none, addr = 0002:675756
+  880396 | S_PUB32 [size = 40] `??_R3CStateCampaign3X3@@8`
+           flags = none, addr = 0002:1619308
+---
+           flags = none, addr = 0002:675912
+  2693588 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdRaise::sub_62B240`
+           flags = function, addr = 0001:6464064
+---
+           flags = none, addr = 0002:69916
+  1325264 | S_PUB32 [size = 36] `LobbyMapIdStartIndex`
+           flags = none, addr = 0002:951012
+---
+           flags = none, addr = 0002:706432
+  2630628 | S_PUB32 [size = 96] `storm::echo::engine::outEvent::PeerManagerTransmissionWindowFullClear::sub_624040`
+           flags = function, addr = 0001:6434880
+---
+           flags = none, addr = 0002:706516
+  489040 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateLobbyMapSettings@@8`
+           flags = none, addr = 0002:1620160
+---
+           flags = none, addr = 0002:710500
+  489576 | S_PUB32 [size = 60] `??_R1A@?0A@AE@CStateMDCampaignsEcoConflict@@8`
+           flags = none, addr = 0002:1620944
+---
+           flags = none, addr = 0002:710804
+  1072848 | S_PUB32 [size = 104] `??_R4CTransmissionHistoryTouchedBits@echo@storm@@6BITransmissionObserver@echo@storm@@@`
+           flags = none, addr = 0002:1487588
+---
+           flags = none, addr = 0002:719340
+  2582888 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_72B080`
+           flags = function, addr = 0001:7512192
+---
+           flags = none, addr = 0002:7332
+  1268580 | S_PUB32 [size = 52] `CStateMDCampaignViking::sub_125C70`
+           flags = function, addr = 0001:1199216
+---
+           flags = none, addr = 0002:763948
+  1307012 | S_PUB32 [size = 32] `CreateLobbyMenu`
+           flags = function, addr = 0001:1155840
+---
+           flags = none, addr = 0002:764996
+  1736820 | S_PUB32 [size = 24] `aCampaign`
+           flags = none, addr = 0002:1311740
+---
+           flags = none, addr = 0002:76536
+  2057124 | S_PUB32 [size = 32] `aMainmenuUnknow`
+           flags = none, addr = 0002:1318984
+---
+           flags = none, addr = 0002:7864
+  691136 | S_PUB32 [size = 36] `??_R2CMissionCD3@@8`
+           flags = none, addr = 0002:1616548
+---
+           flags = none, addr = 0002:795848
+  294776 | S_PUB32 [size = 60] `??_R0?AVCTransmissionMessage@echo@storm@@@8`
+           flags = none, addr = 0003:803336
+---
+           flags = none, addr = 0002:800292
+  697724 | S_PUB32 [size = 52] `??_R2CTransmissionId@echo@storm@@8`
+           flags = none, addr = 0002:1482828
+---
+           flags = none, addr = 0002:802724
+  880812 | S_PUB32 [size = 40] `??_R3CStateLobbyLoadMP@@8`
+           flags = none, addr = 0002:1620108
+---
+           flags = none, addr = 0002:808300
+  2196192 | S_PUB32 [size = 32] `aRansmissionhis`
+           flags = none, addr = 0002:611209
+---
+           flags = none, addr = 0002:817180
+  1647424 | S_PUB32 [size = 36] `aAvcstatecampaign3x3`
+           flags = none, addr = 0003:911108
+---
+           flags = none, addr = 0002:823488
+  1649596 | S_PUB32 [size = 40] `aAvctransmissionhist_1`
+           flags = none, addr = 0003:806244
+---
+           flags = none, addr = 0002:824536
+  868756 | S_PUB32 [size = 52] `??_R3CAIAgentGlobalSuicideMission@@8`
+           flags = none, addr = 0002:1602308
+---
+           flags = none, addr = 0002:829544
+  1649824 | S_PUB32 [size = 40] `aAvctransmissiontouc_0`
+           flags = none, addr = 0003:806192
+---
+           flags = none, addr = 0002:83276
+  2293244 | S_PUB32 [size = 36] `aTheDesiredMapFileCo`
+           flags = none, addr = 0002:1346896
+---
+           flags = none, addr = 0002:834124
+  1665268 | S_PUB32 [size = 36] `aAvitransmissionhist`
+           flags = none, addr = 0003:777676
+---
+           flags = none, addr = 0002:835376
+  881116 | S_PUB32 [size = 44] `??_R3CStateMDCampaignMayan@@8`
+           flags = none, addr = 0002:1620748
+---
+           flags = none, addr = 0002:836848
+  1536372 | S_PUB32 [size = 36] `UpdateLobbyStringsA`
+           flags = function, addr = 0001:496256
+---
+           flags = none, addr = 0002:859464
+  1065476 | S_PUB32 [size = 36] `??_R4CMissionCD@@6B@`
+           flags = none, addr = 0002:1616940
+---
+           flags = none, addr = 0002:861460
+  2058704 | S_PUB32 [size = 32] `aMapCampaignMay`
+           flags = none, addr = 0002:1315456
+---
+           flags = none, addr = 0002:866928
+  2167792 | S_PUB32 [size = 32] `aPermissionDe_0`
+           flags = none, addr = 0002:719416
+---
+           flags = none, addr = 0002:869308
+  1263160 | S_PUB32 [size = 48] `CStateAOCampaignBonus::sub_10EC20`
+           flags = function, addr = 0001:1104928
+---
+           flags = none, addr = 0002:884208
+  683172 | S_PUB32 [size = 52] `??_R2CAIAgentGlobalSuicideMission@@8`
+           flags = none, addr = 0002:1601976
+---
+           flags = none, addr = 0002:890040
+  1649716 | S_PUB32 [size = 36] `aAvctransmissionidEc`
+           flags = none, addr = 0003:803156
+---
+           flags = none, addr = 0002:892992
+  1331908 | S_PUB32 [size = 24] `RandomMap`
+           flags = none, addr = 0003:555632
+---
+           flags = none, addr = 0002:90364
+  1647692 | S_PUB32 [size = 36] `aAvcstatelobbyconnec`
+           flags = none, addr = 0003:911368
+---
+           flags = none, addr = 0002:99524
+  1268288 | S_PUB32 [size = 48] `CStateMDCampaignMayan::sub_1250E0`
+           flags = function, addr = 0001:1196256
+---
+           flags = none, addr = 0003:104608
+  1765428 | S_PUB32 [size = 36] `aCouldNotWriteLobbyI`
+           flags = none, addr = 0002:1144776
+---
+           flags = none, addr = 0003:110440
+  880180 | S_PUB32 [size = 48] `??_R3CStateAOCampaignViking@@8`
+           flags = none, addr = 0002:1619068
+---
+           flags = none, addr = 0003:144820
+  694416 | S_PUB32 [size = 44] `??_R2CStateAOCampaignBonus@@8`
+           flags = none, addr = 0002:1618544
+---
+           flags = none, addr = 0003:306412
+  484052 | S_PUB32 [size = 44] `??_R1A@?0A@AE@CMissionCD@@8`
+           flags = none, addr = 0002:1616672
+---
+           flags = none, addr = 0003:3495460
+  1325300 | S_PUB32 [size = 32] `LobbyMenuCallback`
+           flags = function, addr = 0001:567840
+---
+           flags = none, addr = 0003:760196
+  931792 | S_PUB32 [size = 88] `??_R3PeerManagerTransmissionWindowFullRaise@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432856
+---
+           flags = none, addr = 0003:762412
+  736440 | S_PUB32 [size = 84] `??_R2MessageTransmissionThresholdClear@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504928
+---
+           flags = none, addr = 0003:762868
+  2391384 | S_PUB32 [size = 40] `afterLobbyConnectTimeout`
+           flags = none, addr = 0003:558320
+---
+           flags = none, addr = 0003:763464
+  1649556 | S_PUB32 [size = 40] `aAvctransmissionhist_0`
+           flags = none, addr = 0003:803392
+---
+           flags = none, addr = 0003:765004
+  1647460 | S_PUB32 [size = 36] `aAvcstatecampaigndar`
+           flags = none, addr = 0003:911140
+---
+           flags = none, addr = 0003:765772
+  2586344 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_72B7C0`
+           flags = function, addr = 0001:7514048
+---
+           flags = none, addr = 0003:768740
+  488056 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignMayan@@8`
+           flags = none, addr = 0002:1618640
+---
+           flags = none, addr = 0003:768868
+  117044 | S_PUB32 [size = 60] `??_7ITransmissionIdObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:516896
+---
+           flags = none, addr = 0003:769000
+  2585224 | S_PUB32 [size = 56] `storm::echo::CTransmissionId::sub_71D210`
+           flags = function, addr = 0001:7455248
+---
+           flags = none, addr = 0003:769888
+  1267748 | S_PUB32 [size = 60] `CStateMD2Campaigns::sub_124060:::def_12411C`
+           flags = code, addr = 0001:1192409
+---
+           flags = none, addr = 0003:770088
+  883156 | S_PUB32 [size = 72] `??_R3CTransmissionHistoryTouchedBitsBase@echo@storm@@8`
+           flags = none, addr = 0002:1487368
+---
+           flags = none, addr = 0003:771316
+  2582648 | S_PUB32 [size = 60] `storm::echo::CTransmissionHistory::sub_710860`
+           flags = function, addr = 0001:7403616
+---
+           flags = none, addr = 0003:771428
+  1647728 | S_PUB32 [size = 36] `aAvcstatelobbygamese`
+           flags = none, addr = 0003:911404
+---
+           flags = none, addr = 0003:773516
+  1270696 | S_PUB32 [size = 48] `CStateXMD3Campaigns::sub_129530`
+           flags = function, addr = 0001:1213744
+---
+           flags = none, addr = 0003:775872
+  610972 | S_PUB32 [size = 72] `??_R1IB@?0A@AE@ITransmissionHistoryObserver@echo@storm@@8`
+           flags = none, addr = 0002:1456604
+---
+           flags = none, addr = 0003:776800
+  2586268 | S_PUB32 [size = 76] `storm::echo::CTransmissionTouchedBitsHierarchical::sub_722D20`
+           flags = function, addr = 0001:7478560
+---
+           flags = none, addr = 0003:777832
+  1069356 | S_PUB32 [size = 48] `??_R4CStateAOCampaignMayan@@6B@`
+           flags = none, addr = 0002:1618684
+---
+           flags = none, addr = 0003:778496
+  1263064 | S_PUB32 [size = 48] `CStateAOCampaignBonus::sub_10EAA0`
+           flags = function, addr = 0001:1104544
+---
+           flags = none, addr = 0003:780152
+  695532 | S_PUB32 [size = 44] `??_R2CStateMDCampaignMayan@@8`
+           flags = none, addr = 0002:1620732
+---
+           flags = none, addr = 0003:784400
+  1253848 | S_PUB32 [size = 40] `CRandomMaps::sub_10BBB0`
+           flags = function, addr = 0001:1092528
+---
+           flags = none, addr = 0003:784600
+  1253888 | S_PUB32 [size = 40] `CRandomMaps::sub_10BBC0`
+           flags = function, addr = 0001:1092544
+---
+           flags = none, addr = 0003:785872
+  1263544 | S_PUB32 [size = 48] `CStateAOCampaignRoman::sub_10F240`
+           flags = function, addr = 0001:1106496
+---
+           flags = none, addr = 0003:786276
+  736612 | S_PUB32 [size = 84] `??_R2MessageTransmissionThresholdRaise@outEvent@object@echo@storm@@8`
+           flags = none, addr = 0002:1504844
+---
+           flags = none, addr = 0003:786396
+  488000 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateAOCampaignBonus@@8`
+           flags = none, addr = 0002:1618560
+---
+           flags = none, addr = 0003:789100
+  2584124 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_6FDE90`
+           flags = function, addr = 0001:7327376
+---
+           flags = none, addr = 0003:790868
+  1253808 | S_PUB32 [size = 40] `CRandomMaps::sub_10B860`
+           flags = function, addr = 0001:1091680
+---
+           flags = none, addr = 0003:794136
+  2677160 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MessageTransmissionThresholdClear::sub_765590`
+           flags = function, addr = 0001:7751056
+---
+           flags = none, addr = 0003:799056
+  1069404 | S_PUB32 [size = 48] `??_R4CStateAOCampaignRoman@@6B@`
+           flags = none, addr = 0002:1618764
+---
+           flags = none, addr = 0003:805024
+  2584748 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::sub_703300`
+           flags = function, addr = 0001:7348992
+---
+           flags = none, addr = 0003:806644
+  489468 | S_PUB32 [size = 56] `??_R1A@?0A@AE@CStateMDCampaignViking@@8`
+           flags = none, addr = 0002:1621024
+---
+           flags = none, addr = 0003:806828
+  880764 | S_PUB32 [size = 48] `??_R3CStateLobbyGameSettings@@8`
+           flags = none, addr = 0002:1620024
+---
+           flags = none, addr = 0003:807456
+   87268 | S_PUB32 [size = 68] `??_7CTransmission@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:528612
+---
+           flags = none, addr = 0003:807896
+  697440 | S_PUB32 [size = 64] `??_R2CTransmissionHistoryMessage@echo@storm@@8`
+           flags = none, addr = 0002:1483260
+---
+           flags = none, addr = 0003:807944
+  2693108 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdClear::sub_654310`
+           flags = function, addr = 0001:6632208
+---
+           flags = none, addr = 0003:808232
+   85524 | S_PUB32 [size = 48] `??_7CStateMDCampaignMayan@@6B@`
+           flags = none, addr = 0002:1320208
+---
+           flags = none, addr = 0003:809100
+  1247212 | S_PUB32 [size = 40] `CMissionCD3::sub_FCF50`
+           flags = function, addr = 0001:1032016
+---
+           flags = none, addr = 0003:809384
+  489888 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateVictoryScreen@@8`
+           flags = none, addr = 0002:1621420
+---
+           flags = none, addr = 0003:815108
+  526300 | S_PUB32 [size = 64] `??_R1A@?0A@AE@ITransmissionObserver@echo@storm@@8`
+           flags = none, addr = 0002:1483092
+---
+           flags = none, addr = 0003:815884
+  1264772 | S_PUB32 [size = 44] `CStateCampaign3X3::sub_111240`
+           flags = function, addr = 0001:1114688
+---
+           flags = none, addr = 0003:815924
+   88852 | S_PUB32 [size = 64] `??_7CTransmissionTouchedBitsBase@echo@storm@@6B@`
+           flags = none, addr = 0002:541716
+---
+           flags = none, addr = 0003:818808
+  291896 | S_PUB32 [size = 48] `??_R0?AVCStateLobbyConnect@@@8`
+           flags = none, addr = 0003:911360
+---
+           flags = none, addr = 0003:818952
+  492104 | S_PUB32 [size = 68] `??_R1A@?0A@AE@CTransmissionTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487300
+---
+           flags = none, addr = 0003:819360
+  488280 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateAOCampaigns@@8`
+           flags = none, addr = 0002:1618800
+---
+           flags = none, addr = 0003:819544
+  2675964 | S_PUB32 [size = 92] `storm::echo::object::outEvent::MementoTransmissionThresholdClear::sub_62B060`
+           flags = function, addr = 0001:6463584
+---
+           flags = none, addr = 0003:821224
+  1264816 | S_PUB32 [size = 44] `CStateCampaign3X3::sub_1113E0`
+           flags = function, addr = 0001:1115104
+---
+           flags = none, addr = 0003:823760
+  136640 | S_PUB32 [size = 100] `??_7PeerChannelManager_Network@echo@storm@@6BITransmissionIdObserver@echo@storm@@@`
+           flags = none, addr = 0002:522308
+---
+           flags = none, addr = 0003:825376
+   85712 | S_PUB32 [size = 52] `??_7CStateMDCampaignsEcoConflict@@6B@`
+           flags = none, addr = 0002:1320268
+---
+           flags = none, addr = 0003:830872
+  2693300 | S_PUB32 [size = 96] `storm::echo::peerChannel::outEvent::MessageTransmissionThresholdClear::sub_65D610`
+           flags = function, addr = 0001:6669840
+---
+           flags = none, addr = 0003:831980
+  1263208 | S_PUB32 [size = 48] `CStateAOCampaignMayan::sub_10ECA0`
+           flags = function, addr = 0001:1105056
+---
+           flags = none, addr = 0003:832740
+  697832 | S_PUB32 [size = 60] `??_R2CTransmissionTouchedBits@echo@storm@@8`
+           flags = none, addr = 0002:1487276
+---
+           flags = none, addr = 0003:834224
+  1125768 | S_PUB32 [size = 100] `??_R4PeerChannelManager_Network@echo@storm@@6BITransmissionIdObserver@echo@storm@@@`
+           flags = none, addr = 0002:1456688
+---
+           flags = none, addr = 0003:844440
+  2585776 | S_PUB32 [size = 64] `storm::echo::CTransmissionTouchedBits::sub_72BD30`
+           flags = function, addr = 0001:7515440
+---
+           flags = none, addr = 0003:846172
+  1072508 | S_PUB32 [size = 84] `??_R4CTransmissionHistoryMessage@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1483340
+---
+           flags = none, addr = 0003:850016
+  490036 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateXMD3Campaigns@@8`
+           flags = none, addr = 0002:1621656
+---
+           flags = none, addr = 0003:850056
+  1266884 | S_PUB32 [size = 56] `CStateLobbyMultiplayerType::sub_121B50`
+           flags = function, addr = 0001:1182544
+---
+           flags = none, addr = 0003:850512
+  932320 | S_PUB32 [size = 56] `??_R3PeerTransmissionAgent@echo@storm@@8`
+           flags = none, addr = 0002:1455284
+---
+           flags = none, addr = 0003:851336
+  1649864 | S_PUB32 [size = 40] `aAvctransmissiontouc_1`
+           flags = none, addr = 0003:806368
+---
+           flags = none, addr = 0003:851440
+  1070052 | S_PUB32 [size = 44] `??_R4CStateLobbyConnect@@6B@`
+           flags = none, addr = 0002:1619960
+---
+           flags = none, addr = 0003:852604
+  1116332 | S_PUB32 [size = 88] `??_R4MessageTransmissionThresholdClear@outEvent@object@echo@storm@@6B@`
+           flags = none, addr = 0002:1504892
+---
+           flags = none, addr = 0003:853088
+  1268824 | S_PUB32 [size = 44] `CStateMDCampaigns::sub_125660`
+           flags = function, addr = 0001:1197664
+---
+           flags = none, addr = 0003:853232
+  880088 | S_PUB32 [size = 44] `??_R3CStateAOCampaignRoman@@8`
+           flags = none, addr = 0002:1618748
+---
+           flags = none, addr = 0003:855360
+  1648372 | S_PUB32 [size = 36] `aAvcstatevictoryscre`
+           flags = none, addr = 0003:912052
+---
+           flags = none, addr = 0003:855728
+   85764 | S_PUB32 [size = 52] `??_7CStateMDRandomMapParameters@@6B@`
+           flags = none, addr = 0002:1320308
+---
+           flags = none, addr = 0003:855920
+  880000 | S_PUB32 [size = 44] `??_R3CStateAOCampaignBonus@@8`
+           flags = none, addr = 0002:1618588
+---
+           flags = none, addr = 0003:857552
+  1270228 | S_PUB32 [size = 48] `CStateVictoryScreen::sub_128180`
+           flags = function, addr = 0001:1208704
+---
+           flags = none, addr = 0003:858416
+  1247252 | S_PUB32 [size = 40] `CMissionCD3::sub_FD310`
+           flags = function, addr = 0001:1032976
+---
+           flags = none, addr = 0003:858920
+  881556 | S_PUB32 [size = 44] `??_R3CStateVictoryScreen@@8`
+           flags = none, addr = 0002:1621448
+---
+           flags = none, addr = 0003:859720
+  1247412 | S_PUB32 [size = 36] `CMissionCD::sub_FCCB0`
+           flags = function, addr = 0001:1031344
+---
+           flags = none, addr = 0003:861152
+   84696 | S_PUB32 [size = 48] `??_7CStateAOCampaignsSettle@@6B@`
+           flags = none, addr = 0002:1315196
+---
+           flags = none, addr = 0003:862780
+  292944 | S_PUB32 [size = 48] `??_R0?AVCStateXMD3Campaigns@@@8`
+           flags = none, addr = 0003:912144
+---
+           flags = none, addr = 0003:863648
+  1524080 | S_PUB32 [size = 40] `SetMultiplayerUnknown1`
+           flags = function, addr = 0001:8668272
+---
+           flags = none, addr = 0003:869544
+  1066760 | S_PUB32 [size = 36] `??_R4CRandomMaps@@6B@`
+           flags = none, addr = 0002:1618128
+---
+           flags = none, addr = 0003:870216
+  1116600 | S_PUB32 [size = 92] `??_R4MessageTransmissionThresholdRaise@outEvent@peerChannel@echo@storm@@6B@`
+           flags = none, addr = 0002:1458988
+---
+           flags = none, addr = 0003:870352
+  292092 | S_PUB32 [size = 56] `??_R0?AVCStateLobbyMultiplayerType@@@8`
+           flags = none, addr = 0003:911508
+---
+           flags = none, addr = 0003:873868
+  912944 | S_PUB32 [size = 56] `??_R3ITransmissionObserver@echo@storm@@8`
+           flags = none, addr = 0002:1483068
+---
+           flags = none, addr = 0003:875456
+  489256 | S_PUB32 [size = 52] `??_R1A@?0A@AE@CStateMD2Campaigns@@8`
+           flags = none, addr = 0002:1620560
+---
+           flags = none, addr = 0003:875776
+  2584580 | S_PUB32 [size = 84] `storm::echo::CTransmissionHistoryTouchedBitsHierarchical::nullsub_182`
+           flags = function, addr = 0001:7402352
+---
+           flags = none, addr = 0003:879008
+  2585904 | S_PUB32 [size = 68] `storm::echo::CTransmissionTouchedBitsBase::sub_6FE0B0`
+           flags = function, addr = 0001:7327920
+---
+           flags = none, addr = 0003:885576
+  1069720 | S_PUB32 [size = 44] `??_R4CStateCampaign3X3@@6B@`
+           flags = none, addr = 0002:1619324
+---
+           flags = none, addr = 0003:885856
+  1073304 | S_PUB32 [size = 100] `??_R4CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6BDynamicType@storm@@@`
+           flags = none, addr = 0002:1487808
+---
+           flags = none, addr = 0003:888764
+  1325416 | S_PUB32 [size = 36] `LobbyNameIdStartIndex`
+           flags = none, addr = 0002:951008
+---
+           flags = none, addr = 0003:889116
+   69080 | S_PUB32 [size = 88] `??_7AgentMessage@echo@storm@@6BITransmissionHistoryObserver@echo@storm@@@`
+           flags = none, addr = 0002:552660
+---
+           flags = none, addr = 0003:895076
+  1073224 | S_PUB32 [size = 80] `??_R4CTransmissionHistoryTouchedBitsHierarchical@echo@storm@@6B@`
+           flags = none, addr = 0002:1487716
+---
+           flags = none, addr = 0003:895412
+  1263644 | S_PUB32 [size = 52] `CStateAOCampaignTrojan::sub_10FAF0`
+           flags = function, addr = 0001:1108720
+---
+           flags = none, addr = 0003:896088
+  882968 | S_PUB32 [size = 56] `??_R3CTransmissionHistory@echo@storm@@8`
+           flags = none, addr = 0002:1482968
+---
+           flags = none, addr = 0003:896848
+   80704 | S_PUB32 [size = 36] `??_7CMissionCD@@6B@`
+           flags = none, addr = 0002:1171688
+---
+           flags = none, addr = 0003:897512
+  489096 | S_PUB32 [size = 60] `??_R1A@?0A@AE@CStateLobbyMultiplayerType@@8`
+           flags = none, addr = 0002:1620240
+---
+           flags = none, addr = 0003:898104
+  291304 | S_PUB32 [size = 52] `??_R0?AVCStateAOCampaignViking@@@8`
+           flags = none, addr = 0003:910996
+---
+           flags = none, addr = 0003:899172
+  1073992 | S_PUB32 [size = 72] `??_R4CTransmissionTouchedBitsHierarchical@echo@storm@@6B@`
+           flags = none, addr = 0002:1487608
+---
+           flags = none, addr = 0003:899632
+  881160 | S_PUB32 [size = 44] `??_R3CStateMDCampaignRoman@@8`
+           flags = none, addr = 0002:1620828
+---
+           flags = none, addr = 0003:899824
+  547848 | S_PUB32 [size = 100] `??_R1A@?0A@AE@PeerManagerTransmissionWindowFullClear@outEvent@engine@echo@storm@@8`
+           flags = none, addr = 0002:1432968
+---
+           flags = none, addr = 0003:899916
+  1253328 | S_PUB32 [size = 40] `CRandomMaps::sub_10B180`
+           flags = function, addr = 0001:1089920
+---
+           flags = none, addr = 0003:900648
+  883308 | S_PUB32 [size = 52] `??_R3CTransmissionId@echo@storm@@8`
+           flags = none, addr = 0002:1482812
+---
+           flags = none, addr = 0003:902128
+  1266604 | S_PUB32 [size = 48] `CStateLobbyMapSettings::Callbacks`
+           flags = function, addr = 0001:1178768
+---
+           flags = none, addr = 0003:904136
+  1647836 | S_PUB32 [size = 36] `aAvcstatelobbymultip`
+           flags = none, addr = 0003:911516
+---
+           flags = none, addr = 0003:907424
+  880436 | S_PUB32 [size = 44] `??_R3CStateCampaignDark@@8`
+           flags = none, addr = 0002:1619388
+---
+           flags = none, addr = 0003:907460
+  291108 | S_PUB32 [size = 48] `??_R0?AVCStateAOCampaignBonus@@@8`
+           flags = none, addr = 0003:910776
+---
+           flags = none, addr = 0003:908280
+   88580 | S_PUB32 [size = 56] `??_7CTransmissionMessage@echo@storm@@6B@`
+           flags = none, addr = 0002:539744
+---
+           flags = none, addr = 0003:909600
+  287088 | S_PUB32 [size = 40] `??_R0?AVCMapFile@S4@@@8`
+           flags = none, addr = 0003:906004
+---
+           flags = none, addr = 0003:910584
+  1105624 | S_PUB32 [size = 60] `??_R4ITransmissionIdObserver@echo@storm@@6B@`
+           flags = none, addr = 0002:1452652
+---
+           flags = none, addr = 0003:910748
+  880132 | S_PUB32 [size = 48] `??_R3CStateAOCampaignTrojan@@8`
+           flags = none, addr = 0002:1618988
+---
+           flags = none, addr = 0003:911036
+  1525000 | S_PUB32 [size = 44] `SetupMissionCDEventHandler`
+           flags = function, addr = 0001:1058464
+---
+           flags = none, addr = 0003:911196
+  1270648 | S_PUB32 [size = 48] `CStateXMD3Campaigns::sub_129520`
+           flags = function, addr = 0001:1213728
+---
+           flags = none, addr = 0003:911296
+  912884 | S_PUB32 [size = 60] `??_R3ITransmissionIdObserver@echo@storm@@8`
+           flags = none, addr = 0002:1452672
+---
+           flags = none, addr = 0003:911616
+  1524956 | S_PUB32 [size = 44] `SetupMissionCDEventHandle_SEH`
+           flags = function, addr = 0001:11214346
+---
+           flags = none, addr = 0003:911648
+  1329264 | S_PUB32 [size = 48] `MultiplayerLobbyEventCallbacks`
+           flags = function, addr = 0001:2294016
+---
+           flags = none, addr = 0003:912180
+  1073844 | S_PUB32 [size = 64] `??_R4CTransmissionTouchedBitsBase@echo@storm@@6B@`
+           flags = none, addr = 0002:1487136
+---
+           flags = none, addr = 0003:912996
+   87220 | S_PUB32 [size = 48] `??_7CTransmission@echo@storm@@6B@`
+           flags = none, addr = 0002:528580
+---
+           flags = none, addr = 0003:913024
+  291584 | S_PUB32 [size = 48] `??_R0?AVCStateCampaignDark@@@8`
+           flags = none, addr = 0003:911132
+---
+           flags = none, addr = 0003:913396
+  876684 | S_PUB32 [size = 36] `??_R3CMissionCD2@@8`
+           flags = none, addr = 0002:1616800
+---
+           flags = none, addr = 0003:913560
+  1697716 | S_PUB32 [size = 36] `aAvtransmissionhisto`
+           flags = none, addr = 0003:818480
+---
+           flags = none, addr = 0003:915020
+  696096 | S_PUB32 [size = 44] `??_R2CStateXMD3Campaigns@@8`
+           flags = none, addr = 0002:1621684
+---
+           flags = none, addr = 0003:915364
+   85120 | S_PUB32 [size = 44] `??_7CStateLobbyConnect@@6B@`
+           flags = none, addr = 0002:1317676
+---
+           flags = none, addr = 0003:918400
+  1253448 | S_PUB32 [size = 40] `CRandomMaps::sub_10B2C0`
+           flags = function, addr = 0001:1090240
+---
+           flags = none, addr = 0003:921440
+  291996 | S_PUB32 [size = 44] `??_R0?AVCStateLobbyLoadMP@@@8`
+           flags = none, addr = 0003:911436
+---
+           flags = none, addr = 0003:926484
+  2584200 | S_PUB32 [size = 76] `storm::echo::CTransmissionHistoryTouchedBitsBase::sub_70F050`
+           flags = function, addr = 0001:7397456
+---
+           flags = none, addr = 0003:933192
+  1268868 | S_PUB32 [size = 60] `CStateMDCampaigns::sub_125660:::def_125731`
+           flags = code, addr = 0001:1198084
+---
+           flags = none, addr = 0003:934004
+  1264200 | S_PUB32 [size = 44] `CStateAOCampaigns::sub_10F6D0`
+           flags = function, addr = 0001:1107664
+---
+           flags = none, addr = 0003:934768
+  2582300 | S_PUB32 [size = 56] `storm::echo::CTransmission::sub_6D5C70`
+           flags = function, addr = 0001:7162992
+---
+           flags = none, addr = 0003:934880
+  1253248 | S_PUB32 [size = 40] `CRandomMaps::sub_10B0A0`
+           flags = function, addr = 0001:1089696
+---
+           flags = none, addr = 0003:935080
+  1253608 | S_PUB32 [size = 40] `CRandomMaps::sub_10B420`
+           flags = function, addr = 0001:1090592
+---
+           flags = none, addr = 0003:935136
+  1070460 | S_PUB32 [size = 48] `??_R4CStateMDCampaignMayan@@6B@`
+           flags = none, addr = 0002:1620764
