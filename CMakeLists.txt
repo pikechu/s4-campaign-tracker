@@ -11,6 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
   add_library(CampaignCompletionDebug SHARED
     src/dllmain.cpp
+    src/diagnostics/CaptureTrace.cpp
     src/diagnostics/Logger.cpp
     src/diagnostics/ModuleInventory.cpp
     src/hook/HookSiteLayout.cpp
@@ -65,6 +66,7 @@ add_executable(campaign_completion_tests
   tests/PageObservationTests.cpp
   tests/RuntimePolicyTests.cpp
   tests/StopRequestTests.cpp
+  src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
   src/hook/HookSiteLayout.cpp
