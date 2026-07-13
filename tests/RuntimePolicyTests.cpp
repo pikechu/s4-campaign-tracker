@@ -113,7 +113,7 @@ int RunRuntimePolicyTests() {
             "runtime owns the production SU Lua identity pipeline");
     const auto coordinatorDisable = runtime.find("coordinator_->Disable()");
     const auto listenerStop = runtime.find("listeners_.Stop()");
-    const auto traceClose = runtime.find("captureTrace_.Close()");
+    const auto traceClose = runtime.find("captureTrace_.Close()", listenerStop);
     Require(coordinatorDisable != std::string::npos &&
                 listenerStop != std::string::npos &&
                 coordinatorDisable < listenerStop,
