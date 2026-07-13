@@ -21,6 +21,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/identity/SuMapValue.cpp
     src/lua/LuaApi.cpp
     src/lua/SuLuaMapBridge.cpp
+    src/native/NativeEventAdmission.cpp
     src/runtime/CallbackGate.cpp
     src/runtime/DiagnosticRuntime.cpp
     src/runtime/ListenerRemoval.cpp
