@@ -15,6 +15,7 @@ int RunMsvcX86WideStringTests();
 int RunPageObservationTests();
 int RunRuntimePolicyTests();
 int RunStopRequestTests();
+int RunSuMapValueTests();
 
 int main() {
     try {
@@ -31,6 +32,7 @@ int main() {
         RunMsvcX86WideStringTests();
         RunPageObservationTests();
         RunStopRequestTests();
+        RunSuMapValueTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';

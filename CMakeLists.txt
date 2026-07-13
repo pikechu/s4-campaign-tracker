@@ -66,6 +66,7 @@ add_executable(campaign_completion_tests
   tests/PageObservationTests.cpp
   tests/RuntimePolicyTests.cpp
   tests/StopRequestTests.cpp
+  tests/SuMapValueTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
