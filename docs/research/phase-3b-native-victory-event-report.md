@@ -56,12 +56,20 @@ The later artifact was downloaded and frozen below ignored project directory `ar
 - Normalized comparison proved the live INI differs from the frozen INI only by setting `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`. The trace root exists and is not a reparse point.
 - The inert SU-side INI and both authorized temporary siblings are absent after deployment.
 
-Collect these controls one at a time and verify game responsiveness after each:
+### Live control 1: voluntary exit
 
-1. Eligible-map voluntary exit: no event `609` record.
-2. Normal local victory: event `609`, `wParam=1`, local result `won`.
-3. Normal local defeat: event `609`, `wParam=0`, local result `lost`.
-4. Load-before-victory: recovered origin and identity plus event `609`, `wParam=1`.
-5. Controlled stop: native detachment precedes public-listener removal and trace flush succeeds.
+- Accepted session: `phase-3-session-35588`, map-init session `1`.
+- The loaded `CampaignCompletionDebug.asi` matched frozen SHA-256 `d0b6f498198eb9f924f16434bd2eb91dde129437be34571303cd111d58465036`, and the exact executable remained compatible.
+- Native evidence contained exactly `native-subscription=attached` and no `native-event=` record, so voluntary exit produced no terminal event `609`.
+- Origin was `single-player-map` / `eligible`; SU identity confirmed `Map\Singleplayer\Aeneas.map`.
+- Settlement evidence recorded an available local player, `local-player-lost=0`, one bounded capture, and exactly one `diagnostic-result=calibration-only`.
+- `S4_Main` remained responsive on the settlement page after evidence collection.
+
+Collect the remaining controls one at a time and verify game responsiveness after each:
+
+1. Normal local victory: event `609`, `wParam=1`, local result `won`.
+2. Normal local defeat: event `609`, `wParam=0`, local result `lost`.
+3. Load-before-victory: recovered origin and identity plus event `609`, `wParam=1`.
+4. Controlled stop: native detachment precedes public-listener removal and trace flush succeeds.
 
 Completion storage and completed-level markers remain disabled until these live controls pass.
