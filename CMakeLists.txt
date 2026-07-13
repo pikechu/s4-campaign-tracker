@@ -32,6 +32,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/runtime/StopRequest.cpp
     src/victory/LaunchOrigin.cpp
     src/victory/SettlementUiProbe.cpp
+    src/victory/VictoryEventProbe.cpp
   )
 
   target_include_directories(CampaignCompletionDebug PRIVATE
