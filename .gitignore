@@ -6,6 +6,8 @@ research/evidence/*.pdb.json
 /dist/
 /research/tmp/
 /research/backups/
+/artifacts/phase-3a-ci/
+/artifacts/phase-3-victory-diagnostics/
 
 # Visual Studio
 .vs/
