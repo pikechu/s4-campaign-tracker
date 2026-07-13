@@ -1,0 +1,263 @@
+# Pinned S4ModApi public source audit
+generated_utc=2026-07-13T03:23:50Z
+workspace_commit=bb41a04fa3c873a17b1758158801bd755e3b648a
+repository=https://github.com/nyfrk/S4ModApi.git
+commit=bb5d40ead1bb2a111ec0f787a6da5c15e130684e
+release_tag=v2.3
+
+## PUBLIC_DECLARATIONS
+S4ModApi/CSettlers4Api.h-38-
+S4ModApi/CSettlers4Api.h-39-	STDMETHOD(RemoveListener)(THIS_ S4HOOK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:40:	STDMETHOD_(S4HOOK, AddFrameListener)(THIS_ LPS4FRAMECALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:41:	STDMETHOD_(S4HOOK, AddUIFrameListener)(THIS_ LPS4FRAMECALLBACK, S4_GUI_ENUM); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:42:	STDMETHOD_(S4HOOK, AddMapInitListener)(THIS_ LPS4MAPINITCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:43:	STDMETHOD_(S4HOOK, AddMouseListener)(THIS_ LPS4MOUSECALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h-44-	STDMETHOD_(S4HOOK, AddSettlerSendListener)(THIS_ LPS4SETTLERSENDCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:45:	STDMETHOD_(S4HOOK, AddTickListener)(THIS_ LPS4TICKCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h-46-	STDMETHOD_(S4HOOK, AddLuaOpenListener)(THIS_ LPS4LUAOPENCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h-47-	STDMETHOD_(S4HOOK, AddBltListener)(THIS_ LPS4BLTCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h-48-	STDMETHOD_(S4HOOK, AddEntityListener)(THIS_ LPS4ENTITYCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:49:	STDMETHOD_(S4HOOK, AddGuiBltListener)(THIS_ LPS4GUIBLTCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:50:	STDMETHOD_(S4HOOK, AddGuiElementBltListener)(THIS_ LPS4GUIDRAWCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h:51:	STDMETHOD_(S4HOOK, AddGuiClearListener)(THIS_ LPS4GUICLEARCALLBACK); // defined in CS4Listeners.cpp
+S4ModApi/CSettlers4Api.h-52-
+S4ModApi/CSettlers4Api.h-53-	STDMETHOD(GetMD5OfModule)(THIS_ HMODULE module, LPSTR out, SIZE_T sz); // defined in CS4Misc.cpp
+S4ModApi/CSettlers4Api.h-54-	STDMETHOD_(BOOL, IsEdition)(THIS_ S4_EDITION_ENUM edition); // defined in CS4Misc.cpp
+S4ModApi/CSettlers4Api.h-55-	STDMETHOD_(HWND, GetHwnd)(THIS_); // defined in CS4Misc.cpp
+S4ModApi/CSettlers4Api.h:56:	STDMETHOD(GetHoveringUiElement)(THIS_ LPS4UIELEMENT); // defined in CS4Misc.cpp
+S4ModApi/CSettlers4Api.h:57:	STDMETHOD_(BOOL, IsCurrentlyOnScreen)(THIS_ S4_GUI_ENUM); // defined in CS4Screen.cpp
+S4ModApi/CSettlers4Api.h-58-	STDMETHOD_(S4_ENTITY_ENUM, EntityGetClass)(THIS_ WORD entity);
+S4ModApi/CSettlers4Api.h-59-	STDMETHOD_(BOOL, GetEntitiesCount)(THIS_ WORD* count);
+--
+S4ModApi/CSettlers4Api.h-125-
+S4ModApi/CSettlers4Api.h-126-	STDMETHOD_(S4CUSTOMUI, ShowMessageBox)(THIS_ LPCWSTR title, LPCWSTR message, INT x, INT y, INT w, INT h, DWORD flags); // defined in CS4Screen.cpp
+S4ModApi/CSettlers4Api.h:127:	STDMETHOD_(S4CUSTOMUI, CreateCustomUiElement)(THIS_ LPCS4CUSTOMUIELEMENT);
+S4ModApi/CSettlers4Api.h-128-	STDMETHOD_(BOOL, DestroyCustomUiElement)(THIS_ S4CUSTOMUI);
+S4ModApi/CSettlers4Api.h-129-	STDMETHOD_(BOOL, HideCustomUiElement)(THIS_ S4CUSTOMUI);
+--
+S4ModApi/CSettlers4Api.h-131-
+S4ModApi/CSettlers4Api.h-132-	/** S4 Scripting **/
+S4ModApi/CSettlers4Api.h:133:	STDMETHOD_(DWORD, GetLocalPlayer)(THIS); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-134-	STDMETHOD_(DWORD, BuildingsAdd)(THIS_ S4_BUILDING_ENUM building, INT x, INT y, DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-135-	STDMETHOD_(DWORD, BuildingsAmount)(THIS_ S4_BUILDING_ENUM building, DWORD status, DWORD player); // defined in CS4Scripting.cpp
+--
+S4ModApi/CSettlers4Api.h-148-	STDMETHOD_(DWORD, EffectsAdd)(THIS_ DWORD effect, DWORD sound, INT x, INT y, DWORD delay); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-149-	STDMETHOD_(DWORD, ArePlayerAreasConnected)(THIS_ INT x1, INT y1, DWORD player2, INT x2, INT y2, DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h:150:	STDMETHOD_(BOOL, GameDefaultGameEndCheck)(THIS); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-151-	STDMETHOD_(BOOL, DisableLastNPlayersInStatistic)(THIS_ DWORD n); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-152-	STDMETHOD_(BOOL, EnableLandExploredCheck)(THIS); // defined in CS4Scripting.cpp
+--
+S4ModApi/CSettlers4Api.h-156-	STDMETHOD_(DWORD, GetNumberOfSquaresWithDarkLand)(THIS_ DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-157-	STDMETHOD_(DWORD, GetOffenceFightingStrength)(THIS_ DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h:158:	STDMETHOD_(BOOL, HasPlayerLost)(THIS_ DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-159-	STDMETHOD_(BOOL, IsAlmostAllLandExplored)(THIS_ DWORD player); // defined in CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h-160-	STDMETHOD_(BOOL, IsAreaDarkLand)(THIS_ INT x, INT y, INT r); // defined in CS4Scripting.cpp
+--
+S4ModApi/S4ModApi.h-775-
+S4ModApi/S4ModApi.h-776-
+S4ModApi/S4ModApi.h:777:HRESULT __declspec(nothrow) S4HCALL S4CreateInterface(CONST GUID FAR* lpGUID, S4API FAR* lplpS4H);
+S4ModApi/S4ModApi.h-778-
+S4ModApi/S4ModApi.h:779:static S4API inline S4HCALL S4ApiCreate() {
+S4ModApi/S4ModApi.h-780-	S4API out = NULL;
+S4ModApi/S4ModApi.h:781:	S4CreateInterface(&IID_Default_ISettlers4Api, &out);
+S4ModApi/S4ModApi.h-782-	return out;
+S4ModApi/S4ModApi.h-783-}
+--
+S4ModApi/S4ModApi.h-803-	/** Hooks/Observers **/
+S4ModApi/S4ModApi.h-804-	STDMETHOD(RemoveListener)(THIS_ S4HOOK) PURE;
+S4ModApi/S4ModApi.h:805:	STDMETHOD_(S4HOOK, AddFrameListener)(THIS_ LPS4FRAMECALLBACK) PURE;
+S4ModApi/S4ModApi.h:806:	STDMETHOD_(S4HOOK, AddUIFrameListener)(THIS_ LPS4FRAMECALLBACK, S4_GUI_ENUM) PURE;
+S4ModApi/S4ModApi.h:807:	STDMETHOD_(S4HOOK, AddMapInitListener)(THIS_ LPS4MAPINITCALLBACK) PURE;
+S4ModApi/S4ModApi.h:808:	STDMETHOD_(S4HOOK, AddMouseListener)(THIS_ LPS4MOUSECALLBACK) PURE;
+S4ModApi/S4ModApi.h-809-	STDMETHOD_(S4HOOK, AddSettlerSendListener)(THIS_ LPS4SETTLERSENDCALLBACK) PURE;
+S4ModApi/S4ModApi.h:810:	STDMETHOD_(S4HOOK, AddTickListener)(THIS_ LPS4TICKCALLBACK) PURE;
+S4ModApi/S4ModApi.h-811-	STDMETHOD_(S4HOOK, AddLuaOpenListener)(THIS_ LPS4LUAOPENCALLBACK) PURE;
+S4ModApi/S4ModApi.h-812-	STDMETHOD_(S4HOOK, AddBltListener)(THIS_ LPS4BLTCALLBACK) PURE;
+S4ModApi/S4ModApi.h-813-	STDMETHOD_(S4HOOK, AddEntityListener)(THIS_ LPS4ENTITYCALLBACK) PURE;
+S4ModApi/S4ModApi.h:814:	STDMETHOD_(S4HOOK, AddGuiBltListener)(THIS_ LPS4GUIBLTCALLBACK) PURE;
+S4ModApi/S4ModApi.h:815:	STDMETHOD_(S4HOOK, AddGuiClearListener)(THIS_ LPS4GUICLEARCALLBACK) PURE;
+S4ModApi/S4ModApi.h-816-
+S4ModApi/S4ModApi.h-817-	/** Misc helper functions **/
+--
+S4ModApi/S4ModApi.h-821-
+S4ModApi/S4ModApi.h-822-	/** Settlers 4 functions **/
+S4ModApi/S4ModApi.h:823:	STDMETHOD(GetHoveringUiElement)(THIS_ LPS4UIELEMENT) PURE;
+S4ModApi/S4ModApi.h-824-	STDMETHOD_(BOOL, GetEntitiesCount)(THIS_  WORD* counter) PURE;
+S4ModApi/S4ModApi.h-825-
+S4ModApi/S4ModApi.h:826:	STDMETHOD_(BOOL, IsCurrentlyOnScreen)(THIS_ S4_GUI_ENUM) PURE;
+S4ModApi/S4ModApi.h-827-	STDMETHOD_(S4_ENTITY_ENUM, EntityGetClass)(THIS_ WORD entity) PURE;
+S4ModApi/S4ModApi.h-828-	STDMETHOD_(BOOL, GetEntities)(THIS_ DWORD * entities, size_t size);
+--
+S4ModApi/S4ModApi.h-891-	/** UI Rendering **/
+S4ModApi/S4ModApi.h-892-	STDMETHOD_(S4CUSTOMUI, ShowMessageBox)(THIS_ LPCWSTR title, LPCWSTR message, INT x, INT y, INT w, INT h, DWORD flags = 0) PURE;
+S4ModApi/S4ModApi.h:893:	STDMETHOD_(S4CUSTOMUI, CreateCustomUiElement)(THIS_ LPCS4CUSTOMUIELEMENT) PURE;
+S4ModApi/S4ModApi.h-894-	STDMETHOD_(BOOL, DestroyCustomUiElement)(THIS_ S4CUSTOMUI) PURE;
+S4ModApi/S4ModApi.h-895-	STDMETHOD_(BOOL, HideCustomUiElement)(THIS_ S4CUSTOMUI) PURE;
+--
+S4ModApi/S4ModApi.h-897-
+S4ModApi/S4ModApi.h-898-	/** S4 Scripting **/
+S4ModApi/S4ModApi.h:899:	STDMETHOD_(DWORD, GetLocalPlayer)(THIS) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-900-	STDMETHOD_(DWORD, BuildingsAdd)(THIS_ S4_BUILDING_ENUM building, INT x, INT y, DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-901-	STDMETHOD_(DWORD, BuildingsAmount)(THIS_ S4_BUILDING_ENUM building, DWORD status, DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+--
+S4ModApi/S4ModApi.h-914-	STDMETHOD_(DWORD, EffectsAdd)(THIS_ DWORD effect, DWORD sound, INT x, INT y, DWORD delay) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-915-	STDMETHOD_(DWORD, ArePlayerAreasConnected)(THIS_ INT x1, INT y1, DWORD player2, INT x2, INT y2, DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h:916:	STDMETHOD_(BOOL, GameDefaultGameEndCheck)(THIS) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-917-	STDMETHOD_(BOOL, DisableLastNPlayersInStatistic)(THIS_ DWORD n) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-918-	STDMETHOD_(BOOL, EnableLandExploredCheck)(THIS) PURE; // defined in CS4Scripting.cpp
+--
+S4ModApi/S4ModApi.h-922-	STDMETHOD_(DWORD, GetNumberOfSquaresWithDarkLand)(THIS_ DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-923-	STDMETHOD_(DWORD, GetOffenceFightingStrength)(THIS_ DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h:924:	STDMETHOD_(BOOL, HasPlayerLost)(THIS_ DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-925-	STDMETHOD_(BOOL, IsAlmostAllLandExplored)(THIS_ DWORD player = 0) PURE; // defined in CS4Scripting.cpp
+S4ModApi/S4ModApi.h-926-	STDMETHOD_(BOOL, IsAreaDarkLand)(THIS_ INT x, INT y, INT r) PURE; // defined in CS4Scripting.cpp
+--
+S4ModApi/S4ModApi.h-982-
+S4ModApi/S4ModApi.h-983-	// Added since version 2.2
+S4ModApi/S4ModApi.h:984:	STDMETHOD_(S4HOOK, AddGuiElementBltListener)(THIS_ LPS4GUIDRAWCALLBACK) PURE;
+S4ModApi/S4ModApi.h-985-};
+S4ModApi/S4ModApi.h-986-
+
+## TYPE_BLOCK start=enum S4_GUI_ENUM end=S4_GUI_ENUM_MAXVALUE
+523:enum S4_GUI_ENUM : DWORD {
+524:	S4_GUI_UNKNOWN=0,
+525:	S4_SCREEN_MAINMENU=1,
+526:	S4_SCREEN_TUTORIAL,
+527:	S4_SCREEN_ADDON,
+528:	S4_SCREEN_MISSIONCD,
+529:	S4_SCREEN_NEWWORLD,
+530:	S4_SCREEN_NEWWORLD2,
+531:	S4_SCREEN_SINGLEPLAYER,
+532:	S4_SCREEN_MULTIPLAYER,
+533:	S4_SCREEN_LOADGAME,
+534:	S4_SCREEN_CREDITS,
+535:	S4_SCREEN_ADDON_TROJAN,
+536:	S4_SCREEN_ADDON_ROMAN,
+537:	S4_SCREEN_ADDON_MAYAN,
+538:	S4_SCREEN_ADDON_VIKING,
+539:	S4_SCREEN_ADDON_SETTLE,
+540:	S4_SCREEN_MISSIONCD_ROMAN,
+541:	S4_SCREEN_MISSIONCD_VIKING,
+542:	S4_SCREEN_MISSIONCD_MAYAN,
+543:	S4_SCREEN_MISSIONCD_CONFL,
+544:	S4_SCREEN_SINGLEPLAYER_CAMPAIGN,
+545:	S4_SCREEN_SINGLEPLAYER_DARKTRIBE,
+546:	S4_SCREEN_SINGLEPLAYER_MAPSELECT_SINGLE,
+547:	S4_SCREEN_SINGLEPLAYER_MAPSELECT_MULTI,
+548:	S4_SCREEN_SINGLEPLAYER_MAPSELECT_RANDOM,
+549:	S4_SCREEN_SINGLEPLAYER_MAPSELECT_USER,
+550:	S4_SCREEN_SINGLEPLAYER_LOBBY,
+551:	S4_SCREEN_MULTIPLAYER_MAPSELECT_MULTI,
+552:	S4_SCREEN_MULTIPLAYER_MAPSELECT_RANDOM,
+553:	S4_SCREEN_MULTIPLAYER_MAPSELECT_USER,
+554:	S4_SCREEN_MULTIPLAYER_LOBBY,
+555:	S4_SCREEN_LOADGAME_CAMPAIGN,
+556:	S4_SCREEN_LOADGAME_MAP,
+557:	S4_SCREEN_LOADGAME_MULTIPLAYER,
+558:	S4_SCREEN_AFTERGAME_SUMMARY,
+559:	S4_SCREEN_AFTERGAME_DETAILS,
+560:	S4_SCREEN_INGAME,
+561:	S4_SCREEN_MISSION_DESCRIPTION,
+562:	S4_MENU_EXTRAS_SAVE,
+563:	S4_MENU_EXTRAS_MISSION,
+564:	S4_MENU_EXTRAS_CHATSETTINGS,
+565:	S4_MENU_EXTRAS_QUIT,
+566:	S4_MENU_SETTINGS_GRAPHICS,
+567:	S4_MENU_SETTINGS_AUDIO,
+568:	S4_MENU_SETTINGS_GAME,
+569:	S4_MENU_SETTINGS_NOTIFICATIONS,
+570:	S4_MENU_BUILDINGS_FOUNDATION,
+571:	S4_MENU_BUILDINGS_METAL,
+572:	S4_MENU_BUILDINGS_FOOD,
+573:	S4_MENU_BUILDINGS_MISC,
+574:	S4_MENU_BUILDINGS_MISC_DECOSUB,
+575:	S4_MENU_BUILDINGS_MILITARY,
+576:	S4_MENU_SETTLERS_SUMMARY,
+577:	S4_MENU_SETTLERS_WORKERS,
+578:	S4_MENU_SETTLERS_SPECIALISTS,
+579:	S4_MENU_SETTLERS_SEARCH,
+580:	S4_MENU_GOODS_SUMMARY,
+581:	S4_MENU_GOODS_DISTRIBUTION,
+582:	S4_MENU_GOODS_PRIORITY,
+583:	S4_MENU_STATISTICS_WARRIORS,
+584:	S4_MENU_STATISTICS_LAND,
+585:	S4_MENU_STATISTICS_GOODS,
+586:	S4_MENU_UNITSELECTION_DONKEY,
+587:	S4_MENU_UNITSELECTION_MILITARY,
+588:	S4_MENU_UNITSELECTION_SPECIALISTS,
+589:	S4_MENU_UNITSELECTION_VEHICLES,
+590:	S4_MENU_UNITSELECTION_FERRY,
+591:	S4_MENU_UNITSELECTION_TRADINGVEHICLE,
+592:	S4_MENU_UNITSELECTION_SUB_SPELLS,
+593:	S4_MENU_UNITSELECTION_SUB_GROUPINGS,
+594:	S4_MENU_SELECTION_SUB_TRADE,
+595:	S4_MENU_SELECTION_SUB_BUILDVEHICLE,
+596:	S4_MENU_SELECTION_SUB_BARRACKS,
+597:
+598:	S4_GUI_ENUM_MAXVALUE // never put anything below this
+
+## TYPE_BLOCK start=typedef struct S4UiElement end=} *LPS4UIELEMENT;
+614:typedef struct S4UiElement {
+615:	WORD x, y, w, h;
+616:	WORD sprite;
+617:	WORD id;
+618:} *LPS4UIELEMENT;
+
+## TYPE_BLOCK start=typedef struct S4GuiElementBltParams end=} *LPS4GUIDRAWBLTPARAMS;
+728:typedef struct S4GuiElementBltParams {
+729:	DWORD surfaceWidth;
+730:	DWORD surfaceHeight;
+731:	WORD currentGFXCollection;
+732:	WORD containerType;
+733:	WORD x;
+734:	WORD y;
+735:	WORD xOffset;
+736:	WORD yOffset;
+737:	WORD width;
+738:	WORD height;
+739:	WORD mainTexture;
+740:	WORD valueLink;
+741:	WORD buttonPressedTexture;
+742:	WORD tooltipLink;
+743:	WORD tooltipLinkExtra;
+744:	S4_UI_TYPE imageStyle;
+745:	S4_UI_EFFECTS effects; //When == 8 -> hide text
+746:	S4_UI_TEXTSTYLE textStyle; //enum where the first 4 bits define which font style to use and last 4 bits define effects (Like pressed etc)
+747:	WORD showTexture;
+748:	WORD backTexture;
+749:	char* text;
+750:	char* tooltipText;
+751:	char* tooltipExtraText;
+752:} *LPS4GUIDRAWBLTPARAMS;
+
+## MAIN_MENU_UI_EXAMPLE
+37-        cuie.szImg = imgFn;
+38-        cuie.x = 50;
+39-        cuie.y = 50;
+40:        cuie.screen = S4_SCREEN_MAINMENU;
+41-        cuie.actionHandler = [](LPCVOID lpUiElement, S4_CUSTOM_UI_ENUM newstate) {
+42-            if (newstate & S4_CUSTOM_UI_SELECTED) {
+43-                CleanUp();
+--
+45-            return (HRESULT)0;
+46-        };
+47- 
+48:        splashHandle = s4->CreateCustomUiElement(&cuie);
+49-        break;
+50-    } 
+51-    case DLL_THREAD_ATTACH:
+
+## IMPLEMENTATION_FILES
+S4ModApi/CS4CustomUi.cpp
+S4ModApi/CS4Listeners.cpp
+S4ModApi/CS4Scripting.cpp
+S4ModApi/CSettlers4Api.h
+S4ModApi/S4ModApi.h
+
+## ABSENCE_CHECKS
+absence_check:OnVictory=not_declared
+absence_check:OnGameEnd=not_declared
+absence_check:GetCurrentMapName=not_declared
+absence_check:IsRandomMap=not_declared
+absence_check:IsMultiplayer=not_declared
+absence_check:GetCampaignMenuButtons=not_declared
