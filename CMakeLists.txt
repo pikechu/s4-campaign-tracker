@@ -47,6 +47,7 @@ add_executable(campaign_completion_tests
   tests/TestMain.cpp
   tests/HookSiteLayoutTests.cpp
   tests/LoggerTests.cpp
+  tests/MapPathValidatorTests.cpp
   tests/ListAttributionTests.cpp
   tests/ListenerRemovalTests.cpp
   tests/ModuleInventoryTests.cpp

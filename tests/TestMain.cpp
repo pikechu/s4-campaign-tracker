@@ -2,6 +2,7 @@
 #include <iostream>
 
 int RunLoggerTests();
+int RunMapPathValidatorTests();
 int RunHookSiteLayoutTests();
 int RunListAttributionTests();
 int RunListenerRemovalTests();
@@ -14,6 +15,7 @@ int RunStopRequestTests();
 int main() {
     try {
         RunLoggerTests();
+        RunMapPathValidatorTests();
         RunHookSiteLayoutTests();
         RunListAttributionTests();
         RunListenerRemovalTests();
