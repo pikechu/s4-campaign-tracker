@@ -21,8 +21,11 @@ public:
     void EndBlock() noexcept override {
         ++blocksEnded;
         if (mutateOnEnd) {
-            name = "changed-after-block";
-            relative = "changed-after-block";
+            if (currentFunction == kNameFunction) {
+                name = "changed-after-block";
+            } else if (currentFunction == kRelativeFunction) {
+                relative = "changed-after-block";
+            }
         }
     }
 

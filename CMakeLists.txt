@@ -23,6 +23,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/identity/ListAttribution.cpp
     src/identity/MapPathValidator.cpp
     src/identity/SuMapValue.cpp
+    src/lua/LuaApi.cpp
+    src/lua/SuLuaMapBridge.cpp
     src/runtime/CallbackGate.cpp
     src/runtime/DiagnosticRuntime.cpp
     src/runtime/ListenerRemoval.cpp
@@ -80,6 +82,8 @@ add_executable(campaign_completion_tests
   src/identity/ListAttribution.cpp
   src/identity/MapPathValidator.cpp
   src/identity/SuMapValue.cpp
+  src/lua/LuaApi.cpp
+  src/lua/SuLuaMapBridge.cpp
   src/runtime/CallbackGate.cpp
   src/runtime/ListenerRemoval.cpp
   src/runtime/PageObservation.cpp
