@@ -211,10 +211,26 @@ int RunRuntimePolicyTests() {
     const auto tickSection = listeners.substr(tickBegin, mouseBegin - tickBegin);
     const auto tickService = tickSection.find("ServiceNativeSubscription();");
     const auto tickLock = tickSection.find("std::lock_guard<std::mutex>");
+    const auto luaOpenBegin = listeners.find("void S4Listeners::ObserveLuaOpen(");
     Require(tickService != std::string::npos && tickLock != std::string::npos &&
                 tickService < tickLock,
             "non-delayed Tick services native subscription before listener mutex");
-    const auto luaOpenBegin = listeners.find("void S4Listeners::ObserveLuaOpen(");
+    Require(listenerHeader.find("bool nativeReinsertPending_ = false;") !=
+                std::string::npos,
+            "listener tracks one native list reorder per map session");
+    Require(mapBegin != std::string::npos && luaOpenBegin != std::string::npos &&
+                listeners.substr(mapBegin, luaOpenBegin - mapBegin)
+                        .find("nativeReinsertPending_ = true;") !=
+                    std::string::npos,
+            "map init arms the native list reorder");
+    Require(tickSection.find("nativeReinsertPending_") != std::string::npos &&
+                tickSection.find("NativeSubscriptionState::Attached") !=
+                    std::string::npos &&
+                tickSection.find("ReinsertAtFrontOnGameThread()") !=
+                    std::string::npos &&
+                tickSection.find("native-subscription=reinserted-front") !=
+                    std::string::npos,
+            "first attached in-game Tick moves the subscriber ahead of the game GUI handler");
     Require(mapBegin != std::string::npos && luaOpenBegin != std::string::npos &&
                 listeners.substr(mapBegin, luaOpenBegin - mapBegin)
                         .find("victoryProbe_->BeginSession(activeSessionId_);") !=
