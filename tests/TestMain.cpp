@@ -2,6 +2,7 @@
 #include <iostream>
 
 int RunLoggerTests();
+int RunFixedMapCaptureStateTests();
 int RunMapPathValidatorTests();
 int RunHookSiteLayoutTests();
 int RunListAttributionTests();
@@ -15,6 +16,7 @@ int RunStopRequestTests();
 int main() {
     try {
         RunLoggerTests();
+        RunFixedMapCaptureStateTests();
         RunMapPathValidatorTests();
         RunHookSiteLayoutTests();
         RunListAttributionTests();

@@ -46,6 +46,7 @@ endif()
 
 add_executable(campaign_completion_tests
   tests/TestMain.cpp
+  tests/FixedMapCaptureStateTests.cpp
   tests/HookSiteLayoutTests.cpp
   tests/LoggerTests.cpp
   tests/MapPathValidatorTests.cpp
