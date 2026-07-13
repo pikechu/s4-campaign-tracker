@@ -19,6 +19,10 @@ struct TabControlMapping final {
     DWORD custom;
 };
 
+// Live calibration report rows C1-C3:
+// docs/research/phase-2-2-tab-calibration.md
+inline constexpr TabControlMapping kApprovedTabControls{2449, 2450, 2451};
+
 class ListAttribution final {
 public:
     explicit ListAttribution(TabControlMapping mapping) noexcept;

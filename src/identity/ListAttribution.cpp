@@ -29,12 +29,16 @@ void ListAttribution::ObserveClick(UINT message, DWORD elementId) noexcept {
         return;
     }
 
-    current_ = FixedMapListKind::Unknown;
-    if (elementId == mapping_.single) {
+    const int matchCount = static_cast<int>(elementId == mapping_.single) +
+                           static_cast<int>(elementId == mapping_.multiplayer) +
+                           static_cast<int>(elementId == mapping_.custom);
+    if (matchCount != 1) {
+        current_ = FixedMapListKind::Unknown;
+    } else if (elementId == mapping_.single) {
         current_ = FixedMapListKind::Single;
     } else if (elementId == mapping_.multiplayer) {
         current_ = FixedMapListKind::Multiplayer;
-    } else if (elementId == mapping_.custom) {
+    } else {
         current_ = FixedMapListKind::Custom;
     }
 }
