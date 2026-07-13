@@ -81,7 +81,6 @@ add_executable(campaign_completion_tests
   src/identity/MapIdentityCoordinator.cpp
   src/identity/MapPathValidator.cpp
   src/identity/SuMapValue.cpp
-  src/lua/LuaApi.cpp
   src/lua/SuLuaMapBridge.cpp
   src/runtime/CallbackGate.cpp
   src/runtime/ListenerRemoval.cpp
