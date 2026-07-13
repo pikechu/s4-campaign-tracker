@@ -108,6 +108,7 @@ void NativeVictoryEventSubscriber::RequestDetach() noexcept {
                 }
                 break;
             case NativeSubscriptionState::Attached:
+            case NativeSubscriptionState::DetachFailed:
                 if (state_.compare_exchange_weak(
                         current, NativeSubscriptionState::DetachRequested,
                         std::memory_order_acq_rel,
@@ -119,7 +120,6 @@ void NativeVictoryEventSubscriber::RequestDetach() noexcept {
             case NativeSubscriptionState::DetachRequested:
             case NativeSubscriptionState::Detaching:
             case NativeSubscriptionState::Detached:
-            case NativeSubscriptionState::DetachFailed:
                 return;
         }
     }

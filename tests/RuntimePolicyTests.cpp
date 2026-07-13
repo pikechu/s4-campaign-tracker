@@ -137,7 +137,8 @@ int RunRuntimePolicyTests() {
     const auto coordinatorDisable = runtime.find("coordinator_->Disable()");
     const auto originDisable = runtime.find("origin_.Disable()");
     const auto settlementDisable = runtime.find("settlement_.Disable()");
-    const auto listenerStop = runtime.find("listeners_.Stop()");
+    const auto listenerStop = runtime.find("listeners_.Stop()",
+                                            settlementDisable);
     const auto traceClose = runtime.find("phase3Trace_.Close()", listenerStop);
     Require(coordinatorDisable != std::string::npos &&
                 originDisable != std::string::npos &&

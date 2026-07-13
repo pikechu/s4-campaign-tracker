@@ -23,6 +23,46 @@ std::string SettlementFeatureRecord(const SettlementFeature& feature) {
     return output.str();
 }
 
+const char* NativeStateName(NativeSubscriptionState state) noexcept {
+    switch (state) {
+        case NativeSubscriptionState::Idle:
+            return "idle";
+        case NativeSubscriptionState::AttachRequested:
+            return "attach-requested";
+        case NativeSubscriptionState::Attaching:
+            return "attaching";
+        case NativeSubscriptionState::Attached:
+            return "attached";
+        case NativeSubscriptionState::DetachRequested:
+            return "detach-requested";
+        case NativeSubscriptionState::Detaching:
+            return "detaching";
+        case NativeSubscriptionState::Detached:
+            return "detached";
+        case NativeSubscriptionState::AttachFailed:
+            return "attach-failed";
+        case NativeSubscriptionState::DetachFailed:
+            return "detach-failed";
+    }
+    return "unknown";
+}
+
+const char* NativeResultName(NativeLocalResult result) noexcept {
+    switch (result) {
+        case NativeLocalResult::None:
+            return "none";
+        case NativeLocalResult::Won:
+            return "won";
+        case NativeLocalResult::Lost:
+            return "lost";
+        case NativeLocalResult::Malformed:
+            return "malformed";
+        case NativeLocalResult::Conflict:
+            return "conflict";
+    }
+    return "unknown";
+}
+
 }  // namespace
 
 std::atomic<S4Listeners*> S4Listeners::active_{nullptr};
@@ -35,11 +75,15 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         ILuaMapBridge& bridge,
                         LaunchOriginTracker& origin,
                         SettlementUiProbe& settlement,
+                        NativeVictoryEventSubscriber& subscriber,
+                        VictoryEventProbe& victoryProbe,
                         Phase3Trace& phase3Trace) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
     origin_ = &origin;
     settlement_ = &settlement;
+    nativeSubscriber_ = &subscriber;
+    victoryProbe_ = &victoryProbe;
     phase3Trace_ = &phase3Trace;
     return StartPublicListeners(api, logger);
 }
@@ -92,11 +136,15 @@ ListenerStopResult S4Listeners::Stop() {
     bridge_ = nullptr;
     origin_ = nullptr;
     settlement_ = nullptr;
+    nativeSubscriber_ = nullptr;
+    victoryProbe_ = nullptr;
     phase3Trace_ = nullptr;
     activeOrigin_ = {};
     activeSessionId_ = 0u;
     inGameSeen_ = false;
     settlementStarted_ = false;
+    lastNativeState_.store(NativeSubscriptionState::Idle,
+                           std::memory_order_release);
     return result;
 }
 
@@ -156,6 +204,7 @@ HRESULT S4HCALL S4Listeners::OnGuiElement(LPS4GUIDRAWBLTPARAMS element, BOOL) {
 
 void S4Listeners::ObserveUiFrame(DWORD page) {
     const auto now = GetTickCount64();
+    ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
     if (origin_ != nullptr) {
         origin_->ObservePage(page, now);
@@ -199,6 +248,9 @@ void S4Listeners::ObserveMapInit() {
     }
     inGameSeen_ = false;
     settlementStarted_ = false;
+    if (victoryProbe_ != nullptr) {
+        victoryProbe_->BeginSession(activeSessionId_);
+    }
     if (phase3Trace_ != nullptr) {
         phase3Trace_->Write(
             Phase3TraceChannel::Origin,
@@ -230,6 +282,7 @@ void S4Listeners::ObserveTick(BOOL delayed) {
     if (delayed != FALSE) {
         return;
     }
+    ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
     if (api_ == nullptr) {
         return;
@@ -241,6 +294,47 @@ void S4Listeners::ObserveTick(BOOL delayed) {
         coordinator_->ObserveTick(inGame, now, *bridge_);
     }
     FinishSettlementIfDue(now);
+}
+
+void S4Listeners::ServiceNativeSubscription() {
+    if (nativeSubscriber_ == nullptr || victoryProbe_ == nullptr) {
+        return;
+    }
+    nativeSubscriber_->ServiceOnGameThread();
+
+    const auto current = nativeSubscriber_->state();
+    const auto previous = lastNativeState_.exchange(
+        current, std::memory_order_acq_rel);
+    if (current != previous && phase3Trace_ != nullptr) {
+        phase3Trace_->Write(
+            Phase3TraceChannel::NativeEvent,
+            "native-subscription=" + std::string(NativeStateName(current)));
+    }
+
+    const auto pending = victoryProbe_->ConsumePending();
+    if (!pending.has_value() || phase3Trace_ == nullptr) {
+        return;
+    }
+    const auto& snapshot = pending.value();
+    std::ostringstream event;
+    event << "native-event=session-" << snapshot.sessionId
+          << ";event-id=" << snapshot.fields.eventId
+          << ";local-result=" << NativeResultName(snapshot.result)
+          << ";wparam=" << snapshot.fields.wParam
+          << ";lparam=" << snapshot.fields.lParam
+          << ";game-tick=" << snapshot.fields.gameTick;
+    phase3Trace_->Write(Phase3TraceChannel::NativeEvent, event.str());
+
+    phase3Trace_->Write(
+        Phase3TraceChannel::NativeEvent,
+        "native-event-duplicates=session-" +
+            std::to_string(snapshot.sessionId) +
+            ";count=" + std::to_string(snapshot.duplicates));
+    if (snapshot.orphans != 0u) {
+        phase3Trace_->Write(Phase3TraceChannel::NativeEvent,
+                            "native-event-orphans=count=" +
+                                std::to_string(snapshot.orphans));
+    }
 }
 
 void S4Listeners::FinishSettlementIfDue(std::uint64_t nowMs) {

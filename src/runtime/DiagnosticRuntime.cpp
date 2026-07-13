@@ -80,9 +80,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.3.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.3.1 pid="
            << GetCurrentProcessId()
-           << " mode=victory-ui-calibration-public";
+           << " mode=native-event-calibration";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -158,10 +158,55 @@ bool DiagnosticRuntime::Start(HMODULE module) {
             phase3Trace_.Write(Phase3TraceChannel::Identity, record);
         });
 
-    if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
-                          settlement_, phase3Trace_)) {
+    constexpr DWORD kAdmissionWaitStepMs = 100u;
+    constexpr DWORD kAdmissionWaitLimitMs = 30'000u;
+    DWORD admissionWaited = 0u;
+    do {
+        nativeAdmission_ = NativeEventAdmission::Create(*executable);
+        if (nativeAdmission_ ||
+            nativeAdmission_.failure !=
+                NativeEventAdmissionFailure::EngineUnavailable) {
+            break;
+        }
+        Sleep(kAdmissionWaitStepMs);
+        admissionWaited += kAdmissionWaitStepMs;
+    } while (admissionWaited < kAdmissionWaitLimitMs);
+    if (!nativeAdmission_) {
+        logger_.Write(LogLevel::Error,
+                      "native event admission failed code=" +
+                          std::to_string(static_cast<unsigned>(
+                              nativeAdmission_.failure)));
         api_->Release();
         api_ = nullptr;
+        coordinator_.reset();
+        phase3Trace_.Close();
+        logger_.Close();
+        return false;
+    }
+    nativeRegistration_ =
+        std::make_unique<NativeEventRegistration>(nativeAdmission_);
+
+    if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
+                          settlement_, nativeSubscriber_, victoryProbe_,
+                          phase3Trace_)) {
+        api_->Release();
+        api_ = nullptr;
+        nativeRegistration_.reset();
+        nativeAdmission_ = {};
+        coordinator_.reset();
+        phase3Trace_.Close();
+        logger_.Close();
+        return false;
+    }
+    if (!nativeSubscriber_.Prepare(*nativeRegistration_, victoryProbe_)) {
+        const auto listenerResult = listeners_.Stop();
+        logger_.Write(LogLevel::Error,
+                      "native subscriber prepare failed listener-failures=" +
+                          std::to_string(listenerResult.failures));
+        api_->Release();
+        api_ = nullptr;
+        nativeRegistration_.reset();
+        nativeAdmission_ = {};
         coordinator_.reset();
         phase3Trace_.Close();
         logger_.Close();
@@ -171,6 +216,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     stopRequestPath_ = gameDirectory / L"CampaignCompletion" /
                        L"CampaignCompletionDebug.stop";
     started_ = true;
+    controlledStopRequested_.store(false, std::memory_order_release);
     logger_.Write(LogLevel::Info, "diagnostic runtime started");
     return true;
 }
@@ -189,11 +235,38 @@ void DiagnosticRuntime::RunControlLoop() {
 
         if (ConsumeStopRequest(requestPath)) {
             logger_.Write(LogLevel::Info, "controlled stop requested");
-            Stop();
+            RequestControlledStop();
+        }
+        if (controlledStopRequested_.load(std::memory_order_acquire) &&
+            TryControlledStop()) {
             return;
         }
         Sleep(kControlIntervalMs);
     }
+}
+
+void DiagnosticRuntime::RequestControlledStop() noexcept {
+    controlledStopRequested_.store(true, std::memory_order_release);
+}
+
+bool DiagnosticRuntime::TryControlledStop() {
+    nativeSubscriber_.RequestDetach();
+    constexpr DWORD kDetachWaitStepMs = 10u;
+    constexpr DWORD kDetachWaitLimitMs = 5'000u;
+    DWORD waited = 0u;
+    while (!nativeSubscriber_.Detached() && waited < kDetachWaitLimitMs) {
+        Sleep(kDetachWaitStepMs);
+        waited += kDetachWaitStepMs;
+    }
+    if (!nativeSubscriber_.Detached()) {
+        phase3Trace_.Write(Phase3TraceChannel::Decision,
+                           "controlled-stop-flush=failed");
+        logger_.Write(LogLevel::Warning,
+                      "native subscriber detach timed out; runtime retained");
+        return false;
+    }
+    Stop();
+    return true;
 }
 
 void DiagnosticRuntime::Stop() {
@@ -206,6 +279,7 @@ void DiagnosticRuntime::Stop() {
     }
     origin_.Disable();
     settlement_.Disable();
+    victoryProbe_.Disable();
     const auto result = listeners_.Stop();
     if (api_ != nullptr) {
         api_->Release();
@@ -223,8 +297,11 @@ void DiagnosticRuntime::Stop() {
                               : "controlled-stop-flush=failed");
     phase3Trace_.Close();
     logger_.Close();
+    nativeRegistration_.reset();
+    nativeAdmission_ = {};
     coordinator_.reset();
     started_ = false;
+    controlledStopRequested_.store(false, std::memory_order_release);
 }
 
 DWORD WINAPI BootstrapThread(void* module) {

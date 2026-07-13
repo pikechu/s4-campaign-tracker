@@ -3,7 +3,7 @@
 #include <windows.h>
 
 extern "C" __declspec(dllexport) void CampaignCompletionDebugStop() {
-    campaign_completion::RuntimeInstance().Stop();
+    campaign_completion::RuntimeInstance().RequestControlledStop();
 }
 
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {

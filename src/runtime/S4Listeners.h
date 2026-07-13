@@ -6,6 +6,7 @@
 #include "identity/ListAttribution.h"
 #include "identity/MapIdentityCoordinator.h"
 #include "lua/SuLuaMapBridge.h"
+#include "native/NativeVictoryEventSubscriber.h"
 #include "runtime/CallbackGate.h"
 #include "runtime/ListenerRemoval.h"
 #include "runtime/PageObservation.h"
@@ -50,6 +51,8 @@ public:
                ILuaMapBridge& bridge,
                LaunchOriginTracker& origin,
                SettlementUiProbe& settlement,
+               NativeVictoryEventSubscriber& subscriber,
+               VictoryEventProbe& victoryProbe,
                Phase3Trace& phase3Trace);
     ListenerStopResult Stop();
 
@@ -99,6 +102,7 @@ private:
                       LPCS4UIELEMENT element);
     void ObserveGuiElement(LPS4GUIDRAWBLTPARAMS element);
     void FinishSettlementIfDue(std::uint64_t nowMs);
+    void ServiceNativeSubscription();
 
     static std::atomic<S4Listeners*> active_;
     static const std::array<LPS4FRAMECALLBACK, S4_GUI_ENUM_MAXVALUE - 1>
@@ -109,6 +113,8 @@ private:
     ILuaMapBridge* bridge_ = nullptr;
     LaunchOriginTracker* origin_ = nullptr;
     SettlementUiProbe* settlement_ = nullptr;
+    NativeVictoryEventSubscriber* nativeSubscriber_ = nullptr;
+    VictoryEventProbe* victoryProbe_ = nullptr;
     Phase3Trace* phase3Trace_ = nullptr;
     std::vector<S4HOOK> hooks_;
     CallbackGate callbackGate_;
@@ -123,6 +129,8 @@ private:
     std::uint64_t activeSessionId_ = 0u;
     bool inGameSeen_ = false;
     bool settlementStarted_ = false;
+    std::atomic<NativeSubscriptionState> lastNativeState_{
+        NativeSubscriptionState::Idle};
 
     bool StartPublicListeners(S4API api, Logger& logger);
 };
