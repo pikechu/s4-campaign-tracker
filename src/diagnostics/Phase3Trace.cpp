@@ -11,9 +11,9 @@
 namespace campaign_completion {
 namespace {
 
-constexpr std::array<const wchar_t*, 4u> kFileNames{
+constexpr std::array<const wchar_t*, 5u> kFileNames{
     L"origin.trace", L"identity.trace", L"settlement-ui.trace",
-    L"decision.trace"};
+    L"native-event.trace", L"decision.trace"};
 
 constexpr std::array<std::string_view, 3u> kOriginPrefixes{
     "origin-source=", "origin-eligibility=", "origin-status="};
@@ -24,6 +24,9 @@ constexpr std::array<std::string_view, 8u> kIdentityPrefixes{
 constexpr std::array<std::string_view, 4u> kSettlementPrefixes{
     "settlement-capture=", "settlement-feature=", "local-player-status=",
     "local-player-lost="};
+constexpr std::array<std::string_view, 4u> kNativeEventPrefixes{
+    "native-subscription=", "native-event=", "native-event-duplicates=",
+    "native-event-orphans="};
 constexpr std::array<std::string_view, 2u> kDecisionPrefixes{
     "diagnostic-result=calibration-only", "controlled-stop-flush="};
 constexpr std::array<std::string_view, 9u> kForbiddenTokens{
@@ -49,6 +52,8 @@ bool HasChannelPrefix(Phase3TraceChannel channel,
             return HasPrefix(record, kIdentityPrefixes);
         case Phase3TraceChannel::SettlementUi:
             return HasPrefix(record, kSettlementPrefixes);
+        case Phase3TraceChannel::NativeEvent:
+            return HasPrefix(record, kNativeEventPrefixes);
         case Phase3TraceChannel::Decision:
             return HasPrefix(record, kDecisionPrefixes);
         default:
@@ -87,7 +92,7 @@ std::filesystem::path CandidateDirectory(const std::filesystem::path& root,
     return root / name;
 }
 
-void CloseHandles(std::array<HANDLE, 4u>& handles) noexcept {
+void CloseHandles(std::array<HANDLE, 5u>& handles) noexcept {
     for (auto& handle : handles) {
         if (handle != INVALID_HANDLE_VALUE) {
             FlushFileBuffers(handle);

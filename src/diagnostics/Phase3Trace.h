@@ -14,7 +14,8 @@ enum class Phase3TraceChannel : std::size_t {
     Origin = 0u,
     Identity = 1u,
     SettlementUi = 2u,
-    Decision = 3u,
+    NativeEvent = 3u,
+    Decision = 4u,
 };
 
 class Phase3Trace final {
@@ -29,9 +30,9 @@ public:
 
 private:
     std::mutex mutex_;
-    std::array<HANDLE, 4u> handles_{
+    std::array<HANDLE, 5u> handles_{
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
-        INVALID_HANDLE_VALUE};
+        INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE};
     std::filesystem::path directory_;
 };
 
