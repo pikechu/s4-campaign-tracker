@@ -72,6 +72,7 @@ add_executable(campaign_completion_tests
   tests/MapIdentityCoordinatorTests.cpp
   tests/LaunchOriginTests.cpp
   tests/SettlementUiProbeTests.cpp
+  tests/Phase3TraceTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp

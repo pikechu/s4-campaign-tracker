@@ -21,6 +21,7 @@ int RunLuaMapSessionTests();
 int RunMapIdentityCoordinatorTests();
 int RunLaunchOriginTests();
 int RunSettlementUiProbeTests();
+int RunPhase3TraceTests();
 
 int main() {
     try {
@@ -43,6 +44,7 @@ int main() {
         RunMapIdentityCoordinatorTests();
         RunLaunchOriginTests();
         RunSettlementUiProbeTests();
+        RunPhase3TraceTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';
