@@ -40,9 +40,11 @@ endif()
 add_executable(campaign_completion_tests
   tests/TestMain.cpp
   tests/LoggerTests.cpp
+  tests/ListenerRemovalTests.cpp
   tests/ModuleInventoryTests.cpp
   tests/PageObservationTests.cpp
   tests/RuntimePolicyTests.cpp
+  tests/StopRequestTests.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
   src/runtime/PageObservation.cpp
