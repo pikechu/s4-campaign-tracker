@@ -43,7 +43,35 @@ The later artifact was downloaded and frozen below ignored project directory `ar
 - Frozen ASI SHA-256 `d0b6f498198eb9f924f16434bd2eb91dde129437be34571303cd111d58465036`, size `1654784` bytes; PE signature `PE\0\0`, machine `0x014c`, optional-header magic `0x010b`.
 - Frozen INI SHA-256 `3ddd6420c4680a455bff2bd1a272f9724b5e04abe0d25d9368e7eb35e805c2b8`, size `619` bytes.
 - The inner package contains exactly `Plugins/CampaignCompletionDebug.asi` and `CampaignCompletion/CampaignCompletionDebug.ini`.
-- The INI contains exactly one `Version=0.3.1`, `DiagnosticMode=NativeVictoryEventCalibration`, `NativeEventSubscription=1`, `NativeTerminalEventId=609`, and empty `CaptureTraceRoot=`. Every zero-Hook, zero-patch, zero-write, and zero-completion field occurs exactly once.
+- The corrected INI contains exactly one `Version=0.3.2`, `DiagnosticMode=NativeVictoryEventCalibration`, `NativeEventSubscription=1`, `NativeTerminalEventId=609`, and empty `CaptureTraceRoot=`. Every zero-Hook, zero-patch, zero-write, and zero-completion field occurs exactly once.
+
+## Live sample correction: registered-handler ordering
+
+The first voluntary-exit sample and the UBO(test) AI-resign victory sample both
+left `native-event.trace` with only `native-subscription=attached`, even though
+the victory sample visibly opened the game's win/loss dialog. Reverse-source
+and exact-executable analysis established the ordering cause:
+
+- `IEventEngine::RegisterHandle` inserts with `push_front`.
+- The diagnostic subscriber originally attached while the game was still in
+  the main-menu lifecycle.
+- `CStateGame::InitGUI` later creates and registers `CGuiEventHandler`, placing
+  it ahead of the diagnostic subscriber.
+- `CGuiEventHandler::OnEvent` handles event `609`, opens dialog `72`, passes
+  `m_wParam` to `UpdateGuiDlgWinLoss`, and returns true. `m_wParam == 1` selects
+  translation `GUI_MSG_WIN`; all other values select `GUI_MSG_LOST`.
+- The event engine stops iterating registered handles after a handler returns
+  true, so the lower-priority diagnostic subscriber cannot observe `609`.
+
+Version `0.3.2` keeps the same native registration API and installs no process
+hook or code patch. Each MapInit arms one reorder. On the first non-delayed Tick
+where `S4_SCREEN_INGAME` is active and the subscriber is attached, the runtime
+unregisters and immediately registers the same transparent subscriber once.
+This moves it to the list front; its callback still always returns false, so the
+game's own GUI handler continues to receive the event and display the normal
+win/loss dialog. The trace records either
+`native-subscription=reinserted-front` or the explicit failure form, and never
+retries the reorder repeatedly within the same map session.
 
 ## Guarded deployment and remaining live controls
 

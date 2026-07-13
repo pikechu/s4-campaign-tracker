@@ -80,7 +80,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.3.1 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.3.2 pid="
            << GetCurrentProcessId()
            << " mode=native-event-calibration";
     logger_.Write(LogLevel::Info, header.str());
