@@ -61,19 +61,20 @@ std::uint64_t MapIdentityCoordinator::ObserveMapInit(
     return currentSessionId_;
 }
 
-void MapIdentityCoordinator::ObserveTick(bool inGame,
-                                         std::uint64_t nowMs,
-                                         ILuaMapBridge& bridge) noexcept {
+std::optional<ConfirmedMapIdentity> MapIdentityCoordinator::ObserveTick(
+    bool inGame,
+    std::uint64_t nowMs,
+    ILuaMapBridge& bridge) noexcept {
     if (!enabled_ || !pending_) {
-        return;
+        return std::nullopt;
     }
 
     const auto result = session_.ObserveTick(inGame, nowMs, bridge);
     if (!result.has_value()) {
-        return;
+        return std::nullopt;
     }
     pending_ = false;
-    EmitResult(*result);
+    return EmitResult(*result);
 }
 
 void MapIdentityCoordinator::Disable() noexcept {
@@ -97,7 +98,7 @@ void MapIdentityCoordinator::Emit(std::string line) noexcept {
     }
 }
 
-void MapIdentityCoordinator::EmitResult(
+std::optional<ConfirmedMapIdentity> MapIdentityCoordinator::EmitResult(
     const LuaMapSessionResult& result) noexcept {
     try {
         ValidatedSuValue name;
@@ -141,11 +142,17 @@ void MapIdentityCoordinator::EmitResult(
             association = "lua-unavailable";
         }
         Emit("identity-association=" + std::string(association));
+        if (name && relative) {
+            return ConfirmedMapIdentity{result.sessionId,
+                                        std::move(name.normalized),
+                                        std::move(relative.normalized)};
+        }
     } catch (...) {
         Emit("su-map-name-status=encoding-failure");
         Emit("su-map-relative-status=encoding-failure");
         Emit("identity-association=invalid-value");
     }
+    return std::nullopt;
 }
 
 }  // namespace campaign_completion

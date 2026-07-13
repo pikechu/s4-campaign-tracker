@@ -95,7 +95,14 @@ int RunMapIdentityCoordinatorTests() {
     confirmed.coordinator.ObserveLuaOpen(120u);
     Require(confirmed.coordinator.ObserveMapInit(200u) == 1u,
             "first coordinator MapInit gets session one");
-    confirmed.coordinator.ObserveTick(true, 250u, confirmedBridge);
+    const auto confirmedIdentity =
+        confirmed.coordinator.ObserveTick(true, 250u, confirmedBridge);
+    Require(confirmedIdentity.has_value() &&
+                confirmedIdentity->sessionId == 1u &&
+                confirmedIdentity->name == L"Aeneas" &&
+                confirmedIdentity->relative ==
+                    L"Maps\\Single\\Aeneas.map",
+            "confirmed identity is returned for policy refinement");
     Require(Contains(confirmed.trace, "lua-open-generation=1"),
             "Lua generation traced");
     Require(Contains(confirmed.trace, "map-init-session=1;list=single"),
@@ -130,9 +137,15 @@ int RunMapIdentityCoordinatorTests() {
     nameOnly.coordinator.ObserveListKind(FixedMapListKind::Single, 1u);
     nameOnly.coordinator.ObserveLuaOpen(2u);
     nameOnly.coordinator.ObserveMapInit(100u);
-    nameOnly.coordinator.ObserveTick(true, 150u, nameOnlyBridge);
-    nameOnly.coordinator.ObserveTick(
-        true, 100u + kLuaSessionDeadlineMs, nameOnlyBridge);
+    Require(!nameOnly.coordinator
+                 .ObserveTick(true, 150u, nameOnlyBridge)
+                 .has_value(),
+            "an incomplete identity is not returned");
+    Require(!nameOnly.coordinator
+                 .ObserveTick(true, 100u + kLuaSessionDeadlineMs,
+                              nameOnlyBridge)
+                 .has_value(),
+            "a name-only timeout is not returned");
     Require(Contains(nameOnly.trace, "su-map-name=Aeneas") &&
                 Contains(nameOnly.trace, "su-map-relative-status=timeout") &&
                 Contains(nameOnly.trace, "identity-association=name-only"),
@@ -144,7 +157,10 @@ int RunMapIdentityCoordinatorTests() {
     invalid.coordinator.ObserveListKind(FixedMapListKind::Single, 1u);
     invalid.coordinator.ObserveLuaOpen(2u);
     invalid.coordinator.ObserveMapInit(3u);
-    invalid.coordinator.ObserveTick(true, 53u, invalidBridge);
+    Require(!invalid.coordinator
+                 .ObserveTick(true, 53u, invalidBridge)
+                 .has_value(),
+            "an invalid identity is not returned");
     Require(Contains(invalid.trace, "su-map-relative-status=absolute-path") &&
                 Contains(invalid.trace, "identity-association=invalid-value") &&
                 !Contains(invalid.trace, "su-map-relative=C:"),
@@ -158,9 +174,15 @@ int RunMapIdentityCoordinatorTests() {
     stale.coordinator.ObserveListKind(FixedMapListKind::Single, 1u);
     stale.coordinator.ObserveLuaOpen(2u);
     stale.coordinator.ObserveMapInit(3u);
-    stale.coordinator.ObserveTick(true, 53u, staleBridge);
+    Require(!stale.coordinator
+                 .ObserveTick(true, 53u, staleBridge)
+                 .has_value(),
+            "a retrying identity is not returned");
     stale.coordinator.ObserveLuaOpen(54u);
-    stale.coordinator.ObserveTick(true, 54u, staleBridge);
+    Require(!stale.coordinator
+                 .ObserveTick(true, 54u, staleBridge)
+                 .has_value(),
+            "a stale identity is not returned");
     Require(Contains(stale.trace, "identity-association=stale-generation") &&
                 staleBridge.readCount == 1u,
             "replacement generation is terminal after Lua reads begin");
@@ -176,8 +198,14 @@ int RunMapIdentityCoordinatorTests() {
     conflict.coordinator.ObserveListKind(FixedMapListKind::Single, 1u);
     conflict.coordinator.ObserveLuaOpen(2u);
     conflict.coordinator.ObserveMapInit(100u);
-    conflict.coordinator.ObserveTick(true, 150u, conflictBridge);
-    conflict.coordinator.ObserveTick(true, 200u, conflictBridge);
+    Require(!conflict.coordinator
+                 .ObserveTick(true, 150u, conflictBridge)
+                 .has_value(),
+            "a retrying partial identity is not returned");
+    Require(!conflict.coordinator
+                 .ObserveTick(true, 200u, conflictBridge)
+                 .has_value(),
+            "a conflicting identity is not returned");
     Require(Contains(conflict.trace, "su-map-name-status=value-conflict") &&
                 Contains(conflict.trace, "identity-association=conflict"),
             "changing successful value is classified as conflict");
@@ -190,7 +218,10 @@ int RunMapIdentityCoordinatorTests() {
     backedOut.coordinator.ObserveMapInit(3u);
     const auto beforeBack = backedOut.trace.size();
     backedOut.coordinator.ObserveBack();
-    backedOut.coordinator.ObserveTick(true, 53u, backedOutBridge);
+    Require(!backedOut.coordinator
+                 .ObserveTick(true, 53u, backedOutBridge)
+                 .has_value(),
+            "a backed-out session returns no identity");
     Require(backedOut.trace.size() == beforeBack &&
                 backedOutBridge.readCount == 0u,
             "Back invalidates attribution and the pending session");
@@ -208,7 +239,10 @@ int RunMapIdentityCoordinatorTests() {
     disabled.coordinator.ObserveLuaOpen(2u);
     Require(disabled.coordinator.ObserveMapInit(3u) == 0u,
             "disabled coordinator rejects MapInit");
-    disabled.coordinator.ObserveTick(true, 53u, disabledBridge);
+    Require(!disabled.coordinator
+                 .ObserveTick(true, 53u, disabledBridge)
+                 .has_value(),
+            "a disabled coordinator returns no identity");
     Require(disabled.trace.empty() && disabledBridge.readCount == 0u,
             "Disable prevents records and Lua reads");
     return 0;

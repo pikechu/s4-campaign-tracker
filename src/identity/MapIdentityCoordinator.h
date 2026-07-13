@@ -5,9 +5,16 @@
 
 #include <cstdint>
 #include <functional>
+#include <optional>
 #include <string>
 
 namespace campaign_completion {
+
+struct ConfirmedMapIdentity final {
+    std::uint64_t sessionId = 0u;
+    std::wstring name;
+    std::wstring relative;
+};
 
 class MapIdentityCoordinator {
 public:
@@ -19,9 +26,10 @@ public:
     void ObserveBack() noexcept;
     void ObserveLuaOpen(std::uint64_t nowMs) noexcept;
     std::uint64_t ObserveMapInit(std::uint64_t nowMs) noexcept;
-    void ObserveTick(bool inGame,
-                     std::uint64_t nowMs,
-                     ILuaMapBridge& bridge) noexcept;
+    std::optional<ConfirmedMapIdentity> ObserveTick(
+        bool inGame,
+        std::uint64_t nowMs,
+        ILuaMapBridge& bridge) noexcept;
     void Disable() noexcept;
     std::uint64_t CurrentSessionId() const noexcept {
         return currentSessionId_;
@@ -29,7 +37,8 @@ public:
 
 private:
     void Emit(std::string line) noexcept;
-    void EmitResult(const LuaMapSessionResult& result) noexcept;
+    std::optional<ConfirmedMapIdentity> EmitResult(
+        const LuaMapSessionResult& result) noexcept;
 
     Sink recordSink_;
     Sink traceSink_;
