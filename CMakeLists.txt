@@ -49,6 +49,7 @@ add_executable(campaign_completion_tests
   tests/ListAttributionTests.cpp
   tests/ListenerRemovalTests.cpp
   tests/ModuleInventoryTests.cpp
+  tests/MsvcX86WideStringTests.cpp
   tests/PageObservationTests.cpp
   tests/RuntimePolicyTests.cpp
   tests/StopRequestTests.cpp

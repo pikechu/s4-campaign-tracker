@@ -6,6 +6,7 @@ int RunHookSiteLayoutTests();
 int RunListAttributionTests();
 int RunListenerRemovalTests();
 int RunModuleInventoryTests();
+int RunMsvcX86WideStringTests();
 int RunPageObservationTests();
 int RunRuntimePolicyTests();
 int RunStopRequestTests();
@@ -17,6 +18,7 @@ int main() {
         RunListAttributionTests();
         RunListenerRemovalTests();
         RunModuleInventoryTests();
+        RunMsvcX86WideStringTests();
         RunPageObservationTests();
         RunStopRequestTests();
         return RunRuntimePolicyTests();
