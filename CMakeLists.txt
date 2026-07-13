@@ -76,6 +76,7 @@ add_executable(campaign_completion_tests
   tests/SettlementUiProbeTests.cpp
   tests/VictoryEventProbeTests.cpp
   tests/NativeEventAdmissionTests.cpp
+  tests/NativeVictoryEventSubscriberTests.cpp
   tests/Phase3TraceTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
@@ -100,6 +101,8 @@ add_executable(campaign_completion_tests
   src/victory/SettlementUiProbe.cpp
   src/victory/VictoryEventProbe.cpp
   src/native/NativeEventAdmission.cpp
+  src/native/NativeEventRegistration.cpp
+  src/native/NativeVictoryEventSubscriber.cpp
 )
 target_include_directories(campaign_completion_tests PRIVATE
   src

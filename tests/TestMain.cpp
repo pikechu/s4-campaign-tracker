@@ -23,6 +23,7 @@ int RunLaunchOriginTests();
 int RunSettlementUiProbeTests();
 int RunVictoryEventProbeTests();
 int RunNativeEventAdmissionTests();
+int RunNativeVictoryEventSubscriberTests();
 int RunPhase3TraceTests();
 
 int main() {
@@ -48,6 +49,7 @@ int main() {
         RunSettlementUiProbeTests();
         RunVictoryEventProbeTests();
         RunNativeEventAdmissionTests();
+        RunNativeVictoryEventSubscriberTests();
         RunPhase3TraceTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
