@@ -22,6 +22,7 @@ campaign_completion::PageSnapshot FixedMapPages() {
 
 int RunListAttributionTests() {
     using campaign_completion::FixedMapListKind;
+    using campaign_completion::FixedMapListKindName;
     using campaign_completion::ListAttribution;
     using campaign_completion::PageSnapshot;
     using campaign_completion::TabControlMapping;
@@ -76,5 +77,15 @@ int RunListAttributionTests() {
     ambiguous.ObserveClick(WM_LBUTTONUP, 2449);
     Require(ambiguous.Current() == FixedMapListKind::Unknown,
             "ambiguous control mapping fails closed");
+
+    Require(FixedMapListKindName(FixedMapListKind::Unknown) == "unknown",
+            "unknown list kind has stable log name");
+    Require(FixedMapListKindName(FixedMapListKind::Single) == "single",
+            "single list kind has stable log name");
+    Require(FixedMapListKindName(FixedMapListKind::Multiplayer) ==
+                "multiplayer",
+            "multiplayer list kind has stable log name");
+    Require(FixedMapListKindName(FixedMapListKind::Custom) == "custom",
+            "custom list kind has stable log name");
     return 0;
 }
