@@ -582,7 +582,9 @@ representative element IDs/rectangles, and any page still absent.
 
 - [ ] **Step 2: Trigger controlled stop**
 
-Create only `<game>/CampaignCompletion/CampaignCompletionDebug.stop`. Require
+Create only
+`F:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\thesettlers4\CampaignCompletion\CampaignCompletionDebug.stop`.
+Require
 one consumed request and one summary with `registered > 0`,
 `removed == registered`, and `failures == 0`.
 
