@@ -10,7 +10,7 @@ on:
       - "tests/**"
       - "third_party/**"
       - "config/CampaignCompletionDebug.ini"
-      - "tools/package_debug.ps1"
+      - "tools/**"
       - ".github/workflows/build-debug-asi.yml"
 
 jobs:
@@ -18,6 +18,10 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+
+      - name: Test Settlers United archive integration
+        shell: pwsh
+        run: ./tools/test_settlers_united_artifact.ps1
 
       - name: Configure Win32
         run: cmake -S . -B build -A Win32 -DCMAKE_BUILD_TYPE=Debug

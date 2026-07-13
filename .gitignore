@@ -3,6 +3,9 @@ research/evidence/raw/
 research/evidence/*.etl
 research/evidence/*.dmp
 research/evidence/*.pdb.json
+/dist/
+/research/tmp/
+/research/backups/
 
 # Visual Studio
 .vs/
