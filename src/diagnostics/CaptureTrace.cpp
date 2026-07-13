@@ -9,9 +9,10 @@
 namespace campaign_completion {
 namespace {
 
-constexpr std::array<std::string_view, 5> kAllowedPrefixes{
-    "adapter-entered=", "wide-capture=", "path-validation=",
-    "map-init-association=", "controlled-stop-flush="};
+constexpr std::array<std::string_view, 8> kAllowedPrefixes{
+    "lua-open-generation=", "map-init-session=", "su-map-name-status=",
+    "su-map-relative-status=", "su-map-name=", "su-map-relative=",
+    "identity-association=", "controlled-stop-flush="};
 
 constexpr std::array<std::string_view, 8> kForbiddenTokens{
     "0x",         "module name=", "ui-pages",  "mouse",
@@ -28,6 +29,15 @@ bool IsAllowedRecord(std::string_view record) {
     if (record.empty() || !HasAllowedPrefix(record) ||
         record.find_first_of("\r\n") != std::string_view::npos) {
         return false;
+    }
+
+    constexpr std::string_view relativePrefix = "su-map-relative=";
+    if (record.rfind(relativePrefix, 0u) == 0u) {
+        const auto value = record.substr(relativePrefix.size());
+        if (value.empty() || value.front() == '\\' || value.front() == '/' ||
+            (value.size() >= 2u && value[1] == ':')) {
+            return false;
+        }
     }
 
     std::string lowered(record);
