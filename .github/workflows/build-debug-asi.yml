@@ -29,14 +29,14 @@ jobs:
       - name: Build
         run: cmake --build build --config Debug --parallel
 
-      - name: Verify zero-patch read-only Lua policy
+      - name: Verify public calibration policy
         shell: pwsh
         run: |
           ./tools/verify_no_process_patch.ps1 `
             -Binary build/Debug/CampaignCompletionDebug.asi `
             -SourceRoot .
 
-      - name: Reject process-patch and Lua-write fixtures
+      - name: Reject forbidden behavior fixtures
         shell: pwsh
         run: |
           function New-PolicyFixture([string]$name) {
@@ -83,6 +83,23 @@ jobs:
             "`n// VICTORY_CONDITION_CHECK mutation fixture`n")
           Assert-Rejected $luaHandlerFixture `
             "Lua victory-handler fixture was unexpectedly accepted"
+
+          $additionalTokens = @(
+            "DefaultGameEndCheck"
+            "CStateVictoryScreen"
+            "lua_settable"
+            "WriteProcessMemory"
+            "VirtualProtect"
+          )
+          for ($index = 0; $index -lt $additionalTokens.Count; ++$index) {
+            $token = $additionalTokens[$index]
+            $fixture = New-PolicyFixture "campaign-forbidden-policy-$index"
+            $listener = Join-Path $fixture "src/runtime/S4Listeners.cpp"
+            [IO.File]::AppendAllText($listener,
+              "`n// $token forbidden behavior fixture`n")
+            Assert-Rejected $fixture `
+              "$token fixture was unexpectedly accepted"
+          }
 
       - name: Test
         run: ctest --test-dir build -C Debug --output-on-failure

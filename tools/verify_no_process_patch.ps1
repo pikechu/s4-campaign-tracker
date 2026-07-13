@@ -97,6 +97,14 @@ foreach ($match in $sourceMatches) {
 }
 
 $forbiddenPatchPatterns = @(
+    '\bGameDefaultGameEndCheck\b',
+    '\bDefaultGameEndCheck\b',
+    '\bVICTORY_CONDITION_CHECK\b',
+    '\bCStateVictoryScreen\b',
+    '\blua_setglobal\b',
+    '\blua_settable\b',
+    '\bWriteProcessMemory\b',
+    '\bVirtualProtect\b',
     'hlib\s*::\s*(?:CallPatch|JmpPatch|NopPatch)',
     '\b(?:CallPatch|JmpPatch|NopPatch)\b',
     '\bFixedMapLoadHook\b',
@@ -117,7 +125,7 @@ while ($queue.Count -gt 0) {
     foreach ($pattern in $forbiddenPatchPatterns) {
         if ([regex]::IsMatch($content, $pattern,
                 [Text.RegularExpressions.RegexOptions]::IgnoreCase)) {
-            throw "Process-patch token '$pattern' found in target source: $file"
+            throw "Forbidden behavior token '$pattern' found in target source: $file"
         }
     }
 
@@ -155,4 +163,4 @@ foreach ($api in $forbiddenLuaWrites) {
     }
 }
 
-Write-Host "Verified PE32 diagnostic ASI, zero process patches, and read-only Lua bridge."
+Write-Host "Verified PE32 public calibration ASI, zero internal victory behavior, zero process patches, and read-only Lua bridge."
