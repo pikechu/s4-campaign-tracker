@@ -73,6 +73,7 @@ add_executable(campaign_completion_tests
   tests/SuMapValueTests.cpp
   tests/SuLuaMapBridgeTests.cpp
   tests/LuaMapSessionTests.cpp
+  tests/MapIdentityCoordinatorTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp

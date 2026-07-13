@@ -39,15 +39,38 @@ int RunCaptureTraceTests() {
     const auto firstPath = first.path();
     Require(firstPath.filename() == L"capture-trace-4242.log",
             "first process trace uses the base name");
-    Require(first.Write("adapter-entered=1"), "adapter line accepted");
-    Require(first.Write("wide-capture=null-object"),
-            "wide line accepted");
-    Require(first.Write("path-validation=success"),
-            "path line accepted");
-    Require(first.Write("map-init-association=wide-null-object"),
+    Require(first.Write("lua-open-generation=1"),
+            "Lua generation line accepted");
+    Require(first.Write("map-init-session=1;list=single"),
+            "map-init line accepted");
+    Require(first.Write("su-map-name-status=success"),
+            "name status accepted");
+    Require(first.Write("su-map-relative-status=success"),
+            "relative status accepted");
+    Require(first.Write("su-map-name=Aeneas"), "validated name accepted");
+    Require(first.Write("su-map-relative=Maps\\Single\\Aeneas.map"),
+            "validated relative path accepted");
+    Require(first.Write("identity-association=confirmed"),
             "association line accepted");
     Require(first.Write("controlled-stop-flush=success"),
             "stop line accepted");
+    for (const auto* oldPrefix : {
+             "adapter-entered=1", "wide-capture=null-object",
+             "path-validation=success",
+             "map-init-association=wide-null-object"}) {
+        Require(!first.Write(oldPrefix),
+                "Phase 2.4 capture prefix is rejected");
+    }
+    Require(!first.Write("su-map-name=bad\nname"),
+            "line feed is rejected");
+    Require(!first.Write("su-map-name=bad\rname"),
+            "carriage return is rejected");
+    Require(!first.Write("su-map-relative=C:\\Maps\\Aeneas.map"),
+            "drive-qualified value is rejected");
+    Require(!first.Write("su-map-relative=\\\\server\\share\\a.map"),
+            "UNC value is rejected");
+    Require(!first.Write("identity-association=victory"),
+            "forbidden scope term is rejected");
     Require(!first.Write("module name=S4_Main.exe"),
             "non-allowlisted line rejected");
     first.Close();
