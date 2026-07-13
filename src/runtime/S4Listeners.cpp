@@ -13,12 +13,24 @@ const std::array<LPS4FRAMECALLBACK, S4_GUI_ENUM_MAXVALUE - 1>
 
 bool S4Listeners::Start(S4API api, Logger& logger,
                         FixedMapIdentityProbe& probe) {
+    probe_ = &probe;
+    return StartPublicListeners(api, logger);
+}
+
+bool S4Listeners::Start(S4API api, Logger& logger,
+                        MapIdentityCoordinator& coordinator,
+                        ILuaMapBridge& bridge) {
+    coordinator_ = &coordinator;
+    bridge_ = &bridge;
+    return StartPublicListeners(api, logger);
+}
+
+bool S4Listeners::StartPublicListeners(S4API api, Logger& logger) {
     if (api == nullptr || active_.load() != nullptr) {
         return false;
     }
     api_ = api;
     logger_ = &logger;
-    probe_ = &probe;
     active_.store(this);
 
     const auto addHook = [this](S4HOOK hook) {
@@ -37,6 +49,8 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     }
     success = addHook(api_->AddMouseListener(&OnMouse)) && success;
     success = addHook(api_->AddGuiElementBltListener(&OnGuiElement)) && success;
+    success = addHook(api_->AddLuaOpenListener(&OnLuaOpen)) && success;
+    success = addHook(api_->AddTickListener(&OnTick)) && success;
     if (!success) {
         logger_->Write(LogLevel::Error, "one or more public listeners failed to register");
         Stop();
@@ -56,6 +70,8 @@ ListenerStopResult S4Listeners::Stop() {
     api_ = nullptr;
     logger_ = nullptr;
     probe_ = nullptr;
+    coordinator_ = nullptr;
+    bridge_ = nullptr;
     return result;
 }
 
@@ -72,6 +88,24 @@ HRESULT S4HCALL S4Listeners::OnMapInit(LPVOID, LPVOID) {
     CallbackLease lease(active);
     if (lease) {
         active->ObserveMapInit();
+    }
+    return S_OK;
+}
+
+HRESULT S4HCALL S4Listeners::OnLuaOpen() {
+    auto* active = active_.load();
+    CallbackLease lease(active);
+    if (lease) {
+        active->ObserveLuaOpen();
+    }
+    return S_OK;
+}
+
+HRESULT S4HCALL S4Listeners::OnTick(DWORD, BOOL, BOOL delayed) {
+    auto* active = active_.load();
+    CallbackLease lease(active);
+    if (lease) {
+        active->ObserveTick(delayed);
     }
     return S_OK;
 }
@@ -121,12 +155,33 @@ void S4Listeners::ObserveUiFrame(DWORD page) {
 
 void S4Listeners::ObserveMapInit() {
     std::lock_guard<std::mutex> lock(mutex_);
+    const auto now = GetTickCount64();
     if (probe_ != nullptr) {
-        probe_->ObserveMapInit(GetTickCount64());
+        probe_->ObserveMapInit(now);
+    }
+    if (coordinator_ != nullptr) {
+        coordinator_->ObserveMapInit(now);
     }
     if (logger_ != nullptr) {
         logger_->Write(LogLevel::Info, "map-init observed");
     }
+}
+
+void S4Listeners::ObserveLuaOpen() {
+    if (coordinator_ != nullptr) {
+        coordinator_->ObserveLuaOpen(GetTickCount64());
+    }
+}
+
+void S4Listeners::ObserveTick(BOOL delayed) {
+    if (delayed != FALSE || coordinator_ == nullptr || bridge_ == nullptr ||
+        api_ == nullptr) {
+        return;
+    }
+    const bool inGame =
+        api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
+    const auto now = GetTickCount64();
+    coordinator_->ObserveTick(inGame, now, *bridge_);
 }
 
 void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
@@ -143,12 +198,19 @@ void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
             element->id == 2415u && wasFixedMap) {
             probe_->ObserveBack();
         }
+        if (coordinator_ != nullptr && message == WM_LBUTTONUP &&
+            element->id == 2415u && wasFixedMap) {
+            coordinator_->ObserveBack();
+        }
         listAttribution_.ObserveClick(message, element->id);
         const auto listKind = listAttribution_.Current();
         if (message == WM_LBUTTONUP &&
             listKind != FixedMapListKind::Unknown) {
             if (probe_ != nullptr) {
                 probe_->ObserveListKind(listKind, now);
+            }
+            if (coordinator_ != nullptr) {
+                coordinator_->ObserveListKind(listKind, now);
             }
             std::ostringstream attribution;
             attribution << "fixed-map-list list_kind="

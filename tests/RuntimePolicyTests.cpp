@@ -114,15 +114,18 @@ int RunRuntimePolicyTests() {
     const auto luaOpenBody = listeners.find("S4Listeners::OnLuaOpen()");
     const auto tickBody = listeners.find("S4Listeners::OnTick(");
     const auto mapInitBody = listeners.find("S4Listeners::ObserveMapInit()");
-    const auto mouseBody = listeners.find("S4Listeners::ObserveMouse(");
+    const auto observeLuaOpenBody =
+        listeners.find("S4Listeners::ObserveLuaOpen()");
     Require(luaOpenBody != std::string::npos && tickBody != std::string::npos &&
                 luaOpenBody < tickBody &&
                 listeners.substr(luaOpenBody, tickBody - luaOpenBody)
                         .find("bridge_") == std::string::npos,
             "LuaOpen callback performs generation bookkeeping only");
-    Require(mapInitBody != std::string::npos && mouseBody != std::string::npos &&
-                mapInitBody < mouseBody &&
-                listeners.substr(mapInitBody, mouseBody - mapInitBody)
+    Require(mapInitBody != std::string::npos &&
+                observeLuaOpenBody != std::string::npos &&
+                mapInitBody < observeLuaOpenBody &&
+                listeners.substr(mapInitBody,
+                                 observeLuaOpenBody - mapInitBody)
                         .find("bridge_") == std::string::npos,
             "MapInit callback never reads Lua");
     Require(listeners.find("coordinator_->ObserveTick(inGame, now, *bridge_)") !=

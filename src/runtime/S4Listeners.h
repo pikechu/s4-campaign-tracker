@@ -4,6 +4,8 @@
 #include "diagnostics/Logger.h"
 #include "identity/FixedMapIdentityProbe.h"
 #include "identity/ListAttribution.h"
+#include "identity/MapIdentityCoordinator.h"
+#include "lua/SuLuaMapBridge.h"
 #include "runtime/CallbackGate.h"
 #include "runtime/ListenerRemoval.h"
 #include "runtime/PageObservation.h"
@@ -42,6 +44,9 @@ private:
 class S4Listeners final {
 public:
     bool Start(S4API api, Logger& logger, FixedMapIdentityProbe& probe);
+    bool Start(S4API api, Logger& logger,
+               MapIdentityCoordinator& coordinator,
+               ILuaMapBridge& bridge);
     ListenerStopResult Stop();
 
 private:
@@ -77,11 +82,15 @@ private:
 
     static void DispatchUiFrame(DWORD page);
     static HRESULT S4HCALL OnMapInit(LPVOID, LPVOID);
+    static HRESULT S4HCALL OnLuaOpen();
+    static HRESULT S4HCALL OnTick(DWORD, BOOL, BOOL);
     static HRESULT S4HCALL OnMouse(DWORD, INT, INT, DWORD, HWND, LPCS4UIELEMENT);
     static HRESULT S4HCALL OnGuiElement(LPS4GUIDRAWBLTPARAMS, BOOL);
 
     void ObserveUiFrame(DWORD page);
     void ObserveMapInit();
+    void ObserveLuaOpen();
+    void ObserveTick(BOOL delayed);
     void ObserveMouse(DWORD button, INT x, INT y, DWORD message,
                       LPCS4UIELEMENT element);
     void ObserveGuiElement(LPS4GUIDRAWBLTPARAMS element);
@@ -92,6 +101,8 @@ private:
     S4API api_ = nullptr;
     Logger* logger_ = nullptr;
     FixedMapIdentityProbe* probe_ = nullptr;
+    MapIdentityCoordinator* coordinator_ = nullptr;
+    ILuaMapBridge* bridge_ = nullptr;
     std::vector<S4HOOK> hooks_;
     CallbackGate callbackGate_;
     std::mutex mutex_;
@@ -101,6 +112,8 @@ private:
     RateLimiter guiLimiter_{1000};
     DWORD currentPage_ = S4_GUI_UNKNOWN;
     std::uint64_t guiElementCount_ = 0;
+
+    bool StartPublicListeners(S4API api, Logger& logger);
 };
 
 }  // namespace campaign_completion
