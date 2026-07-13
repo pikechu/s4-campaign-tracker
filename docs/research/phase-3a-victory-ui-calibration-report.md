@@ -24,23 +24,47 @@
 - GUI capture stores numeric public callback fields only. It does not dereference GUI text, tooltip text, or extra tooltip text pointers.
 - Offline single-player Multiplayer Maps remain eligible evidence. Online multiplayer and random-map sources are explicitly excluded; ordinary map loads remain `load-map-unresolved` until live evidence resolves their source.
 
-## Guarded deployment evidence
+## Initial guarded deployment evidence
 
 - Deployment occurred only after explicit user approval and a fresh check that `S4_Main` and Settlers United were not running.
 - Installed archive: `C:\Program Files\Settlers United\resources\bin\s4_artifacts\Plugin_SU.zip`; SHA-256 `c39ca63c4a38636870495999025e00468107942e4d8e228a5979c387be396a17`; size `1688885` bytes.
 - Immutable original archive backup SHA-256 remains `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`; size `1176944` bytes.
 - The installed ZIP passed a complete integrity test. All seven original non-target entries matched the immutable backup byte-for-byte, the installed archive contained eight file entries, and `Plugins/CampaignCompletionDebug.asi` occurred exactly once.
 - Embedded ASI SHA-256: `5d5080965be4b0a95ce41ddfe9002e6a062f5192ea16663de9de9d267ec8b193`, exactly equal to the frozen ASI.
-- Installed INI: `C:\Program Files\Settlers United\CampaignCompletion\CampaignCompletionDebug.ini`; SHA-256 `b727c1cbf36a3005a3771cc305b253e8f3e5a4ac7625fbcd39604e78cbd95118`; size `604` bytes.
-- A normalized textual comparison proved that the installed INI differs from the frozen INI only by setting `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`.
+- The first live INI was written to `C:\Program Files\Settlers United\CampaignCompletion\CampaignCompletionDebug.ini`; SHA-256 `b727c1cbf36a3005a3771cc305b253e8f3e5a4ac7625fbcd39604e78cbd95118`; size `604` bytes.
+- A normalized textual comparison proved that this INI differed from the frozen INI only by setting `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`.
+- Live inspection subsequently proved this SU-side INI was inert. Because the loaded ASI was synchronized below the actual game `Plugins` directory, it resolved configuration from `F:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\thesettlers4\CampaignCompletion\CampaignCompletionDebug.ini`, where the older Phase 2.5 INI remained active.
 - The trace root existed as a normal directory, not a reparse point. No authorized archive or INI temporary sibling remained after deployment.
 - A post-deployment process check again found no game or Settlers United process.
+
+## Invalid first live sample and root causes
+
+- The first voluntary-exit Aeneas attempt proved that the synchronized `0.3.0` ASI loaded and that SU identity confirmed `Map\Singleplayer\Aeneas.map`.
+- Its exact pre-MapInit public page sequence included `1`, `7`, the simultaneously drawn pages `4,22,23,25`, then `26,30`. The old tracker treated sibling page `30` as authoritative and incorrectly emitted `origin-source=online-multiplayer` with `origin-eligibility=excluded-online-multiplayer`.
+- Page `34` remained active on the voluntary-exit settlement screen, but no settlement or decision record was emitted. UI-frame callbacks continued while the non-delayed Tick path that alone called `FinishIfDue` did not advance there.
+- Because the actual game-side Phase 2.5 INI was read, Phase 3 traces were written below the old `dist/phase-2-5/runtime` root rather than the intended Phase 3 project root.
+- This attempt is diagnostic fault evidence only. It is not accepted as a voluntary-exit, victory, or defeat control sample.
+
+## Live-correction TDD and frozen artifact evidence
+
+- Correction source commit: `4fc1c913d675bf768de89ed8111584a407229e35`.
+- Launch-origin RED: run `29259074240`, job `86847153756`, commit `573187f6239c246c77b110eb337b7637cb8f9cff`. Win32 build and all policy checks passed; CTest failed exactly with `FAIL: live offline siblings remain eligible single player`.
+- Launch-origin GREEN: run `29259328623`, job `86848033013`, commit `1a851a6843e6e77be832f099afe19c9ac6e00971`. Every workflow step passed.
+- Settlement-routing RED: run `29259521915`, job `86848716794`, commit `4d7ff3254e86233f7dd26e71fc292e1190754b50`. Win32 build and all policy checks passed; CTest failed exactly with `FAIL: listener declares common settlement deadline operation`.
+- Final correction validation: run `29259755088`; successful jobs `86849544921` (attempt 1) and `86850057030` (attempt 2). Both attempts passed archive integration, Win32 configure/build, public-calibration policy, every forbidden-behavior fixture, CTest, packaging, PE32/layout verification, and artifact upload.
+- Attempt-2 frozen artifact: ID `8282903608`; GitHub digest `sha256:97b99c5dae2554f4151c8aa338fcd5598984233f3af7c3d6d8c8f1f2914876cb`; downloaded size `534313` bytes. The independently downloaded artifact SHA-256 is identical to that digest.
+- Inner diagnostic package SHA-256: `a5a12b5991c8aa6ac31824b2916f0c74b9a1fab21e0b3a6056d6e345e565267f`; size `534549` bytes.
+- Corrected frozen ASI SHA-256: `a8dc3af496fc61ce2dc9cb05845095993793298a23db351cbf60b2dd1bb0ea43`; size `1625600` bytes; PE machine `0x014c` (`IMAGE_FILE_MACHINE_I386`).
+- Corrected frozen INI SHA-256: `25f418f3f7de191dffb525a8fccd142df647a279c70594d7b4a321409b97036b`; size `552` bytes; it contains exactly one empty `CaptureTraceRoot=` line.
+- The inner package contains exactly `CampaignCompletion/CampaignCompletionDebug.ini` and `Plugins/CampaignCompletionDebug.asi`.
+- The frozen files are retained below the ignored project directory `artifacts/phase-3a-ci/29259755088-attempt-2/`.
+- The corrected tracker gates sibling pages through `Unknown`, `SinglePlayer`, and `OnlineMultiplayer` navigation context. The settlement probe retains one-shot ownership while a common deadline operation is called from both public UI-frame and non-delayed Tick callbacks.
 
 ## Pre-live scope statement
 
 This calibration build does not decide victory, persist completion, or render markers. It records bounded public GUI and source evidence only.
 
-Guarded deployment is complete. No live settlement or source evidence has yet been collected for this frozen artifact.
+The corrected artifact is frozen. Guarded redeployment to the authorized archive and the actual game-side `CampaignCompletion` INI is pending a fresh confirmation that the game and Settlers United are closed.
 
 ## Live evidence gate
 
