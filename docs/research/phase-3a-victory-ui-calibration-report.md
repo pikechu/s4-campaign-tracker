@@ -24,11 +24,23 @@
 - GUI capture stores numeric public callback fields only. It does not dereference GUI text, tooltip text, or extra tooltip text pointers.
 - Offline single-player Multiplayer Maps remain eligible evidence. Online multiplayer and random-map sources are explicitly excluded; ordinary map loads remain `load-map-unresolved` until live evidence resolves their source.
 
+## Guarded deployment evidence
+
+- Deployment occurred only after explicit user approval and a fresh check that `S4_Main` and Settlers United were not running.
+- Installed archive: `C:\Program Files\Settlers United\resources\bin\s4_artifacts\Plugin_SU.zip`; SHA-256 `c39ca63c4a38636870495999025e00468107942e4d8e228a5979c387be396a17`; size `1688885` bytes.
+- Immutable original archive backup SHA-256 remains `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`; size `1176944` bytes.
+- The installed ZIP passed a complete integrity test. All seven original non-target entries matched the immutable backup byte-for-byte, the installed archive contained eight file entries, and `Plugins/CampaignCompletionDebug.asi` occurred exactly once.
+- Embedded ASI SHA-256: `5d5080965be4b0a95ce41ddfe9002e6a062f5192ea16663de9de9d267ec8b193`, exactly equal to the frozen ASI.
+- Installed INI: `C:\Program Files\Settlers United\CampaignCompletion\CampaignCompletionDebug.ini`; SHA-256 `b727c1cbf36a3005a3771cc305b253e8f3e5a4ac7625fbcd39604e78cbd95118`; size `604` bytes.
+- A normalized textual comparison proved that the installed INI differs from the frozen INI only by setting `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`.
+- The trace root existed as a normal directory, not a reparse point. No authorized archive or INI temporary sibling remained after deployment.
+- A post-deployment process check again found no game or Settlers United process.
+
 ## Pre-live scope statement
 
 This calibration build does not decide victory, persist completion, or render markers. It records bounded public GUI and source evidence only.
 
-No game-directory deployment or live evidence collection has occurred for this frozen artifact. Deployment remains gated on a closed game, re-verification of the immutable original archive backup, and explicit user approval.
+Guarded deployment is complete. No live settlement or source evidence has yet been collected for this frozen artifact.
 
 ## Live evidence gate
 
