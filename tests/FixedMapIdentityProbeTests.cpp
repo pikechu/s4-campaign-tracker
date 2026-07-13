@@ -58,9 +58,29 @@ int RunFixedMapIdentityProbeTests() {
     }
 
     std::vector<std::string> records;
-    FixedMapIdentityProbe probe(gameRoot, [&](std::string record) {
-        records.push_back(std::move(record));
-    });
+    std::vector<std::string> trace;
+    FixedMapIdentityProbe probe(
+        gameRoot,
+        [&](std::string record) { records.push_back(std::move(record)); },
+        [&](std::string record) { trace.push_back(std::move(record)); });
+
+    probe.ObserveListKind(FixedMapListKind::Single, 100u);
+    probe.ObserveMapInit(200u);
+    Require(Contains(trace, "adapter-entered=0"),
+            "no adapter entry is explicit");
+    Require(Contains(trace, "map-init-association=no-candidate"),
+            "no entry remains no-candidate");
+
+    probe.ObserveListKind(FixedMapListKind::Single, 300u);
+    probe.Observe({{}, campaign_completion::WideCaptureFailure::NullObject},
+                  1u, 400u);
+    probe.ObserveMapInit(500u);
+    Require(Contains(trace, "adapter-entered=1"),
+            "failed capture proves adapter entry");
+    Require(Contains(trace, "wide-capture=null-object"),
+            "exact wide failure is retained");
+    Require(Contains(trace, "map-init-association=wide-null-object"),
+            "wide failure owns the association result");
 
     probe.ObserveListKind(FixedMapListKind::Single, 1000u);
     probe.Observe(Capture(L"Map\\User\\A.map"), 1u, 2000u);
@@ -163,6 +183,15 @@ int RunFixedMapIdentityProbeTests() {
             "probe output contains no completion claim");
     Require(lowered.find("marker") == std::string::npos,
             "probe output contains no marker claim");
+
+    for (const auto& line : trace) {
+        const bool allowed =
+            line.rfind("adapter-entered=", 0) == 0 ||
+            line.rfind("wide-capture=", 0) == 0 ||
+            line.rfind("path-validation=", 0) == 0 ||
+            line.rfind("map-init-association=", 0) == 0;
+        Require(allowed, "probe trace uses only approved record prefixes");
+    }
 
     std::filesystem::remove_all(fixture);
     return 0;
