@@ -29,12 +29,10 @@ jobs:
         run: ctest --test-dir build -C Debug --output-on-failure
 
       - name: Package
-        if: ${{ hashFiles('tools/package_debug.ps1') != '' }}
         shell: pwsh
         run: ./tools/package_debug.ps1 -BuildDirectory build/Debug -OutputDirectory dist
 
       - name: Verify PE32 and package contents
-        if: ${{ hashFiles('tools/package_debug.ps1') != '' }}
         shell: pwsh
         run: |
           $asi = "build/Debug/CampaignCompletionDebug.asi"
@@ -45,9 +43,20 @@ jobs:
           if ($machine -ne 0x14c) { throw "Expected IMAGE_FILE_MACHINE_I386" }
           $archive = "dist/CampaignCompletionDebug.zip"
           if (-not (Test-Path $archive)) { throw "Diagnostic archive missing" }
+          $inspection = Join-Path $env:RUNNER_TEMP "campaign-completion-package"
+          Expand-Archive -Path $archive -DestinationPath $inspection
+          $actual = @(Get-ChildItem $inspection -File -Recurse | ForEach-Object {
+            $_.FullName.Substring($inspection.Length + 1).Replace('\', '/')
+          } | Sort-Object)
+          $expected = @(
+            "CampaignCompletion/CampaignCompletionDebug.ini"
+            "Plugins/CampaignCompletionDebug.asi"
+          ) | Sort-Object
+          if (Compare-Object $actual $expected) {
+            throw "Diagnostic archive contains an unexpected file layout: $($actual -join ', ')"
+          }
 
       - uses: actions/upload-artifact@v4
-        if: ${{ hashFiles('tools/package_debug.ps1') != '' }}
         with:
           name: CampaignCompletionDebug-Win32
           path: dist/CampaignCompletionDebug.zip
