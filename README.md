@@ -2,13 +2,17 @@
 
 An in-game completion tracking plugin for **The Settlers IV: History Edition + Settlers United**.
 
-S4 Campaign Tracker records completed single-player missions and displays completion indicators directly in the game UI.
+The project is being developed to record completed single-player missions and
+display completion indicators directly in the game UI.
 
 The goal is to provide a unified progress tracker for all Settlers IV campaigns, fixed scenarios, and single-player missions.
 
 ---
 
 ## Features
+
+The following list describes the intended release feature set, not the current
+diagnostic build:
 
 - In-game completion indicators
 - Automatic victory detection
@@ -107,22 +111,32 @@ Architecture:
 
 ---
 
-## Installation
+## Phase 2 Diagnostic Build
 
-Copy the plugin files into the Settlers IV installation directory:
+`CampaignCompletionDebug` is a diagnostic-only bootstrap. It inventories loaded
+modules and records events delivered through public S4ModApi listeners. It does
+not detect victory, save completion state, create completion JSON, or render
+completion markers. It installs no internal game hooks.
+
+The CI artifact has this layout:
 
 ```
 TheSettlers4/
 |
-|-- CampaignCompletion.asi
+|-- Plugins/
+|   `-- CampaignCompletionDebug.asi
 |
 `-- CampaignCompletion/
-    |-- CampaignCompletion.ini
-    |-- completed_maps.json
-    `-- CampaignCompletion.log
+    `-- CampaignCompletionDebug.ini
 ```
 
-Example:
+When the game runs, the diagnostic plugin may create
+`CampaignCompletion/CampaignCompletion.log`. To remove this diagnostic build,
+delete only `Plugins/CampaignCompletionDebug.asi` and, if desired, the diagnostic
+configuration and log under `CampaignCompletion`. Do not copy research scripts
+or build files into the game directory.
+
+Example game location:
 
 ```
 F:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\thesettlers4
@@ -134,14 +148,15 @@ Launch the game through Settlers United.
 
 ## Development Roadmap
 
-Current status: Phase 1 research is complete. No usable Release plugin exists
-yet; do not copy the repository's research scripts into the game directory.
+Current status: Phase 1 research is complete and the Phase 2 diagnostic bootstrap
+is under validation. No completion-tracking Release plugin exists yet.
 
 Research and planning documents:
 
 - [Approved design specification](docs/superpowers/specs/2026-07-13-campaign-completion-design.md)
 - [Phase 1 execution plan](docs/superpowers/plans/2026-07-13-phase-1-investigation.md)
 - [Phase 1 investigation report](docs/research/phase-1-investigation-report.md)
+- [Phase 2 diagnostic bootstrap plan](docs/superpowers/plans/2026-07-13-phase-2-diagnostic-bootstrap.md)
 
 ### Phase 1 - Research
 
