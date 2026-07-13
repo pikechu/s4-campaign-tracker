@@ -91,6 +91,27 @@ void NativeVictoryEventSubscriber::ServiceOnGameThread() noexcept {
     }
 }
 
+bool NativeVictoryEventSubscriber::ReinsertAtFrontOnGameThread() noexcept {
+    if (state() != NativeSubscriptionState::Attached ||
+        detachRequested_.load(std::memory_order_acquire) ||
+        registration_ == nullptr) {
+        return false;
+    }
+    if (!registration_->Unregister(this)) {
+        return false;
+    }
+    if (!registration_->Register(this)) {
+        state_.store(NativeSubscriptionState::AttachFailed,
+                     std::memory_order_release);
+        return false;
+    }
+    if (detachRequested_.load(std::memory_order_acquire)) {
+        state_.store(NativeSubscriptionState::DetachRequested,
+                     std::memory_order_release);
+    }
+    return true;
+}
+
 void NativeVictoryEventSubscriber::RequestDetach() noexcept {
     detachRequested_.store(true, std::memory_order_release);
     for (;;) {

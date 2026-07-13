@@ -40,6 +40,7 @@ public:
     bool Prepare(INativeEventRegistration& registration,
                  VictoryEventProbe& probe) noexcept;
     void ServiceOnGameThread() noexcept;
+    bool ReinsertAtFrontOnGameThread() noexcept;
     void RequestDetach() noexcept;
     NativeSubscriptionState state() const noexcept;
     bool Detached() const noexcept;
