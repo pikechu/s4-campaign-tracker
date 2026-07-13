@@ -31,7 +31,10 @@ jobs:
 
       - name: Verify fixed-map hook adapter ABI
         shell: pwsh
-        run: ./tools/verify_hook_adapter.ps1 -Binary build/Debug/CampaignCompletionDebug.asi
+        run: |
+          ./tools/verify_hook_adapter.ps1 `
+            -Binary build/Debug/CampaignCompletionDebug.asi `
+            -FixedMapHookSource src/hook/FixedMapLoadHook.cpp
 
       - name: Reject Hook hot-path file I/O fixture
         shell: pwsh
@@ -53,7 +56,8 @@ jobs:
           try {
             ./tools/verify_hook_adapter.ps1 `
               -Binary build/Debug/CampaignCompletionDebug.asi `
-              -SourceRoot $fixture
+              -SourceRoot $fixture `
+              -FixedMapHookSource $hook
           } catch {
             $accepted = $false
           }

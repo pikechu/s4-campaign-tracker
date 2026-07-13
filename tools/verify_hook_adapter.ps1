@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$Binary,
-    [string]$SourceRoot = "."
+    [string]$SourceRoot = ".",
+    [string]$FixedMapHookSource = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -131,4 +132,35 @@ if ([IO.Path]::GetFullPath($construction[0].Path) -ne $expectedSource) {
     throw "CallPatch construction is outside HlibCallPatchBackend.cpp"
 }
 
-Write-Host "Verified one exported x86 adapter with ret 0Ch and one CallPatch construction."
+if ([string]::IsNullOrWhiteSpace($FixedMapHookSource)) {
+    $FixedMapHookSource = Join-Path $SourceRoot "src/hook/FixedMapLoadHook.cpp"
+}
+if (-not (Test-Path -LiteralPath $FixedMapHookSource -PathType Leaf)) {
+    throw "FixedMapLoadHook source missing: $FixedMapHookSource"
+}
+$hookSource = [IO.File]::ReadAllText(
+    (Resolve-Path -LiteralPath $FixedMapHookSource).Path)
+$dispatchStart = $hookSource.IndexOf(
+    "void FixedMapLoadHook::Dispatch", [StringComparison]::Ordinal)
+if ($dispatchStart -lt 0) {
+    throw "FixedMapLoadHook::Dispatch definition is missing"
+}
+$dispatchEnd = $hookSource.IndexOf(
+    'extern "C"', $dispatchStart, [StringComparison]::Ordinal)
+if ($dispatchEnd -le $dispatchStart) {
+    throw "FixedMapLoadHook::Dispatch boundary is unavailable"
+}
+$dispatchSource = $hookSource.Substring(
+    $dispatchStart, $dispatchEnd - $dispatchStart)
+$forbiddenHotPath = @(
+    'logger_', 'CaptureTrace', 'filesystem', 'fstream',
+    'CreateFile', 'WriteFile', 'GetPrivateProfile'
+)
+foreach ($token in $forbiddenHotPath) {
+    if ($dispatchSource.IndexOf(
+            $token, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+        throw "Hook hot path contains forbidden token: $token"
+    }
+}
+
+Write-Host "Verified x86 ret 0Ch, one CallPatch, and no Hook hot-path file I/O."
