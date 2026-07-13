@@ -152,14 +152,18 @@ int RunMapIdentityCoordinatorTests() {
 
     Harness stale;
     QueueBridge staleBridge;
+    staleBridge.Push(
+        Attempt(Value(SuMapReadStatus::FunctionMissing),
+                Value(SuMapReadStatus::FunctionMissing)));
     stale.coordinator.ObserveListKind(FixedMapListKind::Single, 1u);
     stale.coordinator.ObserveLuaOpen(2u);
     stale.coordinator.ObserveMapInit(3u);
-    stale.coordinator.ObserveLuaOpen(4u);
     stale.coordinator.ObserveTick(true, 53u, staleBridge);
+    stale.coordinator.ObserveLuaOpen(54u);
+    stale.coordinator.ObserveTick(true, 54u, staleBridge);
     Require(Contains(stale.trace, "identity-association=stale-generation") &&
-                staleBridge.readCount == 0u,
-            "stale generation is terminal without entering Lua");
+                staleBridge.readCount == 1u,
+            "replacement generation is terminal after Lua reads begin");
 
     Harness conflict;
     QueueBridge conflictBridge;
