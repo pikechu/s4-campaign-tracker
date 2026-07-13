@@ -45,13 +45,13 @@ if ($LASTEXITCODE -ne 0) {
     throw "dumpbin /HEADERS failed"
 }
 $imageBaseRow = @($headers | Where-Object {
-    $_ -match "^\s*[0-9A-Fa-f]+\s+image base\s*$"
+    $_ -match "^\s*[0-9A-Fa-f]+\s+image base(?:\s|$)"
 })
 if ($imageBaseRow.Count -ne 1) {
     throw "Could not identify one PE image base"
 }
 $imageBaseMatch = [regex]::Match(
-    $imageBaseRow[0], "^\s*([0-9A-Fa-f]+)\s+image base\s*$")
+    $imageBaseRow[0], "^\s*([0-9A-Fa-f]+)\s+image base(?:\s|$)")
 $imageBase = [Convert]::ToUInt64($imageBaseMatch.Groups[1].Value, 16)
 $adapterAddress = "{0:X8}" -f ($imageBase + $adapterRva)
 
