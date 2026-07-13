@@ -41,6 +41,7 @@ add_executable(campaign_completion_tests
   tests/LoggerTests.cpp
   tests/ModuleInventoryTests.cpp
   src/diagnostics/Logger.cpp
+  src/diagnostics/ModuleInventory.cpp
 )
 target_include_directories(campaign_completion_tests PRIVATE src)
 target_compile_definitions(campaign_completion_tests PRIVATE
