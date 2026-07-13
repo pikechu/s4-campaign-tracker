@@ -39,6 +39,7 @@ endif()
 add_executable(campaign_completion_tests
   tests/TestMain.cpp
   tests/LoggerTests.cpp
+  tests/ModuleInventoryTests.cpp
   src/diagnostics/Logger.cpp
 )
 target_include_directories(campaign_completion_tests PRIVATE src)
