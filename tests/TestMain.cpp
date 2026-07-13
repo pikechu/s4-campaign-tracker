@@ -2,6 +2,7 @@
 #include <iostream>
 
 int RunLoggerTests();
+int RunListAttributionTests();
 int RunListenerRemovalTests();
 int RunModuleInventoryTests();
 int RunPageObservationTests();
@@ -11,6 +12,7 @@ int RunStopRequestTests();
 int main() {
     try {
         RunLoggerTests();
+        RunListAttributionTests();
         RunListenerRemovalTests();
         RunModuleInventoryTests();
         RunPageObservationTests();

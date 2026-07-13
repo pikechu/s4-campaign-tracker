@@ -43,6 +43,7 @@ endif()
 add_executable(campaign_completion_tests
   tests/TestMain.cpp
   tests/LoggerTests.cpp
+  tests/ListAttributionTests.cpp
   tests/ListenerRemovalTests.cpp
   tests/ModuleInventoryTests.cpp
   tests/PageObservationTests.cpp
