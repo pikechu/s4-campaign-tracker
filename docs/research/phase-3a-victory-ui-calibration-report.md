@@ -64,7 +64,20 @@
 
 This calibration build does not decide victory, persist completion, or render markers. It records bounded public GUI and source evidence only.
 
-The corrected artifact is frozen. Guarded redeployment to the authorized archive and the actual game-side `CampaignCompletion` INI is pending a fresh confirmation that the game and Settlers United are closed.
+## Corrected guarded redeployment evidence
+
+- The user closed the game normally. Fresh process checks before and after deployment found neither `S4_Main` nor Settlers United running; no process was terminated.
+- The first non-elevated installer attempt was denied while creating the authorized temporary archive sibling. It did not change the archive, immutable backup, metadata, or any game file, and left no temporary sibling.
+- The fixed-hash elevated wrapper then used the existing guarded installer. Installed archive: `C:\Program Files\Settlers United\resources\bin\s4_artifacts\Plugin_SU.zip`; SHA-256 `8d7e0fa774fe633a820c595f05da001c615a2db0de9ee65921c87cec7400dc4a`; size `1688928` bytes.
+- Immutable original archive backup SHA-256 remains `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`; size `1176944` bytes.
+- ZIP compressed-data verification passed. All seven original non-target file entries matched the immutable backup byte-for-byte; the installed archive contains eight file entries and exactly one `Plugins/CampaignCompletionDebug.asi`.
+- Embedded ASI SHA-256 is `a8dc3af496fc61ce2dc9cb05845095993793298a23db351cbf60b2dd1bb0ea43`, exactly equal to the corrected frozen ASI.
+- Live INI was installed at the actual configuration path `F:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\thesettlers4\CampaignCompletion\CampaignCompletionDebug.ini`; SHA-256 `b727c1cbf36a3005a3771cc305b253e8f3e5a4ac7625fbcd39604e78cbd95118`.
+- Normalized comparison proves the live INI differs from the frozen INI only by `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`.
+- The inert project-owned `C:\Program Files\Settlers United\CampaignCompletion\CampaignCompletionDebug.ini` was removed only after its hash matched the expected live INI. Its directory was removed only because it was empty.
+- Neither `Plugin_SU.zip.campaigncompletion.tmp` nor `CampaignCompletionDebug.ini.campaigncompletion.tmp` remained after deployment.
+
+The corrected artifact is deployed and ready for a replacement voluntary-exit control sample.
 
 ## Live evidence gate
 
