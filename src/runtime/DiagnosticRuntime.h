@@ -1,11 +1,13 @@
 #pragma once
 
-#include "diagnostics/CaptureTrace.h"
+#include "diagnostics/Phase3Trace.h"
 #include "diagnostics/Logger.h"
 #include "identity/MapIdentityCoordinator.h"
 #include "lua/LuaApi.h"
 #include "lua/SuLuaMapBridge.h"
 #include "runtime/S4Listeners.h"
+#include "victory/LaunchOrigin.h"
+#include "victory/SettlementUiProbe.h"
 
 #include <windows.h>
 
@@ -23,12 +25,14 @@ public:
 
 private:
     std::mutex mutex_;
-    CaptureTrace captureTrace_;
+    Phase3Trace phase3Trace_;
     Logger logger_;
     S4Listeners listeners_;
     S4LuaApi luaApi_;
     S4LuaMapBridge luaBridge_{luaApi_};
     std::unique_ptr<MapIdentityCoordinator> coordinator_;
+    LaunchOriginTracker origin_;
+    SettlementUiProbe settlement_;
     S4API api_ = nullptr;
     std::filesystem::path stopRequestPath_;
     bool started_ = false;

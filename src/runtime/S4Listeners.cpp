@@ -3,8 +3,27 @@
 #include <windows.h>
 
 #include <sstream>
+#include <string>
 
 namespace campaign_completion {
+namespace {
+
+std::string SettlementFeatureRecord(const SettlementFeature& feature) {
+    std::ostringstream output;
+    output << "settlement-feature=gfx-" << feature.gfxCollection
+           << ";container-" << feature.containerType << ";x-" << feature.x
+           << ";y-" << feature.y << ";width-" << feature.width
+           << ";height-" << feature.height << ";main-texture-"
+           << feature.mainTexture << ";value-link-" << feature.valueLink
+           << ";pressed-texture-" << feature.buttonPressedTexture
+           << ";tooltip-link-" << feature.tooltipLink << ";image-style-"
+           << feature.imageStyle << ";effects-" << feature.effects
+           << ";text-style-" << feature.textStyle << ";show-texture-"
+           << feature.showTexture << ";back-texture-" << feature.backTexture;
+    return output.str();
+}
+
+}  // namespace
 
 std::atomic<S4Listeners*> S4Listeners::active_{nullptr};
 const std::array<LPS4FRAMECALLBACK, S4_GUI_ENUM_MAXVALUE - 1>
@@ -13,9 +32,15 @@ const std::array<LPS4FRAMECALLBACK, S4_GUI_ENUM_MAXVALUE - 1>
 
 bool S4Listeners::Start(S4API api, Logger& logger,
                         MapIdentityCoordinator& coordinator,
-                        ILuaMapBridge& bridge) {
+                        ILuaMapBridge& bridge,
+                        LaunchOriginTracker& origin,
+                        SettlementUiProbe& settlement,
+                        Phase3Trace& phase3Trace) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
+    origin_ = &origin;
+    settlement_ = &settlement;
+    phase3Trace_ = &phase3Trace;
     return StartPublicListeners(api, logger);
 }
 
@@ -65,6 +90,13 @@ ListenerStopResult S4Listeners::Stop() {
     logger_ = nullptr;
     coordinator_ = nullptr;
     bridge_ = nullptr;
+    origin_ = nullptr;
+    settlement_ = nullptr;
+    phase3Trace_ = nullptr;
+    activeOrigin_ = {};
+    activeSessionId_ = 0u;
+    inGameSeen_ = false;
+    settlementStarted_ = false;
     return result;
 }
 
@@ -125,6 +157,17 @@ HRESULT S4HCALL S4Listeners::OnGuiElement(LPS4GUIDRAWBLTPARAMS element, BOOL) {
 void S4Listeners::ObserveUiFrame(DWORD page) {
     const auto now = GetTickCount64();
     std::lock_guard<std::mutex> lock(mutex_);
+    if (origin_ != nullptr) {
+        origin_->ObservePage(page, now);
+    }
+    if (page == S4_SCREEN_INGAME) {
+        inGameSeen_ = true;
+    } else if (page == S4_SCREEN_AFTERGAME_SUMMARY && inGameSeen_ &&
+               !settlementStarted_ && activeSessionId_ != 0u &&
+               settlement_ != nullptr) {
+        settlementStarted_ = settlement_->Begin(activeSessionId_, now);
+    }
+
     const auto snapshot = pageWindow_.Observe(page, now);
     if (!snapshot.has_value() || logger_ == nullptr) {
         return;
@@ -146,8 +189,29 @@ void S4Listeners::ObserveUiFrame(DWORD page) {
 void S4Listeners::ObserveMapInit() {
     std::lock_guard<std::mutex> lock(mutex_);
     const auto now = GetTickCount64();
+    activeOrigin_ = origin_ != nullptr ? origin_->ConsumeMapInit(now)
+                                       : LaunchOriginSnapshot{};
     if (coordinator_ != nullptr) {
-        coordinator_->ObserveMapInit(now);
+        activeSessionId_ = coordinator_->ObserveMapInit(now);
+    } else {
+        activeSessionId_ = 0u;
+    }
+    inGameSeen_ = false;
+    settlementStarted_ = false;
+    if (phase3Trace_ != nullptr) {
+        phase3Trace_->Write(
+            Phase3TraceChannel::Origin,
+            "origin-source=" +
+                std::string(LaunchSourceName(activeOrigin_.source)));
+        phase3Trace_->Write(
+            Phase3TraceChannel::Origin,
+            "origin-eligibility=" + std::string(
+                                        SessionEligibilityName(
+                                            activeOrigin_.eligibility)));
+        phase3Trace_->Write(
+            Phase3TraceChannel::Origin,
+            "origin-status=map-init-session-" +
+                std::to_string(activeSessionId_));
     }
     if (logger_ != nullptr) {
         logger_->Write(LogLevel::Info, "map-init observed");
@@ -155,20 +219,61 @@ void S4Listeners::ObserveMapInit() {
 }
 
 void S4Listeners::ObserveLuaOpen() {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (coordinator_ != nullptr) {
         coordinator_->ObserveLuaOpen(GetTickCount64());
     }
 }
 
 void S4Listeners::ObserveTick(BOOL delayed) {
-    if (delayed != FALSE || coordinator_ == nullptr || bridge_ == nullptr ||
-        api_ == nullptr) {
+    if (delayed != FALSE) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (api_ == nullptr) {
         return;
     }
     const bool inGame =
         api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
     const auto now = GetTickCount64();
-    coordinator_->ObserveTick(inGame, now, *bridge_);
+    if (coordinator_ != nullptr && bridge_ != nullptr) {
+        coordinator_->ObserveTick(inGame, now, *bridge_);
+    }
+
+    if (settlement_ == nullptr || phase3Trace_ == nullptr) {
+        return;
+    }
+    const auto capture = settlement_->FinishIfDue(now);
+    if (!capture.has_value()) {
+        return;
+    }
+
+    const DWORD localPlayer = api_->GetLocalPlayer();
+    phase3Trace_->Write(
+        Phase3TraceChannel::SettlementUi,
+        localPlayer == 0u ? "local-player-status=unavailable"
+                          : "local-player-status=available");
+    if (localPlayer != 0u) {
+        const BOOL lost = api_->HasPlayerLost(localPlayer);
+        phase3Trace_->Write(Phase3TraceChannel::SettlementUi,
+                            lost != FALSE ? "local-player-lost=1"
+                                          : "local-player-lost=0");
+    }
+
+    std::ostringstream summary;
+    summary << "settlement-capture=session-" << capture->sessionId
+            << ";features=" << capture->features.size()
+            << ";truncated=" << (capture->truncated ? 1 : 0);
+    phase3Trace_->Write(Phase3TraceChannel::SettlementUi, summary.str());
+    for (const auto& feature : capture->features) {
+        phase3Trace_->Write(Phase3TraceChannel::SettlementUi,
+                            SettlementFeatureRecord(feature));
+    }
+    phase3Trace_->Write(Phase3TraceChannel::Decision,
+                        "diagnostic-result=calibration-only");
+    if (logger_ != nullptr) {
+        logger_->Write(LogLevel::Info, "settlement UI calibration captured");
+    }
 }
 
 void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
@@ -181,6 +286,10 @@ void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
     if (element != nullptr) {
         const bool wasFixedMap =
             listAttribution_.Current() != FixedMapListKind::Unknown;
+        if (origin_ != nullptr && message == WM_LBUTTONUP &&
+            element->id == 2415u) {
+            origin_->ObserveBack();
+        }
         if (coordinator_ != nullptr && message == WM_LBUTTONUP &&
             element->id == 2415u && wasFixedMap) {
             coordinator_->ObserveBack();
@@ -191,6 +300,9 @@ void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
             listKind != FixedMapListKind::Unknown) {
             if (coordinator_ != nullptr) {
                 coordinator_->ObserveListKind(listKind, now);
+            }
+            if (origin_ != nullptr) {
+                origin_->ObserveListKind(listKind, now);
             }
             std::ostringstream attribution;
             attribution << "fixed-map-list list_kind="
@@ -217,6 +329,26 @@ void S4Listeners::ObserveGuiElement(LPS4GUIDRAWBLTPARAMS element) {
     const auto now = GetTickCount64();
     std::lock_guard<std::mutex> lock(mutex_);
     ++guiElementCount_;
+    if (element != nullptr && settlement_ != nullptr &&
+        settlement_->Active()) {
+        SettlementFeature feature{};
+        feature.gfxCollection = element->currentGFXCollection;
+        feature.containerType = element->containerType;
+        feature.x = element->x;
+        feature.y = element->y;
+        feature.width = element->width;
+        feature.height = element->height;
+        feature.mainTexture = element->mainTexture;
+        feature.valueLink = element->valueLink;
+        feature.buttonPressedTexture = element->buttonPressedTexture;
+        feature.tooltipLink = element->tooltipLink;
+        feature.imageStyle = static_cast<std::uint16_t>(element->imageStyle);
+        feature.effects = static_cast<std::uint16_t>(element->effects);
+        feature.textStyle = static_cast<std::uint16_t>(element->textStyle);
+        feature.showTexture = element->showTexture;
+        feature.backTexture = element->backTexture;
+        settlement_->Observe(feature);
+    }
     if (!guiLimiter_.Allow(now) || logger_ == nullptr) {
         return;
     }

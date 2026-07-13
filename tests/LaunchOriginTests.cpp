@@ -33,9 +33,17 @@ int RunLaunchOriginTests() {
 
     LaunchOriginTracker random;
     random.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_RANDOM, 100u);
+    random.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_USER, 110u);
     Require(random.ConsumeMapInit(200u).eligibility ==
                 SessionEligibility::ExcludedRandomMap,
-            "single-player random map is excluded");
+            "random exclusion survives sibling selector callbacks");
+
+    LaunchOriginTracker randomToFixed;
+    randomToFixed.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_RANDOM, 100u);
+    randomToFixed.ObserveListKind(FixedMapListKind::Single, 110u);
+    Require(randomToFixed.ConsumeMapInit(200u).source ==
+                LaunchSource::SinglePlayerMap,
+            "an explicit fixed-list click can leave the random source");
 
     LaunchOriginTracker onlineRandom;
     onlineRandom.ObservePage(S4_SCREEN_MULTIPLAYER_MAPSELECT_RANDOM, 100u);

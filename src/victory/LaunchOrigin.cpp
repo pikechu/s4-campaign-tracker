@@ -154,6 +154,11 @@ void LaunchOriginTracker::ObserveListKind(FixedMapListKind kind,
         return;
     }
 
+    // A tab click is stronger evidence than the sibling selector pages that
+    // Settlers IV may draw in the same frame.
+    current_ = {};
+    observedAtMs_ = 0u;
+
     switch (kind) {
         case FixedMapListKind::Single:
             Set(Origin(LaunchSource::SinglePlayerMap,
@@ -207,6 +212,14 @@ void LaunchOriginTracker::Disable() noexcept {
 
 void LaunchOriginTracker::Set(LaunchOriginSnapshot value,
                               std::uint64_t nowMs) noexcept {
+    if (IsOnline(current_.eligibility) &&
+        !IsOnline(value.eligibility)) {
+        return;
+    }
+    if (current_.eligibility == SessionEligibility::ExcludedRandomMap &&
+        value.eligibility == SessionEligibility::Eligible) {
+        return;
+    }
     current_ = value;
     observedAtMs_ = nowMs;
 }

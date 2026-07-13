@@ -80,8 +80,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.2.5 pid="
-           << GetCurrentProcessId() << " identity-mode=su-lua-read-only";
+    header << "CampaignCompletionDebug bootstrap version=0.3.0 pid="
+           << GetCurrentProcessId()
+           << " mode=victory-ui-calibration-public";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -143,20 +144,26 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         static_cast<DWORD>(std::size(traceRoot)), iniPath.c_str());
     if (traceLength > 0u &&
         traceLength < static_cast<DWORD>(std::size(traceRoot) - 1u)) {
-        captureTrace_.Open(traceRoot, GetCurrentProcessId());
+        if (!phase3Trace_.Open(traceRoot, GetCurrentProcessId())) {
+            logger_.Write(LogLevel::Warning,
+                          "phase 3 trace root was not admitted");
+        }
     }
 
     coordinator_ = std::make_unique<MapIdentityCoordinator>(
         [this](std::string record) {
             logger_.Write(LogLevel::Info, record);
         },
-        [this](std::string record) { captureTrace_.Write(record); });
+        [this](std::string record) {
+            phase3Trace_.Write(Phase3TraceChannel::Identity, record);
+        });
 
-    if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_)) {
+    if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
+                          settlement_, phase3Trace_)) {
         api_->Release();
         api_ = nullptr;
         coordinator_.reset();
-        captureTrace_.Close();
+        phase3Trace_.Close();
         logger_.Close();
         return false;
     }
@@ -197,6 +204,8 @@ void DiagnosticRuntime::Stop() {
     if (coordinator_ != nullptr) {
         coordinator_->Disable();
     }
+    origin_.Disable();
+    settlement_.Disable();
     const auto result = listeners_.Stop();
     if (api_ != nullptr) {
         api_->Release();
@@ -208,10 +217,11 @@ void DiagnosticRuntime::Stop() {
             << " failures=" << result.failures;
     logger_.Write(LogLevel::Info, summary.str());
     logger_.Write(LogLevel::Info, "diagnostic runtime stopped");
-    captureTrace_.Write(
+    phase3Trace_.Write(
+        Phase3TraceChannel::Decision,
         result.failures == 0u ? "controlled-stop-flush=success"
                               : "controlled-stop-flush=failed");
-    captureTrace_.Close();
+    phase3Trace_.Close();
     logger_.Close();
     coordinator_.reset();
     started_ = false;

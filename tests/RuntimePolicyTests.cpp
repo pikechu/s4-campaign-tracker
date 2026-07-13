@@ -153,6 +153,19 @@ int RunRuntimePolicyTests() {
     Require(listeners.find("AddGuiElementBltListener(&OnGuiElement)") !=
                 std::string::npos,
             "public GUI-element observer remains the settlement source");
+    auto listenersWithoutTextStyle = listeners;
+    for (auto position = listenersWithoutTextStyle.find("element->textStyle");
+         position != std::string::npos;
+         position = listenersWithoutTextStyle.find("element->textStyle")) {
+        listenersWithoutTextStyle.erase(position,
+                                        std::string("element->textStyle").size());
+    }
+    Require(listenersWithoutTextStyle.find("element->text") ==
+                std::string::npos &&
+                listeners.find("element->tooltipText") == std::string::npos &&
+                listeners.find("element->tooltipExtraText") ==
+                    std::string::npos,
+            "calibration must not dereference GUI text pointers");
     Require(listeners.find("AddLuaOpenListener(&OnLuaOpen)") !=
                 std::string::npos,
             "public LuaOpen listener must be registered");

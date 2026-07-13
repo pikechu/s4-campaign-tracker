@@ -2,12 +2,15 @@
 
 #include "S4ModApi.h"
 #include "diagnostics/Logger.h"
+#include "diagnostics/Phase3Trace.h"
 #include "identity/ListAttribution.h"
 #include "identity/MapIdentityCoordinator.h"
 #include "lua/SuLuaMapBridge.h"
 #include "runtime/CallbackGate.h"
 #include "runtime/ListenerRemoval.h"
 #include "runtime/PageObservation.h"
+#include "victory/LaunchOrigin.h"
+#include "victory/SettlementUiProbe.h"
 
 #include <array>
 #include <atomic>
@@ -44,7 +47,10 @@ class S4Listeners final {
 public:
     bool Start(S4API api, Logger& logger,
                MapIdentityCoordinator& coordinator,
-               ILuaMapBridge& bridge);
+               ILuaMapBridge& bridge,
+               LaunchOriginTracker& origin,
+               SettlementUiProbe& settlement,
+               Phase3Trace& phase3Trace);
     ListenerStopResult Stop();
 
 private:
@@ -100,6 +106,9 @@ private:
     Logger* logger_ = nullptr;
     MapIdentityCoordinator* coordinator_ = nullptr;
     ILuaMapBridge* bridge_ = nullptr;
+    LaunchOriginTracker* origin_ = nullptr;
+    SettlementUiProbe* settlement_ = nullptr;
+    Phase3Trace* phase3Trace_ = nullptr;
     std::vector<S4HOOK> hooks_;
     CallbackGate callbackGate_;
     std::mutex mutex_;
@@ -109,6 +118,10 @@ private:
     RateLimiter guiLimiter_{1000};
     DWORD currentPage_ = S4_GUI_UNKNOWN;
     std::uint64_t guiElementCount_ = 0;
+    LaunchOriginSnapshot activeOrigin_{};
+    std::uint64_t activeSessionId_ = 0u;
+    bool inGameSeen_ = false;
+    bool settlementStarted_ = false;
 
     bool StartPublicListeners(S4API api, Logger& logger);
 };
