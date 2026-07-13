@@ -15,6 +15,24 @@ void Require(bool value, const char* message) {
 int RunLaunchOriginTests() {
     using namespace campaign_completion;
 
+    LaunchOriginTracker liveOffline;
+    std::uint64_t liveNow = 100u;
+    for (const DWORD page : {
+             S4_SCREEN_MAINMENU,
+             S4_SCREEN_SINGLEPLAYER,
+             S4_SCREEN_SINGLEPLAYER_CAMPAIGN,
+             S4_SCREEN_SINGLEPLAYER_MAPSELECT_SINGLE,
+             S4_SCREEN_SINGLEPLAYER_MAPSELECT_MULTI,
+             S4_SCREEN_SINGLEPLAYER_MAPSELECT_USER,
+             S4_SCREEN_SINGLEPLAYER_LOBBY,
+             S4_SCREEN_MULTIPLAYER_LOBBY}) {
+        liveOffline.ObservePage(page, liveNow++);
+    }
+    const auto liveOrigin = liveOffline.ConsumeMapInit(200u);
+    Require(liveOrigin.source == LaunchSource::SinglePlayerMap &&
+                liveOrigin.eligibility == SessionEligibility::Eligible,
+            "live offline siblings remain eligible single player");
+
     LaunchOriginTracker offlineMulti;
     offlineMulti.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_MULTI, 100u);
     offlineMulti.ObserveListKind(FixedMapListKind::Multiplayer, 110u);
@@ -25,6 +43,7 @@ int RunLaunchOriginTests() {
             "offline Multiplayer Maps remain eligible");
 
     LaunchOriginTracker online;
+    online.ObservePage(S4_SCREEN_MULTIPLAYER, 90u);
     online.ObservePage(S4_SCREEN_MULTIPLAYER_MAPSELECT_MULTI, 100u);
     online.ObservePage(S4_SCREEN_MULTIPLAYER_LOBBY, 150u);
     Require(online.ConsumeMapInit(200u).eligibility ==
@@ -32,6 +51,7 @@ int RunLaunchOriginTests() {
             "online lobby is excluded");
 
     LaunchOriginTracker random;
+    random.ObservePage(S4_SCREEN_SINGLEPLAYER, 90u);
     random.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_RANDOM, 100u);
     random.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_USER, 110u);
     Require(random.ConsumeMapInit(200u).eligibility ==
@@ -39,6 +59,7 @@ int RunLaunchOriginTests() {
             "random exclusion survives sibling selector callbacks");
 
     LaunchOriginTracker randomToFixed;
+    randomToFixed.ObservePage(S4_SCREEN_SINGLEPLAYER, 90u);
     randomToFixed.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_RANDOM, 100u);
     randomToFixed.ObserveListKind(FixedMapListKind::Single, 110u);
     Require(randomToFixed.ConsumeMapInit(200u).source ==
@@ -46,11 +67,29 @@ int RunLaunchOriginTests() {
             "an explicit fixed-list click can leave the random source");
 
     LaunchOriginTracker onlineRandom;
+    onlineRandom.ObservePage(S4_SCREEN_MULTIPLAYER, 90u);
     onlineRandom.ObservePage(S4_SCREEN_MULTIPLAYER_MAPSELECT_RANDOM, 100u);
     onlineRandom.ObservePage(S4_SCREEN_MULTIPLAYER_LOBBY, 110u);
     Require(onlineRandom.ConsumeMapInit(200u).eligibility ==
                 SessionEligibility::ExcludedOnlineMultiplayer,
             "online session origin takes precedence over random map type");
+
+    LaunchOriginTracker freshCampaign;
+    freshCampaign.ObservePage(S4_SCREEN_SINGLEPLAYER, 90u);
+    freshCampaign.ObservePage(S4_SCREEN_SINGLEPLAYER_CAMPAIGN, 100u);
+    const auto campaign = freshCampaign.ConsumeMapInit(200u);
+    Require(campaign.source == LaunchSource::Campaign &&
+                campaign.eligibility == SessionEligibility::Eligible,
+            "campaign remains eligible without a fixed-map lobby");
+
+    LaunchOriginTracker campaignSibling;
+    campaignSibling.ObservePage(S4_SCREEN_SINGLEPLAYER, 90u);
+    campaignSibling.ObservePage(S4_SCREEN_SINGLEPLAYER_CAMPAIGN, 100u);
+    campaignSibling.ObservePage(S4_SCREEN_SINGLEPLAYER_MAPSELECT_SINGLE,
+                                110u);
+    Require(campaignSibling.ConsumeMapInit(200u).source ==
+                LaunchSource::SinglePlayerMap,
+            "fixed-map lobby replaces a transient campaign sibling");
 
     LaunchOriginTracker loadedMap;
     loadedMap.ObservePage(S4_SCREEN_LOADGAME_MAP, 100u);
