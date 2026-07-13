@@ -70,6 +70,7 @@ add_executable(campaign_completion_tests
   tests/LuaMapSessionTests.cpp
   tests/MapIdentityCoordinatorTests.cpp
   tests/LaunchOriginTests.cpp
+  tests/SettlementUiProbeTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
