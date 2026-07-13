@@ -3,6 +3,7 @@
 
 int RunLoggerTests();
 int RunFixedMapCaptureStateTests();
+int RunFixedMapIdentityProbeTests();
 int RunFixedMapLoadHookTests();
 int RunMapPathValidatorTests();
 int RunHookSiteLayoutTests();
@@ -18,6 +19,7 @@ int main() {
     try {
         RunLoggerTests();
         RunFixedMapCaptureStateTests();
+        RunFixedMapIdentityProbeTests();
         RunFixedMapLoadHookTests();
         RunMapPathValidatorTests();
         RunHookSiteLayoutTests();
