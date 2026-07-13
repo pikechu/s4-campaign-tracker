@@ -59,6 +59,19 @@ int RunPhase3TraceTests() {
                 Phase3TraceChannel::SettlementUi,
                 "settlement-feature=gfx-4;texture-120;value-55;x-10;y-20"),
             "settlement allowlist accepts numeric feature");
+    Require(first.Write(Phase3TraceChannel::NativeEvent,
+                        "native-subscription=attached"),
+            "native channel accepts subscription state");
+    Require(first.Write(
+                Phase3TraceChannel::NativeEvent,
+                "native-event=session-7;event-id=609;local-result=won;wparam=1;lparam=0;game-tick=123"),
+            "native channel accepts bounded numeric event evidence");
+    Require(first.Write(Phase3TraceChannel::NativeEvent,
+                        "native-event-duplicates=session-7;count=0"),
+            "native channel accepts duplicate count");
+    Require(first.Write(Phase3TraceChannel::NativeEvent,
+                        "native-event-orphans=count=1"),
+            "native channel accepts orphan count");
     Require(first.Write(Phase3TraceChannel::Decision,
                         "diagnostic-result=calibration-only"),
             "decision channel accepts calibration-only status");
@@ -78,6 +91,12 @@ int RunPhase3TraceTests() {
     Require(!first.Write(Phase3TraceChannel::Decision,
                          "victory-confirmed"),
             "Phase 3A cannot claim a victory decision");
+    Require(!first.Write(Phase3TraceChannel::NativeEvent,
+                         "native-event=0x261"),
+            "native channel rejects hexadecimal pointer-like syntax");
+    Require(!first.Write(Phase3TraceChannel::NativeEvent,
+                         "victory-confirmed"),
+            "native channel rejects a completion claim");
     Require(!first.Write(Phase3TraceChannel::Origin,
                          "origin-source=bad\nvalue"),
             "line breaks are rejected");
@@ -87,9 +106,10 @@ int RunPhase3TraceTests() {
     first.Close();
 
     for (const auto* name : {"origin.trace", "identity.trace",
-                             "settlement-ui.trace", "decision.trace"}) {
+                             "settlement-ui.trace", "native-event.trace",
+                             "decision.trace"}) {
         Require(std::filesystem::exists(firstDirectory / name),
-                "all four bounded channels exist");
+                "all five bounded channels exist");
     }
     Require(ReadAll(firstDirectory / "origin.trace").find("private text") ==
                 std::string::npos,

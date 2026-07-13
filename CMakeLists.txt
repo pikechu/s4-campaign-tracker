@@ -73,6 +73,7 @@ add_executable(campaign_completion_tests
   tests/MapIdentityCoordinatorTests.cpp
   tests/LaunchOriginTests.cpp
   tests/SettlementUiProbeTests.cpp
+  tests/VictoryEventProbeTests.cpp
   tests/Phase3TraceTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
@@ -95,6 +96,7 @@ add_executable(campaign_completion_tests
   src/runtime/StopRequest.cpp
   src/victory/LaunchOrigin.cpp
   src/victory/SettlementUiProbe.cpp
+  src/victory/VictoryEventProbe.cpp
 )
 target_include_directories(campaign_completion_tests PRIVATE
   src
