@@ -45,11 +45,18 @@ The later artifact was downloaded and frozen below ignored project directory `ar
 - The inner package contains exactly `Plugins/CampaignCompletionDebug.asi` and `CampaignCompletion/CampaignCompletionDebug.ini`.
 - The INI contains exactly one `Version=0.3.1`, `DiagnosticMode=NativeVictoryEventCalibration`, `NativeEventSubscription=1`, `NativeTerminalEventId=609`, and empty `CaptureTraceRoot=`. Every zero-Hook, zero-patch, zero-write, and zero-completion field occurs exactly once.
 
-## Deployment gate and remaining live controls
+## Guarded deployment and remaining live controls
 
-No game or Settlers United file was modified during Phase 3B implementation, CI, or artifact freezing. A final read-only process check found no matching game/SU process, but deployment still requires the user's explicit confirmation that the game is closed. The guarded backup/hash/archive workflow must be used afterward; no automatic deployment is authorized by this report.
+- The user explicitly confirmed that the game was closed. Fresh read-only process checks immediately before and after deployment found neither `S4_Main` nor Settlers United, and no process was terminated.
+- Deployment used the fixed-hash elevated wrapper and the existing guarded archive installer. Only the authorized `Plugin_SU.zip`, game-side `CampaignCompletionDebug.ini`, and project deployment evidence were written.
+- Installed archive: `C:\Program Files\Settlers United\resources\bin\s4_artifacts\Plugin_SU.zip`; SHA-256 `c6eafa1a596e477581626fe309dda84c850397e3826ae019ba78d1f668985c0c`; size `1701818` bytes.
+- The immutable original archive backup remains SHA-256 `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`, size `1176944` bytes.
+- Complete ZIP verification found eight entries: all seven original non-target entries remained byte-identical to the immutable backup, and exactly one `Plugins/CampaignCompletionDebug.asi` had frozen SHA-256 `d0b6f498198eb9f924f16434bd2eb91dde129437be34571303cd111d58465036`.
+- Live configuration: `F:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\games\thesettlers4\CampaignCompletion\CampaignCompletionDebug.ini`; SHA-256 `ac0c080a1a57b27337edd6a6d71e03f36f55f530457f00a3f00d0870da88b7b3`.
+- Normalized comparison proved the live INI differs from the frozen INI only by setting `CaptureTraceRoot=F:\claude projects\thesettler4plugin\artifacts\phase-3-victory-diagnostics`. The trace root exists and is not a reparse point.
+- The inert SU-side INI and both authorized temporary siblings are absent after deployment.
 
-After a later approved deployment, collect these controls one at a time and verify game responsiveness after each:
+Collect these controls one at a time and verify game responsiveness after each:
 
 1. Eligible-map voluntary exit: no event `609` record.
 2. Normal local victory: event `609`, `wParam=1`, local result `won`.
