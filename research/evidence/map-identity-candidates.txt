@@ -1,6 +1,6 @@
 # Phase 2.2 map identity static candidates
-generated_utc=2026-07-13T07:03:46Z
-workspace_commit=b63e9a717a19dae93762e0a70a294c47cd233a69
+generated_utc=2026-07-13T07:04:21Z
+workspace_commit=4b30b0078a67388f9d761157c36918e2c8e1057b
 exe_sha256=3b561269fb7ce4c281959f8f0db691cebf7cd36a04ad3594461b94290c5d3816
 pdb_sha256=702df42ef4d7e8f6ba39aee96b5c83780c3266a7e9a174f81db13c6934050ae6
 pdb_symbols_sha256=dafc72d237209e3c332f44dca44e9fcd24eb49e8b667172ff2eda695c2bc247f
@@ -130,7 +130,7 @@ Contents of section .data:
  1224508 646f6d4d 61707340 40000000 34c8fb00  domMaps@@...4...
  1224518 00000000 2e3f4156 4952616e 646f6d4d  .....?AVIRandomM
  1224528 61707340 40000000 34c8fb00 00000000  aps@@...4.......
- 1224538 2e3f4156 43526567                    .?AVCReg        
+ 1224538 2e3f4156 43526567                    .?AVCReg
 
 ## disassembly CMapFile constructor, destructor, and load vma=0x004b10d0..0x004b1460
 
@@ -555,9 +555,9 @@ Disassembly of section .text:
   5060e1:	c6 00 00             	mov    BYTE PTR [eax],0x0
   5060e4:	8d 86 b4 02 00 00    	lea    eax,[esi+0x2b4]
   5060ea:	66 c7 86 ac 02 00 00 	mov    WORD PTR [esi+0x2ac],0x0
-  5060f1:	00 00 
+  5060f1:	00 00
   5060f3:	c7 86 b0 02 00 00 00 	mov    DWORD PTR [esi+0x2b0],0x0
-  5060fa:	00 00 00 
+  5060fa:	00 00 00
   5060fd:	c7 40 14 07 00 00 00 	mov    DWORD PTR [eax+0x14],0x7
   506104:	c7 40 10 00 00 00 00 	mov    DWORD PTR [eax+0x10],0x0
   50610b:	83 78 14 08          	cmp    DWORD PTR [eax+0x14],0x8
@@ -637,13 +637,13 @@ Disassembly of section .text:
   50625b:	6a 18                	push   0x18
   50625d:	50                   	push   eax
   50625e:	66 c7 86 b8 03 00 00 	mov    WORD PTR [esi+0x3b8],0x0
-  506265:	00 00 
+  506265:	00 00
   506267:	c7 86 cc 03 00 00 00 	mov    DWORD PTR [esi+0x3cc],0x0
-  50626e:	00 00 00 
+  50626e:	00 00 00
   506271:	c7 86 d0 03 00 00 00 	mov    DWORD PTR [esi+0x3d0],0x0
-  506278:	00 00 00 
+  506278:	00 00 00
   50627b:	c7 86 d4 03 00 00 00 	mov    DWORD PTR [esi+0x3d4],0x0
-  506282:	00 00 00 
+  506282:	00 00 00
   506285:	e8 b8 b8 84 00       	call   0xd51b42
   50628a:	68 50 ec 43 00       	push   0x43ec50
   50628f:	68 50 d9 45 00       	push   0x45d950
@@ -656,23 +656,23 @@ Disassembly of section .text:
   5062a8:	c6 45 fc 0c          	mov    BYTE PTR [ebp-0x4],0xc
   5062ac:	8b ce                	mov    ecx,esi
   5062ae:	c7 86 88 05 00 00 00 	mov    DWORD PTR [esi+0x588],0x0
-  5062b5:	00 00 00 
+  5062b5:	00 00 00
   5062b8:	c7 86 8c 05 00 00 00 	mov    DWORD PTR [esi+0x58c],0x0
-  5062bf:	00 00 00 
+  5062bf:	00 00 00
   5062c2:	c7 86 90 05 00 00 00 	mov    DWORD PTR [esi+0x590],0x0
-  5062c9:	00 00 00 
+  5062c9:	00 00 00
   5062cc:	c7 86 94 05 00 00 00 	mov    DWORD PTR [esi+0x594],0x0
-  5062d3:	00 00 00 
+  5062d3:	00 00 00
   5062d6:	66 c7 86 98 05 00 00 	mov    WORD PTR [esi+0x598],0x0
-  5062dd:	00 00 
+  5062dd:	00 00
   5062df:	c7 86 9c 05 00 00 00 	mov    DWORD PTR [esi+0x59c],0x0
-  5062e6:	00 00 00 
+  5062e6:	00 00 00
   5062e9:	c7 86 a0 05 00 00 00 	mov    DWORD PTR [esi+0x5a0],0x0
-  5062f0:	00 00 00 
+  5062f0:	00 00 00
   5062f3:	c7 86 a4 05 00 00 00 	mov    DWORD PTR [esi+0x5a4],0x0
-  5062fa:	00 00 00 
+  5062fa:	00 00 00
   5062fd:	c7 86 a8 05 00 00 00 	mov    DWORD PTR [esi+0x5a8],0x0
-  506304:	00 00 00 
+  506304:	00 00 00
   506307:	e8 14 00 00 00       	call   0x506320
   50630c:	8b c6                	mov    eax,esi
   50630e:	8b 4d f4             	mov    ecx,DWORD PTR [ebp-0xc]
@@ -710,52 +710,52 @@ Disassembly of section .text:
   506379:	c7 47 68 00 00 00 00 	mov    DWORD PTR [edi+0x68],0x0
   506380:	c6 87 28 02 00 00 00 	mov    BYTE PTR [edi+0x228],0x0
   506387:	c7 87 cc 03 00 00 00 	mov    DWORD PTR [edi+0x3cc],0x0
-  50638e:	00 00 00 
+  50638e:	00 00 00
   506391:	c7 87 d0 03 00 00 00 	mov    DWORD PTR [edi+0x3d0],0x0
-  506398:	00 00 00 
+  506398:	00 00 00
   50639b:	c7 87 d4 03 00 00 00 	mov    DWORD PTR [edi+0x3d4],0x0
-  5063a2:	00 00 00 
+  5063a2:	00 00 00
   5063a5:	c7 87 38 03 00 00 00 	mov    DWORD PTR [edi+0x338],0x0
-  5063ac:	00 00 00 
+  5063ac:	00 00 00
   5063af:	c7 87 44 03 00 00 00 	mov    DWORD PTR [edi+0x344],0x0
-  5063b6:	00 00 00 
+  5063b6:	00 00 00
   5063b9:	66 c7 87 48 03 00 00 	mov    WORD PTR [edi+0x348],0x0
-  5063c0:	00 00 
+  5063c0:	00 00
   5063c2:	c7 87 4d 03 00 00 00 	mov    DWORD PTR [edi+0x34d],0x0
-  5063c9:	00 00 00 
+  5063c9:	00 00 00
   5063cc:	66 c7 87 b8 03 00 00 	mov    WORD PTR [edi+0x3b8],0x0
-  5063d3:	00 00 
+  5063d3:	00 00
   5063d5:	c7 87 54 03 00 00 00 	mov    DWORD PTR [edi+0x354],0x0
-  5063dc:	00 00 00 
+  5063dc:	00 00 00
   5063df:	66 c7 87 40 03 00 00 	mov    WORD PTR [edi+0x340],0x0
-  5063e6:	00 00 
+  5063e6:	00 00
   5063e8:	c7 87 d4 02 00 00 00 	mov    DWORD PTR [edi+0x2d4],0x0
-  5063ef:	00 00 00 
+  5063ef:	00 00 00
   5063f2:	c6 87 59 02 00 00 01 	mov    BYTE PTR [edi+0x259],0x1
   5063f9:	c7 87 64 02 00 00 00 	mov    DWORD PTR [edi+0x264],0x0
-  506400:	00 00 00 
+  506400:	00 00 00
   506403:	c7 87 8c 02 00 00 00 	mov    DWORD PTR [edi+0x28c],0x0
-  50640a:	00 00 00 
+  50640a:	00 00 00
   50640d:	c7 87 88 05 00 00 ff 	mov    DWORD PTR [edi+0x588],0xffffffff
-  506414:	ff ff ff 
+  506414:	ff ff ff
   506417:	e8 44 7a f2 ff       	call   0x42de60
   50641c:	6a 00                	push   0x0
   50641e:	68 6c c0 02 01       	push   0x102c06c
   506423:	8d 8f b4 02 00 00    	lea    ecx,[edi+0x2b4]
   506429:	c7 87 a8 02 00 00 01 	mov    DWORD PTR [edi+0x2a8],0x1
-  506430:	00 00 00 
+  506430:	00 00 00
   506433:	c6 87 ac 02 00 00 00 	mov    BYTE PTR [edi+0x2ac],0x0
   50643a:	e8 31 1e f5 ff       	call   0x458270
   50643f:	c7 87 d0 02 00 00 00 	mov    DWORD PTR [edi+0x2d0],0x0
-  506446:	00 00 00 
+  506446:	00 00 00
   506449:	8d 87 b0 04 00 00    	lea    eax,[edi+0x4b0]
   50644f:	c6 87 dc 02 00 00 00 	mov    BYTE PTR [edi+0x2dc],0x0
   506456:	8d b7 90 00 00 00    	lea    esi,[edi+0x90]
   50645c:	c7 87 e0 02 00 00 ff 	mov    DWORD PTR [edi+0x2e0],0xffffffff
-  506463:	ff ff ff 
+  506463:	ff ff ff
   506466:	33 db                	xor    ebx,ebx
   506468:	66 c7 87 4a 03 00 00 	mov    WORD PTR [edi+0x34a],0x0
-  50646f:	00 00 
+  50646f:	00 00
   506471:	c6 87 4c 03 00 00 00 	mov    BYTE PTR [edi+0x34c],0x0
   506478:	c7 47 30 00 00 00 00 	mov    DWORD PTR [edi+0x30],0x0
   50647f:	89 45 fc             	mov    DWORD PTR [ebp-0x4],eax
@@ -785,26 +785,26 @@ Disassembly of section .text:
   5064fd:	c7 46 48 ff ff ff ff 	mov    DWORD PTR [esi+0x48],0xffffffff
   506504:	c7 46 6c 00 00 00 00 	mov    DWORD PTR [esi+0x6c],0x0
   50650b:	c7 86 90 00 00 00 00 	mov    DWORD PTR [esi+0x90],0x0
-  506512:	00 00 00 
+  506512:	00 00 00
   506515:	c7 86 fc 00 00 00 05 	mov    DWORD PTR [esi+0xfc],0x5
-  50651c:	00 00 00 
+  50651c:	00 00 00
   50651f:	c7 86 b4 00 00 00 00 	mov    DWORD PTR [esi+0xb4],0x0
-  506526:	00 00 00 
+  506526:	00 00 00
   506529:	89 9e d8 00 00 00    	mov    DWORD PTR [esi+0xd8],ebx
   50652f:	c7 86 d8 01 00 00 00 	mov    DWORD PTR [esi+0x1d8],0x0
-  506536:	00 00 00 
+  506536:	00 00 00
   506539:	c6 04 18 01          	mov    BYTE PTR [eax+ebx*1],0x1
   50653d:	68 6c c0 02 01       	push   0x102c06c
   506542:	c7 86 2c 01 00 00 00 	mov    DWORD PTR [esi+0x12c],0x0
-  506549:	00 00 00 
+  506549:	00 00 00
   50654c:	c7 86 50 01 00 00 00 	mov    DWORD PTR [esi+0x150],0x0
-  506553:	00 00 00 
+  506553:	00 00 00
   506556:	c7 86 74 01 00 00 ff 	mov    DWORD PTR [esi+0x174],0xffffffff
-  50655d:	ff ff ff 
+  50655d:	ff ff ff
   506560:	e8 0b 1d f5 ff       	call   0x458270
   506565:	43                   	inc    ebx
   506566:	c7 86 9c 01 00 00 ff 	mov    DWORD PTR [esi+0x19c],0xffffffff
-  50656d:	ff ff ff 
+  50656d:	ff ff ff
   506570:	83 c7 18             	add    edi,0x18
   506573:	8d 76 04             	lea    esi,[esi+0x4]
   506576:	83 fb 09             	cmp    ebx,0x9
@@ -814,13 +814,13 @@ Disassembly of section .text:
   506587:	89 87 8c 02 00 00    	mov    DWORD PTR [edi+0x28c],eax
   50658d:	33 c0                	xor    eax,eax
   50658f:	c7 87 b0 02 00 00 00 	mov    DWORD PTR [edi+0x2b0],0x0
-  506596:	00 00 00 
+  506596:	00 00 00
   506599:	66 89 87 34 03 00 00 	mov    WORD PTR [edi+0x334],ax
   5065a0:	89 87 fc 02 00 00    	mov    DWORD PTR [edi+0x2fc],eax
   5065a6:	66 89 87 00 03 00 00 	mov    WORD PTR [edi+0x300],ax
   5065ad:	88 87 02 03 00 00    	mov    BYTE PTR [edi+0x302],al
   5065b3:	66 c7 87 8d 05 00 00 	mov    WORD PTR [edi+0x58d],0xff
-  5065ba:	ff 00 
+  5065ba:	ff 00
   5065bc:	88 87 8f 05 00 00    	mov    BYTE PTR [edi+0x58f],al
   5065c2:	89 87 90 05 00 00    	mov    DWORD PTR [edi+0x590],eax
   5065c8:	89 87 94 05 00 00    	mov    DWORD PTR [edi+0x594],eax
@@ -908,7 +908,7 @@ Disassembly of section .text:
   51c259:	8d 72 6c             	lea    esi,[edx+0x6c]
   51c25c:	0f 1f 40 00          	nop    DWORD PTR [eax+0x0]
   51c260:	c6 84 13 d4 9f 00 00 	mov    BYTE PTR [ebx+edx*1+0x9fd4],0x0
-  51c267:	00 
+  51c267:	00
   51c268:	8b 0d a0 68 29 01    	mov    ecx,DWORD PTR ds:0x12968a0
   51c26e:	85 c9                	test   ecx,ecx
   51c270:	74 3c                	je     0x51c2ae
@@ -925,10 +925,10 @@ Disassembly of section .text:
   51c291:	83 f8 03             	cmp    eax,0x3
   51c294:	75 0a                	jne    0x51c2a0
   51c296:	83 bc 0e 20 01 00 00 	cmp    DWORD PTR [esi+ecx*1+0x120],0x3
-  51c29d:	03 
+  51c29d:	03
   51c29e:	74 0e                	je     0x51c2ae
   51c2a0:	c6 84 11 ba 03 00 00 	mov    BYTE PTR [ecx+edx*1+0x3ba],0x1
-  51c2a7:	01 
+  51c2a7:	01
   51c2a8:	8b 0d a0 68 29 01    	mov    ecx,DWORD PTR ds:0x12968a0
   51c2ae:	83 c6 04             	add    esi,0x4
   51c2b1:	42                   	inc    edx
@@ -941,7 +941,7 @@ Disassembly of section .text:
   51c2cb:	78 0e                	js     0x51c2db
   51c2cd:	0f be c0             	movsx  eax,al
   51c2d0:	c7 84 81 d8 00 00 00 	mov    DWORD PTR [ecx+eax*4+0xd8],0x0
-  51c2d7:	00 00 00 00 
+  51c2d7:	00 00 00 00
   51c2db:	8d 85 10 ff ff ff    	lea    eax,[ebp-0xf0]
   51c2e1:	50                   	push   eax
   51c2e2:	e8 e9 b9 fe ff       	call   0x507cd0
@@ -961,11 +961,11 @@ Disassembly of section .text:
   51c315:	e8 96 27 f2 ff       	call   0x43eab0
   51c31a:	33 c0                	xor    eax,eax
   51c31c:	c7 85 24 ff ff ff 07 	mov    DWORD PTR [ebp-0xdc],0x7
-  51c323:	00 00 00 
+  51c323:	00 00 00
   51c326:	66 89 85 10 ff ff ff 	mov    WORD PTR [ebp-0xf0],ax
   51c32d:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   51c332:	c7 85 20 ff ff ff 00 	mov    DWORD PTR [ebp-0xe0],0x0
-  51c339:	00 00 00 
+  51c339:	00 00 00
   51c33c:	0f be 80 8d 05 00 00 	movsx  eax,BYTE PTR [eax+0x58d]
   51c343:	89 83 0c 42 00 00    	mov    DWORD PTR [ebx+0x420c],eax
   51c349:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
@@ -994,9 +994,9 @@ Disassembly of section .text:
   51c3a0:	0f 85 67 01 00 00    	jne    0x51c50d
   51c3a6:	33 c0                	xor    eax,eax
   51c3a8:	c7 85 24 ff ff ff 07 	mov    DWORD PTR [ebp-0xdc],0x7
-  51c3af:	00 00 00 
+  51c3af:	00 00 00
   51c3b2:	c7 85 20 ff ff ff 00 	mov    DWORD PTR [ebp-0xe0],0x0
-  51c3b9:	00 00 00 
+  51c3b9:	00 00 00
   51c3bc:	66 89 85 10 ff ff ff 	mov    WORD PTR [ebp-0xf0],ax
   51c3c3:	c6 45 fc 04          	mov    BYTE PTR [ebp-0x4],0x4
   51c3c7:	33 f6                	xor    esi,esi
@@ -1012,7 +1012,7 @@ Disassembly of section .text:
   51c3ed:	68 58 6b 05 01       	push   0x1056b58
   51c3f2:	e8 79 be f3 ff       	call   0x458270
   51c3f7:	66 83 bd 28 ff ff ff 	cmp    WORD PTR [ebp-0xd8],0x0
-  51c3fe:	00 
+  51c3fe:	00
   51c3ff:	75 04                	jne    0x51c405
   51c401:	33 c9                	xor    ecx,ecx
   51c403:	eb 1a                	jmp    0x51c41f
@@ -1059,9 +1059,9 @@ Disassembly of section .text:
   51c48f:	8d 85 08 ff ff ff    	lea    eax,[ebp-0xf8]
   51c495:	50                   	push   eax
   51c496:	c7 85 08 ff ff ff 30 	mov    DWORD PTR [ebp-0xf8],0x527330
-  51c49d:	73 52 00 
+  51c49d:	73 52 00
   51c4a0:	c7 85 0c ff ff ff 5e 	mov    DWORD PTR [ebp-0xf4],0x95e
-  51c4a7:	09 00 00 
+  51c4a7:	09 00 00
   51c4aa:	ff 77 04             	push   DWORD PTR [edi+0x4]
   51c4ad:	57                   	push   edi
   51c4ae:	e8 5d 98 fe ff       	call   0x505d10
@@ -1096,9 +1096,9 @@ Disassembly of section .text:
   51c516:	80 3d 3b c1 49 01 00 	cmp    BYTE PTR ds:0x149c13b,0x0
   51c51d:	0f 84 a1 00 00 00    	je     0x51c5c4
   51c523:	c7 83 d0 9f 00 00 04 	mov    DWORD PTR [ebx+0x9fd0],0x4
-  51c52a:	00 00 00 
+  51c52a:	00 00 00
   51c52d:	c7 05 84 c1 49 01 04 	mov    DWORD PTR ds:0x149c184,0x4
-  51c534:	00 00 00 
+  51c534:	00 00 00
   51c537:	e9 9c 00 00 00       	jmp    0x51c5d8
   51c53c:	8b 0d 18 48 29 01    	mov    ecx,DWORD PTR ds:0x1294818
   51c542:	6a 00                	push   0x0
@@ -1135,9 +1135,9 @@ Disassembly of section .text:
   51c5ba:	e8 f1 24 f2 ff       	call   0x43eab0
   51c5bf:	e9 b5 00 00 00       	jmp    0x51c679
   51c5c4:	c7 83 d0 9f 00 00 13 	mov    DWORD PTR [ebx+0x9fd0],0x13
-  51c5cb:	00 00 00 
+  51c5cb:	00 00 00
   51c5ce:	c7 05 84 c1 49 01 13 	mov    DWORD PTR ds:0x149c184,0x13
-  51c5d5:	00 00 00 
+  51c5d5:	00 00 00
   51c5d8:	68 20 ba 48 00       	push   0x48ba20
   51c5dd:	ff b3 d0 9f 00 00    	push   DWORD PTR [ebx+0x9fd0]
   51c5e3:	e8 e8 58 15 00       	call   0x671ed0
@@ -1162,9 +1162,9 @@ Disassembly of section .text:
   51c629:	8d 85 08 ff ff ff    	lea    eax,[ebp-0xf8]
   51c62f:	50                   	push   eax
   51c630:	c7 85 08 ff ff ff 30 	mov    DWORD PTR [ebp-0xf8],0x527330
-  51c637:	73 52 00 
+  51c637:	73 52 00
   51c63a:	c7 85 0c ff ff ff 5e 	mov    DWORD PTR [ebp-0xf4],0x95e
-  51c641:	09 00 00 
+  51c641:	09 00 00
   51c644:	ff 76 04             	push   DWORD PTR [esi+0x4]
   51c647:	56                   	push   esi
   51c648:	e8 c3 96 fe ff       	call   0x505d10
@@ -1506,10 +1506,10 @@ Disassembly of section .text:
   52060b:	33 c0                	xor    eax,eax
   52060d:	0f 1f 00             	nop    DWORD PTR [eax]
   520610:	0f b7 8c 05 5c fb ff 	movzx  ecx,WORD PTR [ebp+eax*1-0x4a4]
-  520617:	ff 
+  520617:	ff
   520618:	8d 40 02             	lea    eax,[eax+0x2]
   52061b:	66 89 8c 05 e6 fd ff 	mov    WORD PTR [ebp+eax*1-0x21a],cx
-  520622:	ff 
+  520622:	ff
   520623:	66 85 c9             	test   cx,cx
   520626:	75 e8                	jne    0x520610
   520628:	8d 85 e8 fd ff ff    	lea    eax,[ebp-0x218]
@@ -1523,10 +1523,10 @@ Disassembly of section .text:
   520648:	33 d2                	xor    edx,edx
   52064a:	66 0f 1f 44 00 00    	nop    WORD PTR [eax+eax*1+0x0]
   520650:	0f b7 8c 15 5c fb ff 	movzx  ecx,WORD PTR [ebp+edx*1-0x4a4]
-  520657:	ff 
+  520657:	ff
   520658:	8d 52 02             	lea    edx,[edx+0x2]
   52065b:	66 89 8c 15 e6 fd ff 	mov    WORD PTR [ebp+edx*1-0x21a],cx
-  520662:	ff 
+  520662:	ff
   520663:	66 85 c9             	test   cx,cx
   520666:	75 e8                	jne    0x520650
   520668:	33 c9                	xor    ecx,ecx
@@ -1589,7 +1589,7 @@ Disassembly of section .text:
   520736:	a1 d8 c1 49 01       	mov    eax,ds:0x149c1d8
   52073b:	83 c4 08             	add    esp,0x8
   52073e:	c7 04 85 48 78 29 01 	mov    DWORD PTR [eax*4+0x1297848],0x0
-  520745:	00 00 00 00 
+  520745:	00 00 00 00
   520749:	c6 45 fc 01          	mov    BYTE PTR [ebp-0x4],0x1
   52074d:	8b 85 e4 fd ff ff    	mov    eax,DWORD PTR [ebp-0x21c]
   520753:	83 f8 08             	cmp    eax,0x8
@@ -1666,9 +1666,9 @@ Disassembly of section .text:
   520bee:	7c d7                	jl     0x520bc7
   520bf0:	5f                   	pop    edi
   520bf1:	c7 05 e0 c1 49 01 00 	mov    DWORD PTR ds:0x149c1e0,0x0
-  520bf8:	00 00 00 
+  520bf8:	00 00 00
   520bfb:	c7 05 d8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1d8,0x0
-  520c02:	00 00 00 
+  520c02:	00 00 00
   520c05:	5e                   	pop    esi
   520c06:	c3                   	ret
   520c07:	cc                   	int3
@@ -1713,15 +1713,15 @@ Disassembly of section .text:
   52157b:	68 fc 00 ff 00       	push   0xff00fc
   521580:	8d 4d d8             	lea    ecx,[ebp-0x28]
   521583:	c7 05 15 c2 49 01 00 	mov    DWORD PTR ds:0x149c215,0x0
-  52158a:	00 00 00 
+  52158a:	00 00 00
   52158d:	c7 05 e4 c1 49 01 00 	mov    DWORD PTR ds:0x149c1e4,0x0
-  521594:	00 00 00 
+  521594:	00 00 00
   521597:	c7 05 e8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1e8,0x0
-  52159e:	00 00 00 
+  52159e:	00 00 00
   5215a1:	c7 05 f0 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f0,0x0
-  5215a8:	00 00 00 
+  5215a8:	00 00 00
   5215ab:	c7 05 f8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f8,0x0
-  5215b2:	00 00 00 
+  5215b2:	00 00 00
   5215b5:	c7 45 ec 0f 00 00 00 	mov    DWORD PTR [ebp-0x14],0xf
   5215bc:	c7 45 e8 00 00 00 00 	mov    DWORD PTR [ebp-0x18],0x0
   5215c3:	c6 45 d8 00          	mov    BYTE PTR [ebp-0x28],0x0
@@ -1736,11 +1736,11 @@ Disassembly of section .text:
   5215e3:	e8 98 cb f0 ff       	call   0x42e180
   5215e8:	8d 45 d8             	lea    eax,[ebp-0x28]
   5215eb:	c7 05 10 c2 49 01 0f 	mov    DWORD PTR ds:0x149c210,0xf
-  5215f2:	00 00 00 
+  5215f2:	00 00 00
   5215f5:	50                   	push   eax
   5215f6:	b9 fc c1 49 01       	mov    ecx,0x149c1fc
   5215fb:	c7 05 0c c2 49 01 00 	mov    DWORD PTR ds:0x149c20c,0x0
-  521602:	00 00 00 
+  521602:	00 00 00
   521605:	c6 05 fc c1 49 01 00 	mov    BYTE PTR ds:0x149c1fc,0x0
   52160c:	e8 1f 86 f3 ff       	call   0x459c30
   521611:	c7 45 fc ff ff ff ff 	mov    DWORD PTR [ebp-0x4],0xffffffff
@@ -1753,9 +1753,9 @@ Disassembly of section .text:
   521625:	ff 75 d8             	push   DWORD PTR [ebp-0x28]
   521628:	e8 53 cb f0 ff       	call   0x42e180
   52162d:	c7 05 f4 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f4,0x0
-  521634:	00 00 00 
+  521634:	00 00 00
   521637:	66 c7 05 50 c2 49 01 	mov    WORD PTR ds:0x149c250,0x0
-  52163e:	00 00 
+  52163e:	00 00
   521640:	e9 81 02 00 00       	jmp    0x5218c6
   521645:	8b 04 9d 48 78 29 01 	mov    eax,DWORD PTR [ebx*4+0x1297848]
   52164c:	85 c0                	test   eax,eax
@@ -2007,7 +2007,7 @@ Disassembly of section .text:
   520d6c:	51                   	push   ecx
   520d6d:	e8 be d8 fe ff       	call   0x50e630
   520d72:	c7 05 a0 68 29 01 00 	mov    DWORD PTR ds:0x12968a0,0x0
-  520d79:	00 00 00 
+  520d79:	00 00 00
   520d7c:	b0 01                	mov    al,0x1
   520d7e:	e9 8c 06 00 00       	jmp    0x52140f
   520d83:	8b 0d 18 48 29 01    	mov    ecx,DWORD PTR ds:0x1294818
@@ -2021,7 +2021,7 @@ Disassembly of section .text:
   520d9e:	6a 01                	push   0x1
   520da0:	ff 10                	call   DWORD PTR [eax]
   520da2:	c7 05 b8 40 45 01 00 	mov    DWORD PTR ds:0x14540b8,0x0
-  520da9:	00 00 00 
+  520da9:	00 00 00
   520dac:	6a 18                	push   0x18
   520dae:	e8 16 05 83 00       	call   0xd512c9
   520db3:	83 c4 04             	add    esp,0x4
@@ -2112,7 +2112,7 @@ Disassembly of section .text:
   520efb:	89 81 a8 02 00 00    	mov    DWORD PTR [ecx+0x2a8],eax
   520f01:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   520f06:	c7 80 d4 02 00 00 00 	mov    DWORD PTR [eax+0x2d4],0x0
-  520f0d:	00 00 00 
+  520f0d:	00 00 00
   520f10:	e8 3b 93 fe ff       	call   0x50a250
   520f15:	8b 0d a0 68 29 01    	mov    ecx,DWORD PTR ds:0x12968a0
   520f1b:	80 b9 8d 05 00 00 ff 	cmp    BYTE PTR [ecx+0x58d],0xff
@@ -2153,7 +2153,7 @@ Disassembly of section .text:
   520fa5:	c6 81 dc 02 00 00 01 	mov    BYTE PTR [ecx+0x2dc],0x1
   520fac:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   520fb1:	c7 80 e0 02 00 00 01 	mov    DWORD PTR [eax+0x2e0],0x1
-  520fb8:	00 00 00 
+  520fb8:	00 00 00
   520fbb:	8b 0d a0 68 29 01    	mov    ecx,DWORD PTR ds:0x12968a0
   520fc1:	a1 f4 c1 49 01       	mov    eax,ds:0x149c1f4
   520fc6:	83 f8 03             	cmp    eax,0x3
@@ -2249,7 +2249,7 @@ Disassembly of section .text:
   521129:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   52112e:	0f 94 05 17 c2 49 01 	sete   BYTE PTR ds:0x149c217
   521135:	c7 05 e8 c1 49 01 02 	mov    DWORD PTR ds:0x149c1e8,0x2
-  52113c:	00 00 00 
+  52113c:	00 00 00
   52113f:	8b 80 38 03 00 00    	mov    eax,DWORD PTR [eax+0x338]
   521145:	a3 e4 c1 49 01       	mov    ds:0x149c1e4,eax
   52114a:	e8 b1 07 00 00       	call   0x521900
@@ -2261,17 +2261,17 @@ Disassembly of section .text:
   521162:	0f 84 02 ff ff ff    	je     0x52106a
   521168:	8b ce                	mov    ecx,esi
   52116a:	66 c7 05 16 c2 49 01 	mov    WORD PTR ds:0x149c216,0x0
-  521171:	00 00 
+  521171:	00 00
   521173:	c7 05 e8 c1 49 01 01 	mov    DWORD PTR ds:0x149c1e8,0x1
-  52117a:	00 00 00 
+  52117a:	00 00 00
   52117d:	c7 05 e4 c1 49 01 01 	mov    DWORD PTR ds:0x149c1e4,0x1
-  521184:	00 00 00 
+  521184:	00 00 00
   521187:	e8 74 07 00 00       	call   0x521900
   52118c:	e8 0f cc f6 ff       	call   0x48dda0
   521191:	b0 01                	mov    al,0x1
   521193:	e9 77 02 00 00       	jmp    0x52140f
   521198:	c7 05 f8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f8,0x0
-  52119f:	00 00 00 
+  52119f:	00 00 00
   5211a2:	8b 47 08             	mov    eax,DWORD PTR [edi+0x8]
   5211a5:	a3 dc c1 49 01       	mov    ds:0x149c1dc,eax
   5211aa:	e8 41 f7 ff ff       	call   0x5208f0
@@ -2290,7 +2290,7 @@ Disassembly of section .text:
   5211dc:	52                   	push   edx
   5211dd:	8b ce                	mov    ecx,esi
   5211df:	c7 05 f8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f8,0x0
-  5211e6:	00 00 00 
+  5211e6:	00 00 00
   5211e9:	e8 52 03 00 00       	call   0x521540
   5211ee:	b0 01                	mov    al,0x1
   5211f0:	e9 1a 02 00 00       	jmp    0x52140f
@@ -2385,7 +2385,7 @@ Disassembly of section .text:
   52133e:	b0 01                	mov    al,0x1
   521340:	e9 ca 00 00 00       	jmp    0x52140f
   521345:	c7 05 f8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f8,0x0
-  52134c:	00 00 00 
+  52134c:	00 00 00
   52134f:	8b 47 08             	mov    eax,DWORD PTR [edi+0x8]
   521352:	50                   	push   eax
   521353:	a3 ec c1 49 01       	mov    ds:0x149c1ec,eax
@@ -2519,7 +2519,7 @@ Disassembly of section .text:
   5260c4:	6a 01                	push   0x1
   5260c6:	ff 10                	call   DWORD PTR [eax]
   5260c8:	c7 05 b8 40 45 01 00 	mov    DWORD PTR ds:0x14540b8,0x0
-  5260cf:	00 00 00 
+  5260cf:	00 00 00
   5260d2:	8b 35 a0 68 29 01    	mov    esi,DWORD PTR ds:0x12968a0
   5260d8:	85 f6                	test   esi,esi
   5260da:	74 1f                	je     0x5260fb
@@ -2530,7 +2530,7 @@ Disassembly of section .text:
   5260e9:	e8 c8 b1 82 00       	call   0xd512b6
   5260ee:	83 c4 08             	add    esp,0x8
   5260f1:	c7 05 a0 68 29 01 00 	mov    DWORD PTR ds:0x12968a0,0x0
-  5260f8:	00 00 00 
+  5260f8:	00 00 00
   5260fb:	8b 0d b4 47 29 01    	mov    ecx,DWORD PTR ds:0x12947b4
   526101:	68 b0 81 49 00       	push   0x4981b0
   526106:	6a 06                	push   0x6
@@ -2552,32 +2552,32 @@ Disassembly of section .text:
   526148:	68 f8 87 29 01       	push   0x12987f8
   52614d:	a3 a0 68 29 01       	mov    ds:0x12968a0,eax
   526152:	c7 05 f8 c1 49 01 00 	mov    DWORD PTR ds:0x149c1f8,0x0
-  526159:	00 00 00 
+  526159:	00 00 00
   52615c:	c7 05 f4 c1 49 01 01 	mov    DWORD PTR ds:0x149c1f4,0x1
-  526163:	00 00 00 
+  526163:	00 00 00
   526166:	c7 05 e8 c1 49 01 02 	mov    DWORD PTR ds:0x149c1e8,0x2
-  52616d:	00 00 00 
+  52616d:	00 00 00
   526170:	c7 05 e4 c1 49 01 02 	mov    DWORD PTR ds:0x149c1e4,0x2
-  526177:	00 00 00 
+  526177:	00 00 00
   52617a:	66 c7 05 16 c2 49 01 	mov    WORD PTR ds:0x149c216,0x101
-  526181:	01 01 
+  526181:	01 01
   526183:	c7 05 f0 c1 49 01 02 	mov    DWORD PTR ds:0x149c1f0,0x2
-  52618a:	00 00 00 
+  52618a:	00 00 00
   52618d:	e8 8e 12 85 00       	call   0xd77420
   526192:	83 c4 0c             	add    esp,0xc
   526195:	c7 05 f8 87 29 01 b8 	mov    DWORD PTR ds:0x12987f8,0xb8
-  52619c:	00 00 00 
+  52619c:	00 00 00
   52619f:	c7 05 10 88 29 01 00 	mov    DWORD PTR ds:0x1298810,0x0
-  5261a6:	00 00 00 
+  5261a6:	00 00 00
   5261a9:	c7 05 14 88 29 01 00 	mov    DWORD PTR ds:0x1298814,0x0
-  5261b0:	00 00 00 
+  5261b0:	00 00 00
   5261b3:	c6 05 1d 88 29 01 00 	mov    BYTE PTR ds:0x129881d,0x0
   5261ba:	c7 05 0c 88 29 01 00 	mov    DWORD PTR ds:0x129880c,0x0
-  5261c1:	00 00 00 
+  5261c1:	00 00 00
   5261c4:	c7 05 04 88 29 01 46 	mov    DWORD PTR ds:0x1298804,0x46
-  5261cb:	00 00 00 
+  5261cb:	00 00 00
   5261ce:	c7 05 18 88 29 01 02 	mov    DWORD PTR ds:0x1298818,0x2
-  5261d5:	00 00 00 
+  5261d5:	00 00 00
   5261d8:	e8 a2 09 87 00       	call   0xd96b7f
   5261dd:	69 c0 ff 7f 00 00    	imul   eax,eax,0x7fff
   5261e3:	99                   	cdq
@@ -2595,83 +2595,83 @@ Disassembly of section .text:
   526200:	a3 fc 87 29 01       	mov    ds:0x12987fc,eax
   526205:	c6 05 1c 88 29 01 00 	mov    BYTE PTR ds:0x129881c,0x0
   52620c:	c7 05 08 88 29 01 0a 	mov    DWORD PTR ds:0x1298808,0xa
-  526213:	00 00 00 
+  526213:	00 00 00
   526216:	c7 05 00 88 29 01 00 	mov    DWORD PTR ds:0x1298800,0x200
-  52621d:	02 00 00 
+  52621d:	02 00 00
   526220:	c7 05 20 88 29 01 10 	mov    DWORD PTR ds:0x1298820,0x10
-  526227:	00 00 00 
+  526227:	00 00 00
   52622a:	c7 05 2c 88 29 01 00 	mov    DWORD PTR ds:0x129882c,0x0
-  526231:	00 00 00 
+  526231:	00 00 00
   526234:	c7 05 28 88 29 01 00 	mov    DWORD PTR ds:0x1298828,0x0
-  52623b:	00 00 00 
+  52623b:	00 00 00
   52623e:	c7 05 24 88 29 01 ff 	mov    DWORD PTR ds:0x1298824,0xffffffff
-  526245:	ff ff ff 
+  526245:	ff ff ff
   526248:	c7 05 30 88 29 01 10 	mov    DWORD PTR ds:0x1298830,0x10
-  52624f:	00 00 00 
+  52624f:	00 00 00
   526252:	c7 05 3c 88 29 01 00 	mov    DWORD PTR ds:0x129883c,0x0
-  526259:	00 00 00 
+  526259:	00 00 00
   52625c:	c7 05 38 88 29 01 00 	mov    DWORD PTR ds:0x1298838,0x0
-  526263:	00 00 00 
+  526263:	00 00 00
   526266:	c7 05 34 88 29 01 ff 	mov    DWORD PTR ds:0x1298834,0xffffffff
-  52626d:	ff ff ff 
+  52626d:	ff ff ff
   526270:	c7 05 40 88 29 01 10 	mov    DWORD PTR ds:0x1298840,0x10
-  526277:	00 00 00 
+  526277:	00 00 00
   52627a:	c7 05 4c 88 29 01 00 	mov    DWORD PTR ds:0x129884c,0x0
-  526281:	00 00 00 
+  526281:	00 00 00
   526284:	c7 05 48 88 29 01 00 	mov    DWORD PTR ds:0x1298848,0x0
-  52628b:	00 00 00 
+  52628b:	00 00 00
   52628e:	c7 05 44 88 29 01 ff 	mov    DWORD PTR ds:0x1298844,0xffffffff
-  526295:	ff ff ff 
+  526295:	ff ff ff
   526298:	c7 05 50 88 29 01 10 	mov    DWORD PTR ds:0x1298850,0x10
-  52629f:	00 00 00 
+  52629f:	00 00 00
   5262a2:	c7 05 5c 88 29 01 00 	mov    DWORD PTR ds:0x129885c,0x0
-  5262a9:	00 00 00 
+  5262a9:	00 00 00
   5262ac:	c7 05 58 88 29 01 00 	mov    DWORD PTR ds:0x1298858,0x0
-  5262b3:	00 00 00 
+  5262b3:	00 00 00
   5262b6:	c7 05 54 88 29 01 ff 	mov    DWORD PTR ds:0x1298854,0xffffffff
-  5262bd:	ff ff ff 
+  5262bd:	ff ff ff
   5262c0:	c7 05 60 88 29 01 10 	mov    DWORD PTR ds:0x1298860,0x10
-  5262c7:	00 00 00 
+  5262c7:	00 00 00
   5262ca:	c7 05 6c 88 29 01 00 	mov    DWORD PTR ds:0x129886c,0x0
-  5262d1:	00 00 00 
+  5262d1:	00 00 00
   5262d4:	c7 05 68 88 29 01 00 	mov    DWORD PTR ds:0x1298868,0x0
-  5262db:	00 00 00 
+  5262db:	00 00 00
   5262de:	c7 05 64 88 29 01 ff 	mov    DWORD PTR ds:0x1298864,0xffffffff
-  5262e5:	ff ff ff 
+  5262e5:	ff ff ff
   5262e8:	c7 05 70 88 29 01 10 	mov    DWORD PTR ds:0x1298870,0x10
-  5262ef:	00 00 00 
+  5262ef:	00 00 00
   5262f2:	c7 05 7c 88 29 01 00 	mov    DWORD PTR ds:0x129887c,0x0
-  5262f9:	00 00 00 
+  5262f9:	00 00 00
   5262fc:	c7 05 78 88 29 01 00 	mov    DWORD PTR ds:0x1298878,0x0
-  526303:	00 00 00 
+  526303:	00 00 00
   526306:	c7 05 74 88 29 01 ff 	mov    DWORD PTR ds:0x1298874,0xffffffff
-  52630d:	ff ff ff 
+  52630d:	ff ff ff
   526310:	c7 05 80 88 29 01 10 	mov    DWORD PTR ds:0x1298880,0x10
-  526317:	00 00 00 
+  526317:	00 00 00
   52631a:	c7 05 8c 88 29 01 00 	mov    DWORD PTR ds:0x129888c,0x0
-  526321:	00 00 00 
+  526321:	00 00 00
   526324:	c7 05 88 88 29 01 00 	mov    DWORD PTR ds:0x1298888,0x0
-  52632b:	00 00 00 
+  52632b:	00 00 00
   52632e:	c7 05 84 88 29 01 ff 	mov    DWORD PTR ds:0x1298884,0xffffffff
-  526335:	ff ff ff 
+  526335:	ff ff ff
   526338:	c7 05 90 88 29 01 10 	mov    DWORD PTR ds:0x1298890,0x10
-  52633f:	00 00 00 
+  52633f:	00 00 00
   526342:	c7 05 9c 88 29 01 00 	mov    DWORD PTR ds:0x129889c,0x0
-  526349:	00 00 00 
+  526349:	00 00 00
   52634c:	c7 05 98 88 29 01 00 	mov    DWORD PTR ds:0x1298898,0x0
-  526353:	00 00 00 
+  526353:	00 00 00
   526356:	c7 05 94 88 29 01 ff 	mov    DWORD PTR ds:0x1298894,0xffffffff
-  52635d:	ff ff ff 
+  52635d:	ff ff ff
   526360:	c7 05 a0 88 29 01 10 	mov    DWORD PTR ds:0x12988a0,0x10
-  526367:	00 00 00 
+  526367:	00 00 00
   52636a:	c7 05 ac 88 29 01 00 	mov    DWORD PTR ds:0x12988ac,0x0
-  526371:	00 00 00 
+  526371:	00 00 00
   526374:	c7 05 a8 88 29 01 00 	mov    DWORD PTR ds:0x12988a8,0x0
-  52637b:	00 00 00 
+  52637b:	00 00 00
   52637e:	68 b0 81 49 00       	push   0x4981b0
   526383:	ff 35 4c c2 49 01    	push   DWORD PTR ds:0x149c24c
   526389:	c7 05 a4 88 29 01 ff 	mov    DWORD PTR ds:0x12988a4,0xffffffff
-  526390:	ff ff ff 
+  526390:	ff ff ff
   526393:	e8 38 bb 14 00       	call   0x671ed0
   526398:	8b 0d d8 40 45 01    	mov    ecx,DWORD PTR ds:0x14540d8
   52639e:	68 00 02 00 00       	push   0x200
@@ -2728,7 +2728,7 @@ Disassembly of section .text:
   526451:	e8 5a 86 f1 ff       	call   0x43eab0
   526456:	33 c0                	xor    eax,eax
   526458:	c7 85 ec fb ff ff 07 	mov    DWORD PTR [ebp-0x414],0x7
-  52645f:	00 00 00 
+  52645f:	00 00 00
   526462:	66 89 85 2e fe ff ff 	mov    WORD PTR [ebp-0x1d2],ax
   526469:	89 85 e8 fb ff ff    	mov    DWORD PTR [ebp-0x418],eax
   52646f:	66 89 85 d8 fb ff ff 	mov    WORD PTR [ebp-0x428],ax
@@ -2760,12 +2760,12 @@ Disassembly of section .text:
   5264c9:	e8 e2 85 f1 ff       	call   0x43eab0
   5264ce:	33 c0                	xor    eax,eax
   5264d0:	c7 05 30 c2 49 01 07 	mov    DWORD PTR ds:0x149c230,0x7
-  5264d7:	00 00 00 
+  5264d7:	00 00 00
   5264da:	66 a3 1c c2 49 01    	mov    ds:0x149c21c,ax
   5264e0:	b9 1c c2 49 01       	mov    ecx,0x149c21c
   5264e5:	8d 85 d8 fb ff ff    	lea    eax,[ebp-0x428]
   5264eb:	c7 05 2c c2 49 01 00 	mov    DWORD PTR ds:0x149c22c,0x0
-  5264f2:	00 00 00 
+  5264f2:	00 00 00
   5264f5:	50                   	push   eax
   5264f6:	e8 b5 83 f1 ff       	call   0x43e8b0
   5264fb:	8b 8d ec fb ff ff    	mov    ecx,DWORD PTR [ebp-0x414]
@@ -2904,23 +2904,23 @@ Disassembly of section .text:
   5266a2:	80 7f 04 00          	cmp    BYTE PTR [edi+0x4],0x0
   5266a6:	75 c8                	jne    0x526670
   5266a8:	66 c7 05 16 c2 49 01 	mov    WORD PTR ds:0x149c216,0x0
-  5266af:	00 00 
+  5266af:	00 00
   5266b1:	c7 05 e8 c1 49 01 01 	mov    DWORD PTR ds:0x149c1e8,0x1
-  5266b8:	00 00 00 
+  5266b8:	00 00 00
   5266bb:	c7 05 e4 c1 49 01 01 	mov    DWORD PTR ds:0x149c1e4,0x1
-  5266c2:	00 00 00 
+  5266c2:	00 00 00
   5266c5:	e8 86 13 f7 ff       	call   0x497a50
   5266ca:	b0 01                	mov    al,0x1
   5266cc:	e9 aa 07 00 00       	jmp    0x526e7b
   5266d1:	66 c7 05 16 c2 49 01 	mov    WORD PTR ds:0x149c216,0x101
-  5266d8:	01 01 
+  5266d8:	01 01
   5266da:	eb 09                	jmp    0x5266e5
   5266dc:	66 c7 05 16 c2 49 01 	mov    WORD PTR ds:0x149c216,0x1
-  5266e3:	01 00 
+  5266e3:	01 00
   5266e5:	c7 05 e4 c1 49 01 02 	mov    DWORD PTR ds:0x149c1e4,0x2
-  5266ec:	00 00 00 
+  5266ec:	00 00 00
   5266ef:	c7 05 e8 c1 49 01 02 	mov    DWORD PTR ds:0x149c1e8,0x2
-  5266f6:	00 00 00 
+  5266f6:	00 00 00
   5266f9:	e8 52 13 f7 ff       	call   0x497a50
   5266fe:	b0 01                	mov    al,0x1
   526700:	e9 76 07 00 00       	jmp    0x526e7b
@@ -3056,7 +3056,7 @@ Disassembly of section .text:
   5268f5:	e8 bc a9 82 00       	call   0xd512b6
   5268fa:	83 c4 08             	add    esp,0x8
   5268fd:	c7 05 a0 68 29 01 00 	mov    DWORD PTR ds:0x12968a0,0x0
-  526904:	00 00 00 
+  526904:	00 00 00
   526907:	b0 01                	mov    al,0x1
   526909:	e9 6d 05 00 00       	jmp    0x526e7b
   52690e:	2d 6b 1b 00 00       	sub    eax,0x1b6b
@@ -3074,7 +3074,7 @@ Disassembly of section .text:
   52693e:	6a 01                	push   0x1
   526940:	ff 10                	call   DWORD PTR [eax]
   526942:	c7 05 b8 40 45 01 00 	mov    DWORD PTR ds:0x14540b8,0x0
-  526949:	00 00 00 
+  526949:	00 00 00
   52694c:	6a 18                	push   0x18
   52694e:	e8 76 a9 82 00       	call   0xd512c9
   526953:	83 c4 04             	add    esp,0x4
@@ -3174,7 +3174,7 @@ Disassembly of section .text:
   526aba:	89 81 a8 02 00 00    	mov    DWORD PTR [ecx+0x2a8],eax
   526ac0:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   526ac5:	c7 80 d4 02 00 00 00 	mov    DWORD PTR [eax+0x2d4],0x0
-  526acc:	00 00 00 
+  526acc:	00 00 00
   526acf:	8b 35 a0 68 29 01    	mov    esi,DWORD PTR ds:0x12968a0
   526ad5:	80 be 8d 05 00 00 ff 	cmp    BYTE PTR [esi+0x58d],0xff
   526adc:	75 11                	jne    0x526aef
@@ -3207,7 +3207,7 @@ Disassembly of section .text:
   526b45:	c6 81 dc 02 00 00 01 	mov    BYTE PTR [ecx+0x2dc],0x1
   526b4c:	a1 a0 68 29 01       	mov    eax,ds:0x12968a0
   526b51:	c7 80 e0 02 00 00 01 	mov    DWORD PTR [eax+0x2e0],0x1
-  526b58:	00 00 00 
+  526b58:	00 00 00
   526b5b:	a1 f4 c1 49 01       	mov    eax,ds:0x149c1f4
   526b60:	8b 0d a0 68 29 01    	mov    ecx,DWORD PTR ds:0x12968a0
   526b66:	83 f8 03             	cmp    eax,0x3
@@ -3303,10 +3303,10 @@ Disassembly of section .text:
   4fef37:	e8 b4 35 14 00       	call   0x6424f0
   4fef3c:	83 c4 0c             	add    esp,0xc
   4fef3f:	c7 05 bc 47 29 01 00 	mov    DWORD PTR ds:0x12947bc,0x0
-  4fef46:	00 00 00 
+  4fef46:	00 00 00
   4fef49:	33 c9                	xor    ecx,ecx
   4fef4b:	c7 05 ec 42 16 01 14 	mov    DWORD PTR ds:0x11642ec,0x14
-  4fef52:	00 00 00 
+  4fef52:	00 00 00
   4fef55:	b3 01                	mov    bl,0x1
   4fef57:	e8 94 b8 f7 ff       	call   0x47a7f0
   4fef5c:	8b d6                	mov    edx,esi
@@ -3531,12 +3531,12 @@ Disassembly of section .text:
   4ff2a3:	8d 8d 48 fb ff ff    	lea    ecx,[ebp-0x4b8]
   4ff2a9:	e8 e2 2c fb ff       	call   0x4b1f90
   4ff2ae:	c7 85 34 fb ff ff ec 	mov    DWORD PTR [ebp-0x4cc],0x10303ec
-  4ff2b5:	03 03 01 
+  4ff2b5:	03 03 01
   4ff2b8:	c7 85 3c fb ff ff 01 	mov    DWORD PTR [ebp-0x4c4],0x1
-  4ff2bf:	00 00 00 
+  4ff2bf:	00 00 00
   4ff2c2:	e8 89 0a ff ff       	call   0x4efd50
   4ff2c7:	c7 85 38 fb ff ff ff 	mov    DWORD PTR [ebp-0x4c8],0xffffffff
-  4ff2ce:	ff ff ff 
+  4ff2ce:	ff ff ff
   4ff2d1:	51                   	push   ecx
   4ff2d2:	ba fc 37 03 01       	mov    edx,0x10337fc
   4ff2d7:	c6 45 fc 03          	mov    BYTE PTR [ebp-0x4],0x3
@@ -3553,7 +3553,7 @@ Disassembly of section .text:
   4ff302:	51                   	push   ecx
   4ff303:	ba 10 38 03 01       	mov    edx,0x1033810
   4ff308:	c7 85 40 fb ff ff 14 	mov    DWORD PTR [ebp-0x4c0],0x1033114
-  4ff30f:	31 03 01 
+  4ff30f:	31 03 01
   4ff312:	8d 8d 48 fb ff ff    	lea    ecx,[ebp-0x4b8]
   4ff318:	e8 23 fb ff ff       	call   0x4fee40
   4ff31d:	83 c4 04             	add    esp,0x4
@@ -3586,7 +3586,7 @@ Disassembly of section .text:
   4ff385:	e8 66 31 14 00       	call   0x6424f0
   4ff38a:	83 c4 08             	add    esp,0x8
   4ff38d:	c7 85 34 fb ff ff ec 	mov    DWORD PTR [ebp-0x4cc],0x10303ec
-  4ff394:	03 03 01 
+  4ff394:	03 03 01
   4ff397:	8d 8d 48 fb ff ff    	lea    ecx,[ebp-0x4b8]
   4ff39d:	e8 ae 1e fb ff       	call   0x4b1250
   4ff3a2:	eb 22                	jmp    0x4ff3c6
@@ -3657,7 +3657,7 @@ Disassembly of section .text:
   50b10e:	cc                   	int3
   50b10f:	cc                   	int3
   50b110:	c7 05 70 da 1c 01 cc 	mov    DWORD PTR ds:0x11cda70,0x10559cc
-  50b117:	59 05 01 
+  50b117:	59 05 01
   50b11a:	b8 70 da 1c 01       	mov    eax,0x11cda70
   50b11f:	c3                   	ret
   50b120:	8b 41 10             	mov    eax,DWORD PTR [ecx+0x10]

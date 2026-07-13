@@ -129,7 +129,7 @@ emit_disassembly() {
     emit_disassembly 'single-player lobby start path' 0x00526000 0x00526c20
     emit_disassembly 'CMapFile fixed-map load wrapper' 0x004feef0 0x004ff440
     emit_disassembly 'CRandomMaps CMapFile owner (out of scope)' 0x0050b100 0x0050b2b0
-} >"$tmp"
+} | sed 's/[[:space:]]\+$//' >"$tmp"
 
 mv "$tmp" "$OUTPUT"
 trap - EXIT
