@@ -103,10 +103,17 @@ retries the reorder repeatedly within the same map session.
 - Origin was `single-player-map` / `eligible`; SU identity confirmed `Map\Singleplayer\Aeneas.map`.
 - `S4_Main` remained responsive while the victory dialog was visible. The after-game page was not required to establish this event result.
 
+### Live control 3: Custom Map local defeat
+
+- Accepted process/session: PID `12768`, `phase-3-session-12768`, map-init session `1`.
+- The Custom Map identity was confirmed as `Antares`, `Map\User\Antares.map`.
+- Launch origin remained `single-player-map` / `eligible`, confirming that an offline Custom Map is not excluded from completion eligibility.
+- Native evidence recorded `native-subscription=attached`, exactly one `native-subscription=reinserted-front`, then exactly one terminal record: `event-id=609`, `local-result=lost`, `wparam=0`, `lparam=0`, `game-tick=145`, duplicate count `0`.
+- `S4_Main` remained responsive while the defeat dialog was visible.
+
 Collect the remaining controls one at a time and verify game responsiveness after each:
 
-1. Normal local defeat: event `609`, `wParam=0`, local result `lost`.
-2. Load-before-victory: recovered origin and identity plus event `609`, `wParam=1`.
-3. Controlled stop: native detachment precedes public-listener removal and trace flush succeeds.
+1. Load-before-victory: recovered origin and identity plus event `609`, `wParam=1`.
+2. Controlled stop: native detachment precedes public-listener removal and trace flush succeeds.
 
 Completion storage and completed-level markers remain disabled until these live controls pass.
