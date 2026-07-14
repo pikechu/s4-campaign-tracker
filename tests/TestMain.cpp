@@ -34,6 +34,7 @@ int RunCompletionStoreTests();
 int RunWin32CompletionFileOpsTests();
 int RunCompletionWorkerTests();
 int RunCompletionRuntimeFlowTests();
+int RunMarkerCalibrationTraceTests();
 
 int main() {
     try {
@@ -69,6 +70,7 @@ int main() {
         RunWin32CompletionFileOpsTests();
         RunCompletionWorkerTests();
         RunCompletionRuntimeFlowTests();
+        RunMarkerCalibrationTraceTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';
