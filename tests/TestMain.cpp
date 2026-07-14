@@ -32,6 +32,7 @@ int RunCompletionCandidateCoordinatorTests();
 int RunCompletionJsonTests();
 int RunCompletionStoreTests();
 int RunWin32CompletionFileOpsTests();
+int RunCompletionWorkerTests();
 
 int main() {
     try {
@@ -65,6 +66,7 @@ int main() {
         RunCompletionJsonTests();
         RunCompletionStoreTests();
         RunWin32CompletionFileOpsTests();
+        RunCompletionWorkerTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';
