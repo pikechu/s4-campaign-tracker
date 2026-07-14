@@ -3,6 +3,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace {
 
@@ -19,7 +20,38 @@ campaign_completion::CompletionRecord Record(std::string suffix) {
     record.relativeId = "Map\\User\\" + suffix + ".map";
     record.displayName = suffix;
     record.mapKind = CompletionMapKind::Fixed;
-    record.launchSource = LaunchSource::SinglePlayerMap;
+    record.launchSource = LaunchSource::SinglePlayerCustomMap;
+    record.completedAtUtc = "2026-07-14T01:57:38Z";
+    return record;
+}
+
+campaign_completion::CompletionRecord LegacyRecord(
+    std::string suffix,
+    campaign_completion::LaunchSource source) {
+    auto record = Record(std::move(suffix));
+    record.launchSource = source;
+    return record;
+}
+
+campaign_completion::CompletionRecord RecordAt(
+    std::string relative,
+    std::string display,
+    campaign_completion::LaunchSource source) {
+    using namespace campaign_completion;
+    CompletionRecord record{};
+    record.relativeId = std::move(relative);
+    const auto wide = StrictUtf8ToWide(record.relativeId);
+    if (!wide.has_value()) {
+        throw std::runtime_error("valid fixture relative path did not decode");
+    }
+    const auto stable = BuildStableMapId(*wide);
+    if (!stable.has_value()) {
+        throw std::runtime_error("valid fixture relative path did not normalize");
+    }
+    record.stableId = *stable;
+    record.displayName = std::move(display);
+    record.mapKind = CompletionMapKind::Fixed;
+    record.launchSource = source;
     record.completedAtUtc = "2026-07-14T01:57:38Z";
     return record;
 }
@@ -157,23 +189,91 @@ int RunCompletionStoreTests() {
         auto store = MakeStore(files);
         const auto load = store.Load();
         Require(load.mode == CompletionStoreMode::WritableLoaded &&
-                    load.recordCount == 1u,
+                    load.recordCount == 1u && files.writeCalls == 0u &&
+                    files.replaceCalls == 0u,
                 "valid main must remain writable despite invalid backup");
     }
     {
         FakeFileOps files;
+        const auto legacy =
+            LegacyRecord("antares", LaunchSource::SinglePlayerMap);
+        const auto oldBytes = Database(legacy);
+        files.files[L"main"] = oldBytes;
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        const auto snapshot = store.Snapshot();
+        Require(load.mode == CompletionStoreMode::WritableLoaded &&
+                    files.writeCalls == 1u && files.replaceCalls == 1u &&
+                    files.files[L"backup"] == oldBytes &&
+                    snapshot.records.size() == 1u &&
+                    snapshot.records.front().launchSource ==
+                        LaunchSource::SinglePlayerCustomMap &&
+                    snapshot.records.front().stableId == legacy.stableId &&
+                    snapshot.records.front().completedAtUtc ==
+                        legacy.completedAtUtc,
+                "writable legacy source is atomically normalized");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(RecordAt(
+            "Map\\Multiplayer\\Alien.map", "Alien",
+            LaunchSource::LoadSinglePlayerMap));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded &&
+                    store.Snapshot().records.front().launchSource ==
+                        LaunchSource::SinglePlayerMultiplayerMap,
+                "loaded multiplayer-list map is canonically normalized");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(RecordAt(
+            "Map\\Campaign\\roman01.map", "roman01",
+            LaunchSource::LoadCampaign));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded &&
+                    store.Snapshot().records.front().launchSource ==
+                        LaunchSource::Campaign,
+                "loaded campaign is canonically normalized");
+    }
+    {
+        FakeFileOps files;
         files.files[L"main"] = "{broken";
-        files.files[L"backup"] = Database(Record("a"));
+        const auto legacy =
+            LegacyRecord("a", LaunchSource::SinglePlayerMap);
+        files.files[L"backup"] = Database(legacy);
         auto store = MakeStore(files);
         const auto load = store.Load();
         Require(load.mode == CompletionStoreMode::ReadOnlyBackup &&
-                    load.recordCount == 1u,
+                    load.recordCount == 1u && files.writeCalls == 0u &&
+                    store.Snapshot().records.front().launchSource ==
+                        LaunchSource::SinglePlayerMap,
                 "corrupt main with valid backup must load read-only");
         files.ResetOperationCounts();
         Require(store.AddIfAbsent(Record("b")).status ==
                     CompletionAddStatus::ReadOnly &&
                     files.writeCalls == 0u,
                 "read-only backup mode must refuse all writes");
+    }
+    {
+        FakeFileOps files;
+        const auto legacy =
+            LegacyRecord("failure", LaunchSource::SinglePlayerMap);
+        files.files[L"main"] = Database(legacy);
+        files.writeFailure =
+            CompletionTransactionStage::WriteTemporary;
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode ==
+                    CompletionStoreMode::ReadOnlyNormalizationFailed &&
+                    store.Snapshot().records.size() == 1u &&
+                    store.Snapshot().records.front().launchSource ==
+                        LaunchSource::SinglePlayerMap,
+                "failed normalization retains original data read-only");
+        files.ResetOperationCounts();
+        Require(store.AddIfAbsent(Record("later")).status ==
+                    CompletionAddStatus::ReadOnly &&
+                    files.writeCalls == 0u && files.replaceCalls == 0u,
+                "failed normalization disables future writes");
     }
     {
         FakeFileOps files;

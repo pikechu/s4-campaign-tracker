@@ -53,6 +53,14 @@ int RunCompletionRecordTests() {
     Require(WideToStrictUtf8(L"\u6218\u5F79") ==
                 std::optional<std::string>("\xE6\x88\x98\xE5\xBD\xB9"),
             "non-ASCII text must use strict UTF-8");
+    Require(StrictUtf8ToWide("\xE6\x88\x98\xE5\xBD\xB9") ==
+                std::optional<std::wstring>(L"\u6218\u5F79"),
+            "strict UTF-8 conversion must preserve non-ASCII text");
+    Require(!StrictUtf8ToWide("\xC0\xAF"),
+            "overlong UTF-8 must be rejected");
+    const std::string utf8EmbeddedNull("Map\0User", 8u);
+    Require(!StrictUtf8ToWide(utf8EmbeddedNull),
+            "UTF-8 with an embedded NUL must be rejected");
 
     Require(CompletionKindFor(L"RD_LCGSDR30") ==
                 CompletionMapKind::Random,
