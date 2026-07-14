@@ -97,6 +97,7 @@ add_executable(campaign_completion_tests
   tests/CompletionStoreTests.cpp
   tests/Win32CompletionFileOpsTests.cpp
   tests/CompletionWorkerTests.cpp
+  tests/CompletionRuntimeFlowTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp

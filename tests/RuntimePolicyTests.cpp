@@ -84,15 +84,15 @@ int RunRuntimePolicyTests() {
     const auto policy = ReadText(sourceRoot / "config" /
                                  "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.3.3",
-             "DiagnosticMode=NativeVictoryEventCalibration",
+             "Version=0.4.0",
+             "DiagnosticMode=CompletionPersistence",
              "NativeEventSubscription=1", "NativeTerminalEventId=609",
              "IdentitySource=SettlersUnitedLua",
              "PublicSettlementUiProbe=1", "LaunchOriginTracking=1",
              "LoadOriginRecovery=1", "InternalVictoryHook=0",
              "GameDefaultGameEndCheckCalls=0", "HookCount=0",
              "CodePatchBytes=0", "LuaWrites=0", "GameDataWrites=0",
-             "CompletionDetection=0", "CompletionStorage=0",
+             "CompletionDetection=1", "CompletionStorage=1",
              "CompletionMarkers=0", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
                 "phase 3B INI policy field missing");
@@ -123,10 +123,10 @@ int RunRuntimePolicyTests() {
                 "Plugins/CampaignCompletion/CampaignCompletionDebug.ini") !=
                 std::string::npos,
             "workflow must require the plugin-relative INI layout");
-    Require(runtime.find("version=0.3.3") != std::string::npos &&
-                runtime.find("mode=native-event-calibration") !=
+    Require(runtime.find("version=0.4.0") != std::string::npos &&
+                runtime.find("mode=completion-persistence") !=
                     std::string::npos,
-            "runtime header identifies phase 3B native event calibration");
+            "runtime header identifies completion persistence");
     for (const auto* forbidden : {
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout",
              "fixedMapHook_", "hookBackend_", "originalInvoker_",
@@ -142,6 +142,15 @@ int RunRuntimePolicyTests() {
                     std::string::npos &&
                 runtimeHeader.find("VictoryEventProbe") != std::string::npos,
             "runtime owns process-lifetime native subscription components");
+    Require(runtimeHeader.find("Win32CompletionFileOps") !=
+                    std::string::npos &&
+                runtimeHeader.find("CompletionStore") != std::string::npos &&
+                runtimeHeader.find("CompletionWorker") != std::string::npos &&
+                runtimeHeader.find("CompletionCandidateCoordinator") !=
+                    std::string::npos &&
+                runtimeHeader.find("CompletionAdmission") !=
+                    std::string::npos,
+            "runtime owns completion persistence in dependency-safe storage layers");
     Require(runtimeHeader.find("S4LuaApi") != std::string::npos &&
                 runtimeHeader.find("S4LuaMapBridge") != std::string::npos &&
                 runtimeHeader.find("MapIdentityCoordinator") !=
@@ -174,6 +183,13 @@ int RunRuntimePolicyTests() {
             "diagnostic ASI source block is present");
     const auto asiSources = cmake.substr(asiBegin, asiEnd - asiBegin);
     for (const auto* requiredSource : {
+             "src/completion/CompletionAdmission.cpp",
+             "src/completion/CompletionCandidateCoordinator.cpp",
+             "src/completion/CompletionJson.cpp",
+             "src/completion/CompletionRecord.cpp",
+             "src/completion/CompletionStore.cpp",
+             "src/completion/CompletionWorker.cpp",
+             "src/completion/Win32CompletionFileOps.cpp",
              "src/native/NativeEventAdmission.cpp",
              "src/native/NativeEventRegistration.cpp",
              "src/native/NativeVictoryEventSubscriber.cpp",
@@ -319,6 +335,13 @@ int RunRuntimePolicyTests() {
                 std::string::npos &&
                 dllMain.find("RuntimeInstance().Stop()") == std::string::npos,
             "exported stop requests control-loop shutdown only");
+    Require(runtime.find(
+                "static DiagnosticRuntime* const runtime = new DiagnosticRuntime();") !=
+                std::string::npos,
+            "runtime must have process lifetime outside loader-lock destruction");
+    Require(dllMain.find("DLL_PROCESS_DETACH") == std::string::npos &&
+                dllMain.find("CompletionWorker") == std::string::npos,
+            "DllMain must not stop or destroy persistence resources on detach");
     const auto requestDetach = runtime.find("nativeSubscriber_.RequestDetach()");
     const auto detachedCheck = runtime.find("nativeSubscriber_.Detached()",
                                              requestDetach);
@@ -341,5 +364,15 @@ int RunRuntimePolicyTests() {
     Require(finalTraceClose != std::string::npos &&
                 finalListenerStop < finalTraceClose,
             "successful controlled stop closes trace after public listeners");
+    const auto drain = runtime.find(
+        "worker_->StopAndDrain(std::chrono::milliseconds(5000))");
+    const auto drainFailureReturn = runtime.find("return false;", drain);
+    const auto workerReset = runtime.find("worker_.reset()", drain);
+    Require(drain != std::string::npos &&
+                drainFailureReturn != std::string::npos &&
+                workerReset != std::string::npos &&
+                drain < drainFailureReturn &&
+                drainFailureReturn < workerReset,
+            "drain timeout must retain worker and store ownership for later retry");
     return 0;
 }
