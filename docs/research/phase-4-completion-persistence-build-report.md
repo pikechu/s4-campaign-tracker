@@ -162,3 +162,62 @@ At build-report creation time, the report and downloaded artifacts were
 project files only and no deployment had occurred. The later approved guarded
 deployment is recorded above; no file outside its authorized archive, ASI, and
 configuration scope was changed.
+
+## Canonical map-category follow-up build
+
+The direct/load consistency correction was completed at commit
+`1ec15ecaebf49369ef392874f3b7b37886ac50e4`. Navigation and load controls
+continue to decide admission, while validated SU relative map identity now
+selects the canonical persisted category. Writable schema-version-1 records
+are normalized through the existing verified atomic replacement transaction;
+normalization changes only `launch_source`. A failed normalization retains the
+original valid snapshot read-only, disables future writes, and logs that
+manual handling is required.
+
+TDD evidence:
+
+- RED run `29305605022` built successfully and passed both policy checks, then
+  failed CTest only at `a confirmed custom-map load becomes eligible and
+  canonical`.
+- GREEN classifier run `29305722340` passed the full workflow.
+- RED store run `29305851426` failed Build only because the tests referenced
+  the not-yet-defined `StrictUtf8ToWide` and
+  `ReadOnlyNormalizationFailed` interfaces.
+- GREEN store run `29305997273` passed the full workflow.
+
+Final workflow evidence:
+
+- Workflow: `build-debug-asi`
+- Run: `29306106271`
+- Job: `86999628073`
+- Head SHA: `1ec15ecaebf49369ef392874f3b7b37886ac50e4`
+- Run URL: <https://github.com/pikechu/s4-campaign-tracker/actions/runs/29306106271>
+- Conclusion: `success`
+- Artifact: `CampaignCompletionDebug-Win32`, ID `8300294794`
+- Uploaded artifact digest:
+  `95d3621e84184473841a35c3ac4942d91464ace54cb2aa9a6c81a0a4ac1ca311`
+- CTest: `1/1` passed in `0.53 s`; total test time `0.56 s`
+
+The run passed Settlers United archive integration, Win32 `/W4 /WX` Build,
+the native-event policy verifier, every forbidden-behavior mutation fixture,
+CTest, packaging, PE32/package verification, and artifact upload.
+
+The downloaded candidate is isolated below the project-owned directory
+`artifacts/run-29306106271/`. Independent inspection produced:
+
+| Item | Bytes | SHA-256 |
+|---|---:|---|
+| `CampaignCompletionDebug.zip` | 604069 | `1e5c98e181bde279258fbf2da892a2218a2cbf35d613b71f5596e98260d91724` |
+| `CampaignCompletionDebug.asi` | 1806336 | `3b403e94e26435f8cce36c52098b4787a3e66a137f1a61c0adc4a5a02ffbe502` |
+| `CampaignCompletionDebug.ini` | 591 | `573a99ce24026b43901b0c4914b1b06ae6a6eb08f82826926695c88544ef5b2a` |
+
+The ZIP contains exactly
+`Plugins/CampaignCompletionDebug.asi` and
+`Plugins/CampaignCompletion/CampaignCompletionDebug.ini`. The INI is
+byte-identical to the repository configuration. Independent binary inspection
+identifies the ASI as a six-section PE32 Intel 80386 DLL and finds the expected
+`CampaignCompletionDebugStop` export.
+
+This follow-up build has not been deployed. Candidate inspection and report
+creation changed only project-owned files; guarded archive replacement remains
+blocked until the game is closed and the user approves the deployment step.
