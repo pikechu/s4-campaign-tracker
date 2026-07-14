@@ -30,6 +30,8 @@ int RunPluginPathsTests();
 int RunCompletionRecordTests();
 int RunCompletionCandidateCoordinatorTests();
 int RunCompletionJsonTests();
+int RunCompletionStoreTests();
+int RunWin32CompletionFileOpsTests();
 
 int main() {
     try {
@@ -61,6 +63,8 @@ int main() {
         RunCompletionRecordTests();
         RunCompletionCandidateCoordinatorTests();
         RunCompletionJsonTests();
+        RunCompletionStoreTests();
+        RunWin32CompletionFileOpsTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';

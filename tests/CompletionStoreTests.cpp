@@ -1,0 +1,299 @@
+#include "completion/CompletionStore.h"
+
+#include <map>
+#include <stdexcept>
+#include <string>
+
+namespace {
+
+void Require(bool condition, const char* message) {
+    if (!condition) {
+        throw std::runtime_error(message);
+    }
+}
+
+campaign_completion::CompletionRecord Record(std::string suffix) {
+    using namespace campaign_completion;
+    CompletionRecord record{};
+    record.stableId = "map:map\\user\\" + suffix + ".map";
+    record.relativeId = "Map\\User\\" + suffix + ".map";
+    record.displayName = suffix;
+    record.mapKind = CompletionMapKind::Fixed;
+    record.launchSource = LaunchSource::SinglePlayerMap;
+    record.completedAtUtc = "2026-07-14T01:57:38Z";
+    return record;
+}
+
+std::string Database(const campaign_completion::CompletionRecord& record) {
+    campaign_completion::CompletionDatabaseSnapshot snapshot{};
+    snapshot.records.push_back(record);
+    const auto encoded = campaign_completion::EncodeCompletionJson(snapshot);
+    if (!encoded.has_value()) {
+        throw std::runtime_error("valid test record did not encode");
+    }
+    return *encoded;
+}
+
+class FakeFileOps final : public campaign_completion::ICompletionFileOps {
+public:
+    using path = std::filesystem::path;
+
+    campaign_completion::CompletionReadResult ReadBounded(
+        const path& value, std::size_t limit) noexcept override {
+        ++readCalls;
+        if (failedRead == value) {
+            return {campaign_completion::CompletionFileStatus::Failed, {},
+                    ERROR_ACCESS_DENIED};
+        }
+        const auto found = files.find(value);
+        if (found == files.end()) {
+            return {campaign_completion::CompletionFileStatus::Missing, {},
+                    ERROR_FILE_NOT_FOUND};
+        }
+        if (found->second.size() > limit) {
+            return {campaign_completion::CompletionFileStatus::Failed, {},
+                    ERROR_FILE_TOO_LARGE};
+        }
+        if (corruptTemporaryRead && value == temporary) {
+            return {campaign_completion::CompletionFileStatus::Success,
+                    "{broken", ERROR_SUCCESS};
+        }
+        return {campaign_completion::CompletionFileStatus::Success,
+                found->second, ERROR_SUCCESS};
+    }
+
+    campaign_completion::CompletionWriteResult WriteTemporaryAndFlush(
+        const path& value, std::string_view bytes) noexcept override {
+        ++writeCalls;
+        if (writeFailure ==
+            campaign_completion::CompletionTransactionStage::WriteTemporary) {
+            return {false, writeFailure, ERROR_WRITE_FAULT};
+        }
+        files[value] = std::string(bytes);
+        if (writeFailure ==
+            campaign_completion::CompletionTransactionStage::FlushTemporary) {
+            return {false, writeFailure, ERROR_WRITE_FAULT};
+        }
+        return {true,
+                campaign_completion::CompletionTransactionStage::None,
+                ERROR_SUCCESS};
+    }
+
+    campaign_completion::CompletionWriteResult ReplaceWithBackup(
+        const path& main, const path& temporaryPath,
+        const path& backup) noexcept override {
+        ++replaceCalls;
+        if (replaceFailure !=
+            campaign_completion::CompletionTransactionStage::None) {
+            return {false, replaceFailure, ERROR_UNABLE_TO_MOVE_REPLACEMENT};
+        }
+        files[backup] = files[main];
+        files[main] = files[temporaryPath];
+        files.erase(temporaryPath);
+        return {true,
+                campaign_completion::CompletionTransactionStage::None,
+                ERROR_SUCCESS};
+    }
+
+    campaign_completion::CompletionWriteResult MoveFirstWriteThrough(
+        const path& temporaryPath, const path& main) noexcept override {
+        ++moveCalls;
+        if (moveFailure) {
+            return {false,
+                    campaign_completion::CompletionTransactionStage::MoveFirst,
+                    ERROR_UNABLE_TO_MOVE_REPLACEMENT};
+        }
+        files[main] = files[temporaryPath];
+        files.erase(temporaryPath);
+        return {true,
+                campaign_completion::CompletionTransactionStage::None,
+                ERROR_SUCCESS};
+    }
+
+    void ResetOperationCounts() noexcept {
+        readCalls = 0u;
+        writeCalls = 0u;
+        replaceCalls = 0u;
+        moveCalls = 0u;
+    }
+
+    std::map<path, std::string> files;
+    path failedRead;
+    path temporary = L"temporary";
+    campaign_completion::CompletionTransactionStage writeFailure =
+        campaign_completion::CompletionTransactionStage::None;
+    campaign_completion::CompletionTransactionStage replaceFailure =
+        campaign_completion::CompletionTransactionStage::None;
+    bool corruptTemporaryRead = false;
+    bool moveFailure = false;
+    std::size_t readCalls = 0u;
+    std::size_t writeCalls = 0u;
+    std::size_t replaceCalls = 0u;
+    std::size_t moveCalls = 0u;
+};
+
+campaign_completion::CompletionStore MakeStore(FakeFileOps& files) {
+    return campaign_completion::CompletionStore(
+        files, L"main", L"temporary", L"backup");
+}
+
+}  // namespace
+
+int RunCompletionStoreTests() {
+    using namespace campaign_completion;
+
+    {
+        FakeFileOps files;
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode == CompletionStoreMode::WritableEmpty &&
+                    load.recordCount == 0u,
+                "no main and no backup must be writable empty");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(Record("a"));
+        files.files[L"backup"] = "{broken";
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode == CompletionStoreMode::WritableLoaded &&
+                    load.recordCount == 1u,
+                "valid main must remain writable despite invalid backup");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = "{broken";
+        files.files[L"backup"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode == CompletionStoreMode::ReadOnlyBackup &&
+                    load.recordCount == 1u,
+                "corrupt main with valid backup must load read-only");
+        files.ResetOperationCounts();
+        Require(store.AddIfAbsent(Record("b")).status ==
+                    CompletionAddStatus::ReadOnly &&
+                    files.writeCalls == 0u,
+                "read-only backup mode must refuse all writes");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"backup"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::ReadOnlyBackup,
+                "missing main must not overwrite an existing valid backup");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = "{broken";
+        files.files[L"backup"] = "{also-broken";
+        auto store = MakeStore(files);
+        Require(store.Load().mode ==
+                    CompletionStoreMode::ReadOnlyUnavailable &&
+                    store.Snapshot().records.empty(),
+                "unrecoverable data must not become writable empty data");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"temporary"] = Database(Record("stale"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableEmpty &&
+                    store.Snapshot().records.empty(),
+                "stale temporary data must never be promoted on load");
+    }
+    {
+        FakeFileOps files;
+        files.failedRead = L"main";
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode == CompletionStoreMode::ReadOnlyUnavailable &&
+                    load.error == ERROR_ACCESS_DENIED,
+                "main read failure must fail closed with its Win32 error");
+    }
+
+    {
+        FakeFileOps files;
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableEmpty,
+                "first-write fixture must load empty");
+        const auto committed = store.AddIfAbsent(Record("a"));
+        Require(committed.status == CompletionAddStatus::Committed &&
+                    files.moveCalls == 1u &&
+                    DecodeCompletionJson(files.files[L"main"]),
+                "first write must validate and atomically move main");
+        const auto originalBytes = files.files[L"main"];
+        files.ResetOperationCounts();
+        const auto duplicate = store.AddIfAbsent(Record("a"));
+        Require(duplicate.status == CompletionAddStatus::Duplicate &&
+                    files.writeCalls == 0u && files.replaceCalls == 0u &&
+                    files.moveCalls == 0u &&
+                    files.files[L"main"] == originalBytes,
+                "duplicate stable ID must perform no file transaction");
+    }
+
+    for (const auto stage : {
+             CompletionTransactionStage::WriteTemporary,
+             CompletionTransactionStage::FlushTemporary,
+             CompletionTransactionStage::ReadTemporary,
+             CompletionTransactionStage::ValidateTemporary,
+             CompletionTransactionStage::BackupMain,
+             CompletionTransactionStage::ReplaceMain}) {
+        FakeFileOps files;
+        files.files[L"main"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded,
+                "failure fixture must load valid main");
+        const auto oldMain = files.files[L"main"];
+        const auto oldSnapshot = store.Snapshot();
+        files.ResetOperationCounts();
+        if (stage == CompletionTransactionStage::WriteTemporary ||
+            stage == CompletionTransactionStage::FlushTemporary) {
+            files.writeFailure = stage;
+        } else if (stage == CompletionTransactionStage::ReadTemporary) {
+            files.failedRead = L"temporary";
+        } else if (stage ==
+                   CompletionTransactionStage::ValidateTemporary) {
+            files.corruptTemporaryRead = true;
+        } else {
+            files.replaceFailure = stage;
+        }
+        const auto result = store.AddIfAbsent(Record("b"));
+        Require(result.status == CompletionAddStatus::Failed &&
+                    result.stage == stage,
+                "injected transaction stage must report exact failure");
+        Require(files.files[L"main"] == oldMain &&
+                    store.Snapshot().records.size() ==
+                        oldSnapshot.records.size() &&
+                    store.Snapshot().records.front().stableId ==
+                        oldSnapshot.records.front().stableId,
+                "failed transaction must preserve main and snapshot");
+    }
+
+    {
+        FakeFileOps files;
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableEmpty,
+                "move failure fixture must load empty");
+        files.moveFailure = true;
+        const auto result = store.AddIfAbsent(Record("a"));
+        Require(result.status == CompletionAddStatus::Failed &&
+                    result.stage == CompletionTransactionStage::MoveFirst &&
+                    files.files.find(L"main") == files.files.end() &&
+                    store.Snapshot().records.empty(),
+                "failed first move must not publish a database");
+    }
+
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded,
+                "encode failure fixture must load main");
+        auto invalid = Record("b");
+        invalid.completedAtUtc = "not-a-time";
+        const auto result = store.AddIfAbsent(invalid);
+        Require(result.status == CompletionAddStatus::Failed &&
+                    result.stage == CompletionTransactionStage::Encode,
+                "invalid record must fail before file I/O");
+    }
+    return 0;
+}
