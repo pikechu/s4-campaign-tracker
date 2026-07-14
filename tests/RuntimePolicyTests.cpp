@@ -108,6 +108,21 @@ int RunRuntimePolicyTests() {
                                   "DiagnosticRuntime.cpp");
     const auto runtimeHeader = ReadText(sourceRoot / "src" / "runtime" /
                                         "DiagnosticRuntime.h");
+    const auto packageScript = ReadText(sourceRoot / "tools" /
+                                        "package_debug.ps1");
+    const auto workflow = ReadText(sourceRoot / ".github" / "workflows" /
+                                   "build-debug-asi.yml");
+    Require((runtime + runtimeHeader).find(
+                "pluginDirectory.parent_path()") == std::string::npos,
+            "runtime must not derive data from the game-root parent");
+    Require(packageScript.find(
+                "Join-Path $plugins \"CampaignCompletion\"") !=
+                std::string::npos,
+            "package must stage configuration below Plugins");
+    Require(workflow.find(
+                "Plugins/CampaignCompletion/CampaignCompletionDebug.ini") !=
+                std::string::npos,
+            "workflow must require the plugin-relative INI layout");
     Require(runtime.find("version=0.3.3") != std::string::npos &&
                 runtime.find("mode=native-event-calibration") !=
                     std::string::npos,
