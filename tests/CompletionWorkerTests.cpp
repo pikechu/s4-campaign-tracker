@@ -43,11 +43,17 @@ public:
                         campaign_completion::CompletionTransactionStage::ReplaceMain,
                         ERROR_WRITE_FAULT};
             }
+            if (record.stableId.find("readonly") != std::string::npos) {
+                return {campaign_completion::CompletionAddStatus::ReadOnly,
+                        campaign_completion::CompletionTransactionStage::None,
+                        ERROR_ACCESS_DENIED};
+            }
             if (record.stableId.find("duplicate") != std::string::npos) {
                 return {campaign_completion::CompletionAddStatus::Duplicate,
                         campaign_completion::CompletionTransactionStage::None,
                         ERROR_SUCCESS};
             }
+            snapshot.records.push_back(record);
             return {campaign_completion::CompletionAddStatus::Committed,
                     campaign_completion::CompletionTransactionStage::None,
                     ERROR_SUCCESS};
@@ -56,6 +62,13 @@ public:
                     campaign_completion::CompletionTransactionStage::Encode,
                     ERROR_OUTOFMEMORY};
         }
+    }
+
+    campaign_completion::CompletionDatabaseSnapshot Snapshot()
+        const override {
+        std::lock_guard<std::mutex> lock(mutex);
+        ++snapshotCalls;
+        return snapshot;
     }
 
     bool WaitUntilEntered(std::chrono::milliseconds timeout) {
@@ -70,10 +83,12 @@ public:
         releaseCondition.notify_all();
     }
 
-    std::mutex mutex;
+    mutable std::mutex mutex;
     std::condition_variable enteredCondition;
     std::condition_variable releaseCondition;
     std::vector<std::string> records;
+    campaign_completion::CompletionDatabaseSnapshot snapshot;
+    mutable std::size_t snapshotCalls = 0u;
     bool blocked = false;
     bool entered = false;
 };
@@ -91,7 +106,7 @@ int RunCompletionWorkerTests() {
         CompletionWorker worker(
             store, [&logs](LogLevel, std::string line) {
                 logs.push_back(std::move(line));
-            });
+            }, {});
         Require(worker.Start() && worker.Running(),
                 "worker must start exactly one consumer");
         Require(!worker.Start(), "worker must reject a second start");
@@ -129,7 +144,7 @@ int RunCompletionWorkerTests() {
         CompletionWorker worker(
             store, [&logs](LogLevel, std::string line) {
                 logs.push_back(std::move(line));
-            });
+            }, {});
         Require(worker.Start(), "result logging worker must start");
         auto duplicate = Candidate(40u);
         duplicate.record.stableId = "map:duplicate";
@@ -162,7 +177,7 @@ int RunCompletionWorkerTests() {
         CompletionWorker worker(
             store, [](LogLevel, std::string) {
                 throw std::runtime_error("log sink failure");
-            });
+            }, {});
         Require(worker.Start() && worker.TryEnqueue(Candidate(50u)) &&
                     worker.StopAndDrain(5s),
                 "log sink exception must not escape or stop draining");
@@ -171,7 +186,7 @@ int RunCompletionWorkerTests() {
     {
         ControllableStore store;
         store.blocked = true;
-        CompletionWorker worker(store, [](LogLevel, std::string) {});
+        CompletionWorker worker(store, [](LogLevel, std::string) {}, {});
         Require(worker.Start() && worker.TryEnqueue(Candidate(60u)) &&
                     store.WaitUntilEntered(2s),
                 "timeout fixture must block inside store");
@@ -186,6 +201,72 @@ int RunCompletionWorkerTests() {
         store.Release();
         Require(worker.StopAndDrain(5s),
                 "retained worker must support a later successful drain");
+    }
+
+    {
+        ControllableStore store;
+        std::vector<CompletionDatabaseSnapshot> publications;
+        CompletionWorker worker(
+            store, [](LogLevel, std::string) {},
+            [&publications](CompletionDatabaseSnapshot snapshot) {
+                publications.push_back(std::move(snapshot));
+            });
+        Require(worker.Start() && worker.TryEnqueue(Candidate(70u)) &&
+                    worker.StopAndDrain(5s),
+                "committed publication worker must drain");
+        Require(store.snapshotCalls == 1u && publications.size() == 1u &&
+                    publications.front().records.size() == 1u &&
+                    publications.front().records.front().stableId ==
+                        "map:test-70",
+                "committed transaction publishes the replacement snapshot once");
+    }
+
+    for (const auto& stableId : {
+             std::string("map:duplicate"),
+             std::string("map:readonly"),
+             std::string("map:fail")}) {
+        ControllableStore store;
+        std::vector<CompletionDatabaseSnapshot> publications;
+        CompletionWorker worker(
+            store, [](LogLevel, std::string) {},
+            [&publications](CompletionDatabaseSnapshot snapshot) {
+                publications.push_back(std::move(snapshot));
+            });
+        auto candidate = Candidate(71u);
+        candidate.record.stableId = stableId;
+        Require(worker.Start() && worker.TryEnqueue(std::move(candidate)) &&
+                    worker.StopAndDrain(5s),
+                "non-committed publication worker must drain");
+        Require(store.snapshotCalls == 0u && publications.empty(),
+                "duplicate, read-only, and failed results never publish");
+    }
+
+    {
+        ControllableStore store;
+        std::vector<std::string> logs;
+        CompletionWorker worker(
+            store,
+            [&logs](LogLevel, std::string line) {
+                logs.push_back(std::move(line));
+            },
+            [](CompletionDatabaseSnapshot) {
+                throw std::runtime_error("snapshot sink failure");
+            });
+        Require(worker.Start() && worker.TryEnqueue(Candidate(72u)) &&
+                    worker.StopAndDrain(5s),
+                "snapshot sink failure must not stop worker drain");
+        bool sawCommitted = false;
+        bool sawPublishFailure = false;
+        for (const auto& line : logs) {
+            sawCommitted = sawCommitted ||
+                line.find("completion-store committed") != std::string::npos;
+            sawPublishFailure = sawPublishFailure ||
+                line == "completion-marker-index publish-failed";
+        }
+        Require(store.snapshotCalls == 1u &&
+                    store.snapshot.records.size() == 1u && sawCommitted &&
+                    sawPublishFailure,
+                "publication failure preserves the committed result and logs once");
     }
     return 0;
 }

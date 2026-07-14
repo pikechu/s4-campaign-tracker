@@ -72,6 +72,15 @@ int RunCompletionMarkerIndexTests() {
     Require(index.Find(FixedMapListKind::Custom, L"Aeneas").empty() &&
                 index.Find(FixedMapListKind::Unknown, L"Aeneas").empty(),
             "list category and unknown state fail closed");
+    Require(index.Match(FixedMapListKind::Single, L"Aeneas") ==
+                MarkerMatchStatus::Unique,
+            "one category-correct record must match uniquely");
+    Require(index.Match(FixedMapListKind::Custom, L"Aeneas") ==
+                MarkerMatchStatus::None,
+            "the same name in a wrong category must not match");
+    Require(index.Match(FixedMapListKind::Unknown, L"Aeneas") ==
+                MarkerMatchStatus::None,
+            "unknown category must fail closed");
 
     auto random = Antares();
     random.stableId = "map:random";
@@ -118,6 +127,9 @@ int RunCompletionMarkerIndexTests() {
     index.Publish(ambiguous);
     Require(index.Find(FixedMapListKind::Custom, L"Antares").size() == 2u,
             "duplicate display candidates remain visible to fail-closed caller");
+    Require(index.Match(FixedMapListKind::Custom, L"Antares") ==
+                MarkerMatchStatus::Ambiguous,
+            "two indexed candidates with one display name must be ambiguous");
 
     CompletionDatabaseSnapshot replacement{};
     replacement.records = {Aeneas()};
