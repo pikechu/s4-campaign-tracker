@@ -1,5 +1,9 @@
 #pragma once
 
+#include "completion/CompletionAdmission.h"
+#include "completion/CompletionStore.h"
+#include "completion/CompletionWorker.h"
+#include "completion/Win32CompletionFileOps.h"
 #include "diagnostics/Phase3Trace.h"
 #include "diagnostics/Logger.h"
 #include "identity/MapIdentityCoordinator.h"
@@ -18,6 +22,7 @@
 
 #include <filesystem>
 #include <atomic>
+#include <cstddef>
 #include <mutex>
 #include <memory>
 
@@ -32,10 +37,16 @@ public:
 private:
     bool TryControlledStop();
     void Stop();
+    void AbortStart() noexcept;
 
     std::mutex mutex_;
     Phase3Trace phase3Trace_;
     Logger logger_;
+    std::unique_ptr<Win32CompletionFileOps> fileOps_;
+    std::unique_ptr<CompletionStore> store_;
+    std::unique_ptr<CompletionWorker> worker_;
+    std::unique_ptr<CompletionCandidateCoordinator> completionCoordinator_;
+    std::unique_ptr<CompletionAdmission> completionAdmission_;
     S4Listeners listeners_;
     S4LuaApi luaApi_;
     S4LuaMapBridge luaBridge_{luaApi_};
@@ -50,6 +61,8 @@ private:
     std::optional<PluginPaths> paths_;
     std::filesystem::path stopRequestPath_;
     bool started_ = false;
+    bool listenersStopped_ = false;
+    std::size_t listenerStopFailures_ = 0u;
     std::atomic<bool> controlledStopRequested_{false};
 };
 

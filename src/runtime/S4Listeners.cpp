@@ -79,6 +79,7 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         SettlementUiProbe& settlement,
                         NativeVictoryEventSubscriber& subscriber,
                         VictoryEventProbe& victoryProbe,
+                        CompletionAdmission& completionAdmission,
                         Phase3Trace& phase3Trace) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
@@ -86,6 +87,7 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     settlement_ = &settlement;
     nativeSubscriber_ = &subscriber;
     victoryProbe_ = &victoryProbe;
+    completionAdmission_ = &completionAdmission;
     phase3Trace_ = &phase3Trace;
     return StartPublicListeners(api, logger);
 }
@@ -140,6 +142,7 @@ ListenerStopResult S4Listeners::Stop() {
     settlement_ = nullptr;
     nativeSubscriber_ = nullptr;
     victoryProbe_ = nullptr;
+    completionAdmission_ = nullptr;
     phase3Trace_ = nullptr;
     activeOrigin_ = {};
     activeSessionId_ = 0u;
@@ -255,6 +258,9 @@ void S4Listeners::ObserveMapInit() {
     if (victoryProbe_ != nullptr) {
         victoryProbe_->BeginSession(activeSessionId_);
     }
+    if (completionAdmission_ != nullptr) {
+        completionAdmission_->BeginSession(activeSessionId_, activeOrigin_);
+    }
     if (phase3Trace_ != nullptr) {
         phase3Trace_->Write(
             Phase3TraceChannel::Origin,
@@ -320,6 +326,10 @@ void S4Listeners::ObserveTick(BOOL delayed) {
             activeOrigin_ = RefineActiveSessionOrigin(
                 activeSessionId_, activeOrigin_, identity->sessionId,
                 identity->relative);
+            if (completionAdmission_ != nullptr) {
+                completionAdmission_->ObserveIdentity(identity.value(),
+                                                       activeOrigin_);
+            }
             if (phase3Trace_ != nullptr) {
                 phase3Trace_->Write(
                     Phase3TraceChannel::Origin,
@@ -355,28 +365,33 @@ void S4Listeners::ServiceNativeSubscription() {
     }
 
     const auto pending = victoryProbe_->ConsumePending();
-    if (!pending.has_value() || phase3Trace_ == nullptr) {
+    if (!pending.has_value()) {
         return;
     }
     const auto& snapshot = pending.value();
-    std::ostringstream event;
-    event << "native-event=session-" << snapshot.sessionId
-          << ";event-id=" << snapshot.fields.eventId
-          << ";local-result=" << NativeResultName(snapshot.result)
-          << ";wparam=" << snapshot.fields.wParam
-          << ";lparam=" << snapshot.fields.lParam
-          << ";game-tick=" << snapshot.fields.gameTick;
-    phase3Trace_->Write(Phase3TraceChannel::NativeEvent, event.str());
+    if (phase3Trace_ != nullptr) {
+        std::ostringstream event;
+        event << "native-event=session-" << snapshot.sessionId
+              << ";event-id=" << snapshot.fields.eventId
+              << ";local-result=" << NativeResultName(snapshot.result)
+              << ";wparam=" << snapshot.fields.wParam
+              << ";lparam=" << snapshot.fields.lParam
+              << ";game-tick=" << snapshot.fields.gameTick;
+        phase3Trace_->Write(Phase3TraceChannel::NativeEvent, event.str());
 
-    phase3Trace_->Write(
-        Phase3TraceChannel::NativeEvent,
-        "native-event-duplicates=session-" +
-            std::to_string(snapshot.sessionId) +
-            ";count=" + std::to_string(snapshot.duplicates));
-    if (snapshot.orphans != 0u) {
-        phase3Trace_->Write(Phase3TraceChannel::NativeEvent,
-                            "native-event-orphans=count=" +
-                                std::to_string(snapshot.orphans));
+        phase3Trace_->Write(
+            Phase3TraceChannel::NativeEvent,
+            "native-event-duplicates=session-" +
+                std::to_string(snapshot.sessionId) +
+                ";count=" + std::to_string(snapshot.duplicates));
+        if (snapshot.orphans != 0u) {
+            phase3Trace_->Write(Phase3TraceChannel::NativeEvent,
+                                "native-event-orphans=count=" +
+                                    std::to_string(snapshot.orphans));
+        }
+    }
+    if (completionAdmission_ != nullptr) {
+        completionAdmission_->ObserveVictory(snapshot);
     }
 }
 

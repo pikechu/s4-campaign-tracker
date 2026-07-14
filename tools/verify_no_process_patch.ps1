@@ -67,6 +67,23 @@ $requiredNativeFiles = @(
     'src/native/NativeVictoryEventSubscriber.cpp',
     'src/victory/VictoryEventProbe.cpp'
 )
+$requiredCompletionFiles = @(
+    'src/completion/CompletionAdmission.cpp',
+    'src/completion/CompletionCandidateCoordinator.cpp',
+    'src/completion/CompletionJson.cpp',
+    'src/completion/CompletionRecord.cpp',
+    'src/completion/CompletionStore.cpp',
+    'src/completion/CompletionWorker.cpp',
+    'src/completion/Win32CompletionFileOps.cpp'
+)
+foreach ($file in $requiredCompletionFiles) {
+    $count = [regex]::Matches(
+        $targetBody, [regex]::Escape($file),
+        [Text.RegularExpressions.RegexOptions]::IgnoreCase).Count
+    if ($count -ne 1) {
+        throw "Required completion source must be linked exactly once: $file (found $count)"
+    }
+}
 foreach ($file in $requiredNativeFiles) {
     $count = [regex]::Matches(
         $targetBody, [regex]::Escape($file),
@@ -197,4 +214,4 @@ foreach ($api in $forbiddenLuaWrites) {
     }
 }
 
-Write-Host "Verified PE32 native event calibration ASI, zero process patches, and read-only Lua bridge."
+Write-Host "Verified PE32 completion persistence ASI, zero process patches, and read-only Lua bridge."

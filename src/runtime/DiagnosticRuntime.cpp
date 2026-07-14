@@ -4,6 +4,7 @@
 #include "runtime/StopRequest.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cwctype>
 #include <filesystem>
 #include <iomanip>
@@ -50,11 +51,27 @@ std::string CompatibilityName(CompatibilityResult result) {
     return "unknown";
 }
 
+const char* StoreModeName(CompletionStoreMode mode) noexcept {
+    switch (mode) {
+        case CompletionStoreMode::Uninitialized:
+            return "uninitialized";
+        case CompletionStoreMode::WritableEmpty:
+            return "writable-empty";
+        case CompletionStoreMode::WritableLoaded:
+            return "writable-loaded";
+        case CompletionStoreMode::ReadOnlyBackup:
+            return "read-only-backup";
+        case CompletionStoreMode::ReadOnlyUnavailable:
+            return "read-only-unavailable";
+    }
+    return "unknown";
+}
+
 }  // namespace
 
 DiagnosticRuntime& RuntimeInstance() {
-    static DiagnosticRuntime runtime;
-    return runtime;
+    static DiagnosticRuntime* const runtime = new DiagnosticRuntime();
+    return *runtime;
 }
 
 bool DiagnosticRuntime::Start(HMODULE module) {
@@ -72,9 +89,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.3.3 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.4.0 pid="
            << GetCurrentProcessId()
-           << " mode=native-event-calibration";
+           << " mode=completion-persistence";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -168,26 +185,80 @@ bool DiagnosticRuntime::Start(HMODULE module) {
                       "native event admission failed code=" +
                           std::to_string(static_cast<unsigned>(
                               nativeAdmission_.failure)));
-        api_->Release();
-        api_ = nullptr;
-        coordinator_.reset();
-        phase3Trace_.Close();
-        logger_.Close();
+        AbortStart();
         return false;
     }
     nativeRegistration_ =
         std::make_unique<NativeEventRegistration>(nativeAdmission_);
 
+    try {
+        fileOps_ = std::make_unique<Win32CompletionFileOps>();
+        store_ = std::make_unique<CompletionStore>(
+            *fileOps_, paths_->database, paths_->temporary, paths_->backup);
+        const auto load = store_->Load();
+        std::ostringstream storage;
+        storage << "completion-store mode=" << StoreModeName(load.mode)
+                << " records=" << load.recordCount
+                << " failure=" << static_cast<unsigned>(load.failure)
+                << " error=" << load.error;
+        logger_.Write(load.mode == CompletionStoreMode::ReadOnlyBackup
+                          ? LogLevel::Warning
+                          : LogLevel::Info,
+                      storage.str());
+        if (load.mode == CompletionStoreMode::ReadOnlyBackup) {
+            logger_.Write(
+                LogLevel::Warning,
+                "completion-store loaded backup read-only; automatic repair "
+                "and future writes are disabled; manual handling required");
+        }
+        if (load.mode == CompletionStoreMode::Uninitialized ||
+            load.mode == CompletionStoreMode::ReadOnlyUnavailable) {
+            logger_.Write(
+                LogLevel::Error,
+                "completion-store unavailable; no automatic recovery or "
+                "write attempted; manual handling required");
+            AbortStart();
+            return false;
+        }
+
+        worker_ = std::make_unique<CompletionWorker>(
+            *store_, [this](LogLevel level, std::string line) {
+                logger_.Write(level, line);
+            });
+        if (!worker_->Start()) {
+            logger_.Write(LogLevel::Error,
+                          "completion-worker failed to start");
+            AbortStart();
+            return false;
+        }
+        completionCoordinator_ =
+            std::make_unique<CompletionCandidateCoordinator>(
+                [] { return CurrentUtcCompletionTime(); });
+        completionAdmission_ = std::make_unique<CompletionAdmission>(
+            *completionCoordinator_,
+            [this](CompletionCandidate candidate) {
+                const std::string stableId = candidate.record.stableId;
+                const bool accepted =
+                    worker_ != nullptr &&
+                    worker_->TryEnqueue(std::move(candidate));
+                logger_.Write(
+                    accepted ? LogLevel::Info : LogLevel::Warning,
+                    std::string("completion-admission ") +
+                        (accepted ? "accepted" : "rejected") +
+                        " stable-id=" + stableId);
+                return accepted;
+            });
+    } catch (...) {
+        logger_.Write(LogLevel::Error,
+                      "completion persistence initialization failed");
+        AbortStart();
+        return false;
+    }
+
     if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
                           settlement_, nativeSubscriber_, victoryProbe_,
-                          phase3Trace_)) {
-        api_->Release();
-        api_ = nullptr;
-        nativeRegistration_.reset();
-        nativeAdmission_ = {};
-        coordinator_.reset();
-        phase3Trace_.Close();
-        logger_.Close();
+                          *completionAdmission_, phase3Trace_)) {
+        AbortStart();
         return false;
     }
     if (!nativeSubscriber_.Prepare(*nativeRegistration_, victoryProbe_)) {
@@ -195,18 +266,14 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         logger_.Write(LogLevel::Error,
                       "native subscriber prepare failed listener-failures=" +
                           std::to_string(listenerResult.failures));
-        api_->Release();
-        api_ = nullptr;
-        nativeRegistration_.reset();
-        nativeAdmission_ = {};
-        coordinator_.reset();
-        phase3Trace_.Close();
-        logger_.Close();
+        AbortStart();
         return false;
     }
 
     stopRequestPath_ = paths_->stop;
     started_ = true;
+    listenersStopped_ = false;
+    listenerStopFailures_ = 0u;
     controlledStopRequested_.store(false, std::memory_order_release);
     logger_.Write(LogLevel::Info, "diagnostic runtime started");
     return true;
@@ -241,6 +308,9 @@ void DiagnosticRuntime::RequestControlledStop() noexcept {
 }
 
 bool DiagnosticRuntime::TryControlledStop() {
+    if (completionAdmission_ != nullptr) {
+        completionAdmission_->Disable();
+    }
     nativeSubscriber_.RequestDetach();
     constexpr DWORD kDetachWaitStepMs = 10u;
     constexpr DWORD kDetachWaitLimitMs = 5'000u;
@@ -256,6 +326,33 @@ bool DiagnosticRuntime::TryControlledStop() {
                       "native subscriber detach timed out; runtime retained");
         return false;
     }
+
+    if (!listenersStopped_) {
+        if (coordinator_ != nullptr) {
+            coordinator_->Disable();
+        }
+        origin_.Disable();
+        settlement_.Disable();
+        victoryProbe_.Disable();
+        const auto result = listeners_.Stop();
+        listenerStopFailures_ = result.failures;
+        listenersStopped_ = true;
+        std::ostringstream summary;
+        summary << "listeners stopped registered=" << result.registered
+                << " removed=" << result.removed
+                << " failures=" << result.failures;
+        logger_.Write(LogLevel::Info, summary.str());
+    }
+
+    if (worker_ != nullptr &&
+        !worker_->StopAndDrain(std::chrono::milliseconds(5000))) {
+        phase3Trace_.Write(Phase3TraceChannel::Decision,
+                           "controlled-stop-flush=failed");
+        logger_.Write(
+            LogLevel::Warning,
+            "completion worker drain timed out; persistence resources retained");
+        return false;
+    }
     Stop();
     return true;
 }
@@ -265,35 +362,60 @@ void DiagnosticRuntime::Stop() {
     if (!started_) {
         return;
     }
-    if (coordinator_ != nullptr) {
-        coordinator_->Disable();
-    }
-    origin_.Disable();
-    settlement_.Disable();
-    victoryProbe_.Disable();
-    const auto result = listeners_.Stop();
     if (api_ != nullptr) {
         api_->Release();
         api_ = nullptr;
     }
-    std::ostringstream summary;
-    summary << "listeners stopped registered=" << result.registered
-            << " removed=" << result.removed
-            << " failures=" << result.failures;
-    logger_.Write(LogLevel::Info, summary.str());
     logger_.Write(LogLevel::Info, "diagnostic runtime stopped");
     phase3Trace_.Write(
         Phase3TraceChannel::Decision,
-        result.failures == 0u ? "controlled-stop-flush=success"
-                              : "controlled-stop-flush=failed");
-    phase3Trace_.Close();
-    logger_.Close();
+        listenerStopFailures_ == 0u ? "controlled-stop-flush=success"
+                                    : "controlled-stop-flush=failed");
+    completionAdmission_.reset();
+    completionCoordinator_.reset();
+    worker_.reset();
+    store_.reset();
+    fileOps_.reset();
     nativeRegistration_.reset();
     nativeAdmission_ = {};
     coordinator_.reset();
+    phase3Trace_.Close();
+    logger_.Close();
     paths_.reset();
     started_ = false;
+    listenersStopped_ = false;
+    listenerStopFailures_ = 0u;
     controlledStopRequested_.store(false, std::memory_order_release);
+}
+
+void DiagnosticRuntime::AbortStart() noexcept {
+    try {
+        if (completionAdmission_ != nullptr) {
+            completionAdmission_->Disable();
+        }
+        listeners_.Stop();
+        if (worker_ != nullptr) {
+            worker_->StopAndDrain(std::chrono::milliseconds(5000));
+        }
+        completionAdmission_.reset();
+        completionCoordinator_.reset();
+        worker_.reset();
+        store_.reset();
+        fileOps_.reset();
+        if (api_ != nullptr) {
+            api_->Release();
+            api_ = nullptr;
+        }
+        nativeRegistration_.reset();
+        nativeAdmission_ = {};
+        coordinator_.reset();
+        phase3Trace_.Close();
+        logger_.Close();
+        paths_.reset();
+        listenersStopped_ = false;
+        listenerStopFailures_ = 0u;
+    } catch (...) {
+    }
 }
 
 DWORD WINAPI BootstrapThread(void* module) {

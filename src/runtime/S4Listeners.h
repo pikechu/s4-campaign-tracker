@@ -1,6 +1,7 @@
 #pragma once
 
 #include "S4ModApi.h"
+#include "completion/CompletionAdmission.h"
 #include "diagnostics/Logger.h"
 #include "diagnostics/Phase3Trace.h"
 #include "identity/ListAttribution.h"
@@ -53,6 +54,7 @@ public:
                SettlementUiProbe& settlement,
                NativeVictoryEventSubscriber& subscriber,
                VictoryEventProbe& victoryProbe,
+               CompletionAdmission& completionAdmission,
                Phase3Trace& phase3Trace);
     ListenerStopResult Stop();
 
@@ -115,6 +117,7 @@ private:
     SettlementUiProbe* settlement_ = nullptr;
     NativeVictoryEventSubscriber* nativeSubscriber_ = nullptr;
     VictoryEventProbe* victoryProbe_ = nullptr;
+    CompletionAdmission* completionAdmission_ = nullptr;
     Phase3Trace* phase3Trace_ = nullptr;
     std::vector<S4HOOK> hooks_;
     CallbackGate callbackGate_;
