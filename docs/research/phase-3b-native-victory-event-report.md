@@ -274,3 +274,22 @@ map is recordable and remains eligible for its future completed-level marker.
 This is an accepted fresh Custom Maps fixed-map victory sample. It validates
 the deployed identity, source-policy, and local-winner event chain in one
 session, but it is not labeled as a loaded-map victory.
+
+## 2026-07-14 manually won fixed-map loaded-save sample
+
+- The user loaded the fixed-map save and won manually without restarting the
+  map or using the UBO(test) `AI resign` helper.
+- MapInit session `4` began as `load-map-unresolved/unknown`, then confirmed SU
+  identity `Battle of the Gods` with relative identifier
+  `Map\User\Battle of the Gods.map`.
+- The session-bound refinement was
+  `source-load-single-player-map;eligibility-eligible;ui-visible`.
+- Native terminal event `609` was recorded for the same session as
+  `local-result=won;wparam=1;lparam=0;game-tick=96417`, with duplicate count
+  `0`.
+- PID `10700` remained responsive after the victory window appeared.
+
+This sample passes the strict loaded-fixed victory gate: load recovery, fixed
+map identity, recording eligibility, marker visibility, and the local-player
+victory event all belong to session `4`. It is the loaded-save counterpart to
+the fresh Custom Maps sample above.
