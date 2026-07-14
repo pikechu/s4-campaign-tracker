@@ -8,6 +8,9 @@
 namespace campaign_completion {
 
 bool IsRandomMapIdentifier(std::wstring_view value) noexcept;
+LaunchSource CanonicalCompletionSource(
+    LaunchSource admittedSource,
+    std::wstring_view relativeIdentifier) noexcept;
 LaunchOriginSnapshot RefineLaunchOrigin(
     LaunchOriginSnapshot origin,
     std::wstring_view relativeIdentifier) noexcept;
