@@ -1,9 +1,17 @@
 #include "completion/CompletionStore.h"
 
+#include <type_traits>
 #include <utility>
 
 namespace campaign_completion {
 namespace {
+
+static_assert(
+    std::is_nothrow_move_assignable_v<CompletionDatabaseSnapshot>,
+    "committed snapshot publication must not allocate or throw");
+static_assert(
+    std::is_nothrow_move_assignable_v<std::set<std::string>>,
+    "committed stable-ID publication must not allocate or throw");
 
 CompletionLoadResult LoadResult(CompletionStoreMode mode,
                                 CompletionJsonFailure failure,
@@ -115,6 +123,8 @@ CompletionAddResult CompletionStore::AddIfAbsent(
 
         CompletionDatabaseSnapshot candidate = snapshot_;
         candidate.records.push_back(record);
+        std::set<std::string> candidateIds = stableIds_;
+        candidateIds.insert(record.stableId);
         const auto encoded = EncodeCompletionJson(candidate);
         if (!encoded.has_value()) {
             return AddFailure(CompletionTransactionStage::Encode,
@@ -151,7 +161,8 @@ CompletionAddResult CompletionStore::AddIfAbsent(
         if (!commit.success) {
             return AddFailure(commit.stage, commit.error);
         }
-        Publish(std::move(verified.snapshot));
+        snapshot_ = std::move(verified.snapshot);
+        stableIds_ = std::move(candidateIds);
         mode_ = CompletionStoreMode::WritableLoaded;
         return {CompletionAddStatus::Committed,
                 CompletionTransactionStage::None, ERROR_SUCCESS};
