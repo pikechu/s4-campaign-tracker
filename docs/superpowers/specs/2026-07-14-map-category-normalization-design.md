@@ -175,4 +175,3 @@ or the normalized existing Antares record, and will compare the persisted
 category with the SU relative identity. Deployment remains blocked while the
 game process is running and requires the existing guarded archive procedure
 after the user closes the game.
-
