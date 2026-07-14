@@ -36,6 +36,7 @@ int RunCompletionWorkerTests();
 int RunCompletionRuntimeFlowTests();
 int RunMarkerCalibrationTraceTests();
 int RunCompletionMarkerIndexTests();
+int RunFixedMapRowCalibrationTests();
 
 int main() {
     try {
@@ -73,6 +74,7 @@ int main() {
         RunCompletionRuntimeFlowTests();
         RunMarkerCalibrationTraceTests();
         RunCompletionMarkerIndexTests();
+        RunFixedMapRowCalibrationTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';
