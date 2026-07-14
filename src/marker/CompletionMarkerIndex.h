@@ -18,6 +18,12 @@ struct MarkerCandidate final {
 
 using MarkerCandidateSnapshot = std::vector<MarkerCandidate>;
 
+enum class MarkerMatchStatus {
+    None,
+    Unique,
+    Ambiguous,
+};
+
 FixedMapListKind FixedListKindForRecord(
     const CompletionRecord& record) noexcept;
 
@@ -25,6 +31,9 @@ class CompletionMarkerIndex final {
 public:
     void Publish(const CompletionDatabaseSnapshot& snapshot) noexcept;
     MarkerCandidateSnapshot Find(
+        FixedMapListKind listKind,
+        std::wstring_view rowLabel) const noexcept;
+    MarkerMatchStatus Match(
         FixedMapListKind listKind,
         std::wstring_view rowLabel) const noexcept;
 

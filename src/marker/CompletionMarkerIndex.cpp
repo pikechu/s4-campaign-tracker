@@ -171,4 +171,30 @@ MarkerCandidateSnapshot CompletionMarkerIndex::Find(
     }
 }
 
+MarkerMatchStatus CompletionMarkerIndex::Match(
+    FixedMapListKind listKind,
+    std::wstring_view rowLabel) const noexcept {
+    if (listKind == FixedMapListKind::Unknown || rowLabel.empty()) {
+        return MarkerMatchStatus::None;
+    }
+    try {
+        bool matched = false;
+        std::lock_guard<std::mutex> lock(mutex_);
+        for (const auto& candidate : candidates_) {
+            if (candidate.listKind != listKind ||
+                !EqualOrdinalInsensitive(candidate.displayName, rowLabel)) {
+                continue;
+            }
+            if (matched) {
+                return MarkerMatchStatus::Ambiguous;
+            }
+            matched = true;
+        }
+        return matched ? MarkerMatchStatus::Unique
+                       : MarkerMatchStatus::None;
+    } catch (...) {
+        return MarkerMatchStatus::None;
+    }
+}
+
 }  // namespace campaign_completion

@@ -18,8 +18,12 @@ namespace campaign_completion {
 class CompletionWorker final {
 public:
     using LogSink = std::function<void(LogLevel, std::string)>;
+    using SnapshotSink =
+        std::function<void(CompletionDatabaseSnapshot)>;
 
-    CompletionWorker(ICompletionStore& store, LogSink log);
+    CompletionWorker(ICompletionStore& store,
+                     LogSink log,
+                     SnapshotSink publish);
     CompletionWorker(const CompletionWorker&) = delete;
     CompletionWorker& operator=(const CompletionWorker&) = delete;
     ~CompletionWorker();
@@ -37,6 +41,7 @@ private:
 
     ICompletionStore& store_;
     LogSink log_;
+    SnapshotSink publish_;
     mutable std::mutex mutex_;
     std::condition_variable workCondition_;
     std::condition_variable finishedCondition_;

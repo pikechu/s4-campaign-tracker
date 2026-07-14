@@ -254,7 +254,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         worker_ = std::make_unique<CompletionWorker>(
             *store_, [this](LogLevel level, std::string line) {
                 logger_.Write(level, line);
-            });
+            }, CompletionWorker::SnapshotSink{});
         if (!worker_->Start()) {
             logger_.Write(LogLevel::Error,
                           "completion-worker failed to start");

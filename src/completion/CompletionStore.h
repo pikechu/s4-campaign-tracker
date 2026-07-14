@@ -43,6 +43,7 @@ public:
     virtual ~ICompletionStore() = default;
     virtual CompletionAddResult AddIfAbsent(
         const CompletionRecord& record) noexcept = 0;
+    virtual CompletionDatabaseSnapshot Snapshot() const = 0;
 };
 
 class CompletionStore final : public ICompletionStore {
@@ -55,7 +56,7 @@ public:
     CompletionAddResult AddIfAbsent(
         const CompletionRecord& record) noexcept override;
     CompletionStoreMode Mode() const noexcept;
-    CompletionDatabaseSnapshot Snapshot() const;
+    CompletionDatabaseSnapshot Snapshot() const override;
 
 private:
     CompletionAddResult CommitSnapshot(

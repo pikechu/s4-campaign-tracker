@@ -36,8 +36,12 @@ const char* StageName(CompletionTransactionStage stage) noexcept {
 
 }  // namespace
 
-CompletionWorker::CompletionWorker(ICompletionStore& store, LogSink log)
-    : store_(store), log_(std::move(log)) {}
+CompletionWorker::CompletionWorker(ICompletionStore& store,
+                                   LogSink log,
+                                   SnapshotSink publish)
+    : store_(store),
+      log_(std::move(log)),
+      publish_(std::move(publish)) {}
 
 CompletionWorker::~CompletionWorker() {
     try {
@@ -183,6 +187,16 @@ void CompletionWorker::Run() noexcept {
             result = {CompletionAddStatus::Failed,
                       CompletionTransactionStage::Encode,
                       ERROR_UNHANDLED_EXCEPTION};
+        }
+
+        if (result.status == CompletionAddStatus::Committed && publish_) {
+            try {
+                auto snapshot = store_.Snapshot();
+                publish_(std::move(snapshot));
+            } catch (...) {
+                SafeLog(LogLevel::Error,
+                        "completion-marker-index publish-failed");
+            }
         }
 
         try {
