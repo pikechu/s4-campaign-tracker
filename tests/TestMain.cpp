@@ -27,6 +27,7 @@ int RunNativeEventAdmissionTests();
 int RunNativeVictoryEventSubscriberTests();
 int RunPhase3TraceTests();
 int RunPluginPathsTests();
+int RunCompletionRecordTests();
 
 int main() {
     try {
@@ -55,6 +56,7 @@ int main() {
         RunNativeVictoryEventSubscriberTests();
         RunPhase3TraceTests();
         RunPluginPathsTests();
+        RunCompletionRecordTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';
