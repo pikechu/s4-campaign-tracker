@@ -8,6 +8,7 @@
 #include "identity/MapIdentityCoordinator.h"
 #include "lua/SuLuaMapBridge.h"
 #include "marker/CompletionMarkerRenderer.h"
+#include "marker/FixedMapMenuReader.h"
 #include "marker/FixedMapRowObserver.h"
 #include "native/NativeVictoryEventSubscriber.h"
 #include "runtime/CallbackGate.h"
@@ -59,7 +60,8 @@ public:
                CompletionAdmission& completionAdmission,
                Phase3Trace& phase3Trace,
                FixedMapRowObserver& markerObserver,
-               CompletionMarkerRenderer& markerRenderer);
+               CompletionMarkerRenderer& markerRenderer,
+               const FixedMapMenuMemoryView& fixedMapMenuMemory);
     ListenerStopResult Stop();
 
 private:
@@ -112,6 +114,7 @@ private:
     void ObserveGuiElement(LPS4GUIDRAWBLTPARAMS element);
     void FinishSettlementIfDue(std::uint64_t nowMs);
     void ServiceNativeSubscription();
+    void ObserveInternalMenu(DWORD page);
 
     static std::atomic<S4Listeners*> active_;
     static const std::array<LPS4FRAMECALLBACK, S4_GUI_ENUM_MAXVALUE - 1>
@@ -128,6 +131,8 @@ private:
     Phase3Trace* phase3Trace_ = nullptr;
     FixedMapRowObserver* markerObserver_ = nullptr;
     CompletionMarkerRenderer* markerRenderer_ = nullptr;
+    FixedMapMenuMemoryView fixedMapMenuMemory_{};
+    FixedMapMenuSnapshot lastFixedMapMenuSnapshot_{};
     std::vector<S4HOOK> hooks_;
     CallbackGate callbackGate_;
     std::mutex mutex_;
@@ -142,6 +147,8 @@ private:
     bool inGameSeen_ = false;
     bool settlementStarted_ = false;
     bool nativeReinsertPending_ = false;
+    bool exactFixedMapPages_ = false;
+    bool hasFixedMapMenuSnapshot_ = false;
     std::atomic<NativeSubscriptionState> lastNativeState_{
         NativeSubscriptionState::Idle};
 

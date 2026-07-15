@@ -84,8 +84,9 @@ int RunRuntimePolicyTests() {
     const auto policy = ReadText(sourceRoot / "config" /
                                  "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.6.0",
-             "DiagnosticMode=CompletionMarkerRendering",
+             "Version=0.6.1",
+             "DiagnosticMode=ReadOnlyInternalMenuDiagnostic",
+             "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "MarkerCalibration=0",
              "NativeEventSubscription=1", "NativeTerminalEventId=609",
              "IdentitySource=SettlersUnitedLua",
@@ -124,10 +125,10 @@ int RunRuntimePolicyTests() {
                 "Plugins/CampaignCompletion/CampaignCompletionDebug.ini") !=
                 std::string::npos,
             "workflow must require the plugin-relative INI layout");
-    Require(runtime.find("version=0.6.0") != std::string::npos &&
-                runtime.find("mode=completion-marker-rendering") !=
+    Require(runtime.find("version=0.6.1") != std::string::npos &&
+                runtime.find("mode=read-only-internal-menu-diagnostic") !=
                     std::string::npos,
-            "runtime header identifies completion-marker rendering");
+            "runtime header identifies the read-only menu diagnostic");
     for (const auto* forbidden : {
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout",
              "fixedMapHook_", "hookBackend_", "originalInvoker_",
@@ -243,6 +244,7 @@ int RunRuntimePolicyTests() {
              "src/marker/CompletionMarkerIndex.cpp",
              "src/marker/CompletionMarkerRenderer.cpp",
              "src/marker/DirectDrawMarkerSurface.cpp",
+             "src/marker/FixedMapMenuReader.cpp",
              "src/marker/FixedMapRowObserver.cpp",
              "src/native/NativeEventAdmission.cpp",
              "src/native/NativeEventRegistration.cpp",
@@ -267,6 +269,8 @@ int RunRuntimePolicyTests() {
                                          "S4Listeners.h");
     const auto markerSurface = ReadText(sourceRoot / "src" / "marker" /
                                         "DirectDrawMarkerSurface.cpp");
+    const auto menuReader = ReadText(sourceRoot / "src" / "marker" /
+                                     "FixedMapMenuReader.cpp");
     Require(listeners.find("RefineActiveSessionOrigin") !=
                     std::string::npos &&
                 listeners.find("identity->sessionId") != std::string::npos &&
@@ -379,6 +383,24 @@ int RunRuntimePolicyTests() {
                 listeners.find("markerRenderer_->Render(") !=
                     std::string::npos,
             "public page, tab, and frame evidence reaches marker rendering");
+    Require(runtime.find("AdmitFixedMapMenuMemory(*executable)") !=
+                    std::string::npos &&
+                listeners.find("ReadFixedMapMenuSnapshot(") !=
+                    std::string::npos &&
+                listeners.find("internal-menu status=") != std::string::npos,
+            "the exact executable gate feeds diagnostic-only bounded snapshots");
+    Require(listeners.find("markerObserver_->ObserveInternal") ==
+                std::string::npos &&
+                listeners.find("markerRenderer_->RenderInternal") ==
+                    std::string::npos,
+            "internal menu snapshots are not connected to marker drawing");
+    for (const auto* forbiddenWrite : {
+             "WriteProcessMemory", "VirtualProtect", "VirtualProtectEx",
+             "CreateRemoteThread", "SetWindowLong", "SendInput",
+             "mouse_event", "SetCursorPos"}) {
+        Require(menuReader.find(forbiddenWrite) == std::string::npos,
+                "read-only menu adapter contains no write, patch, or input API");
+    }
     Require(listeners.find(
                 "CopyBoundedGuiText(element->text, feature.text)") !=
                 std::string::npos &&
@@ -419,7 +441,7 @@ int RunRuntimePolicyTests() {
     for (const auto* markerFile : {
              "BoundedMenuText.cpp", "CompletionMarkerGeometry.cpp",
              "CompletionMarkerRenderer.cpp", "DirectDrawMarkerSurface.cpp",
-             "FixedMapRowObserver.cpp"}) {
+             "FixedMapMenuReader.cpp", "FixedMapRowObserver.cpp"}) {
         const auto markerSource = ReadText(sourceRoot / "src" / "marker" /
                                            markerFile);
         Require(markerSource.find("std::filesystem") == std::string::npos &&

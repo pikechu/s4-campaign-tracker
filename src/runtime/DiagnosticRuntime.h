@@ -12,6 +12,7 @@
 #include "marker/CompletionMarkerIndex.h"
 #include "marker/CompletionMarkerRenderer.h"
 #include "marker/DirectDrawMarkerSurface.h"
+#include "marker/FixedMapMenuReader.h"
 #include "marker/FixedMapRowObserver.h"
 #include "native/NativeEventAdmission.h"
 #include "native/NativeEventRegistration.h"
@@ -52,6 +53,7 @@ private:
     std::unique_ptr<FixedMapRowObserver> markerObserver_;
     std::unique_ptr<DirectDrawMarkerSurface> markerSurface_;
     std::unique_ptr<CompletionMarkerRenderer> markerRenderer_;
+    FixedMapMenuMemoryView fixedMapMenuMemory_{};
     std::unique_ptr<CompletionWorker> worker_;
     std::unique_ptr<CompletionCandidateCoordinator> completionCoordinator_;
     std::unique_ptr<CompletionAdmission> completionAdmission_;

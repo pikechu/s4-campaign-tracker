@@ -92,9 +92,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.6.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.6.1 pid="
            << GetCurrentProcessId()
-           << " mode=completion-marker-rendering";
+           << " mode=read-only-internal-menu-diagnostic";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -129,6 +129,13 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         logger_.Close();
         return false;
     }
+
+    fixedMapMenuMemory_ = AdmitFixedMapMenuMemory(*executable);
+    logger_.Write(fixedMapMenuMemory_.admitted ? LogLevel::Info
+                                               : LogLevel::Error,
+                  fixedMapMenuMemory_.admitted
+                      ? "internal-menu-adapter=admitted-read-only"
+                      : "internal-menu-adapter=disabled-admission-failed");
 
     constexpr DWORD kWaitStepMs = 100;
     constexpr DWORD kWaitLimitMs = 30'000;
@@ -290,7 +297,8 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
                           settlement_, nativeSubscriber_, victoryProbe_,
                           *completionAdmission_, phase3Trace_,
-                          *markerObserver_, *markerRenderer_)) {
+                          *markerObserver_, *markerRenderer_,
+                          fixedMapMenuMemory_)) {
         AbortStart();
         return false;
     }
@@ -416,6 +424,7 @@ void DiagnosticRuntime::Stop() {
     markerRenderer_.reset();
     markerSurface_.reset();
     markerObserver_.reset();
+    fixedMapMenuMemory_ = {};
     markerIndex_.reset();
     store_.reset();
     fileOps_.reset();
@@ -452,6 +461,7 @@ void DiagnosticRuntime::AbortStart() noexcept {
         markerRenderer_.reset();
         markerSurface_.reset();
         markerObserver_.reset();
+        fixedMapMenuMemory_ = {};
         markerIndex_.reset();
         store_.reset();
         fileOps_.reset();

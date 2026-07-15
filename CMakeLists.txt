@@ -33,6 +33,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/marker/CompletionMarkerIndex.cpp
     src/marker/CompletionMarkerRenderer.cpp
     src/marker/DirectDrawMarkerSurface.cpp
+    src/marker/FixedMapMenuReader.cpp
     src/marker/FixedMapRowObserver.cpp
     src/native/NativeEventAdmission.cpp
     src/native/NativeEventRegistration.cpp
@@ -110,6 +111,7 @@ add_executable(campaign_completion_tests
   tests/CompletionMarkerIndexTests.cpp
   tests/FixedMapRowCalibrationTests.cpp
   tests/BoundedMenuTextTests.cpp
+  tests/FixedMapMenuReaderTests.cpp
   tests/FixedMapRowObserverTests.cpp
   tests/CompletionMarkerGeometryTests.cpp
   tests/CompletionMarkerRendererTests.cpp
@@ -140,6 +142,7 @@ add_executable(campaign_completion_tests
   src/marker/CompletionMarkerGeometry.cpp
   src/marker/CompletionMarkerIndex.cpp
   src/marker/CompletionMarkerRenderer.cpp
+  src/marker/FixedMapMenuReader.cpp
   src/marker/FixedMapRowObserver.cpp
   src/marker/FixedMapRowCalibration.cpp
   src/runtime/CallbackGate.cpp

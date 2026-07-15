@@ -6,6 +6,7 @@
 
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <utility>
 
 namespace campaign_completion {
@@ -66,6 +67,54 @@ const char* NativeResultName(NativeLocalResult result) noexcept {
     return "unknown";
 }
 
+bool HasExactFixedMapPages(const PageSnapshot& snapshot) noexcept {
+    return snapshot.activePages.size() == 4u &&
+           snapshot.activePages[0] == 4u &&
+           snapshot.activePages[1] == 22u &&
+           snapshot.activePages[2] == 23u &&
+           snapshot.activePages[3] == 25u;
+}
+
+const char* InternalMenuStatusName(FixedMapMenuReadStatus status) noexcept {
+    switch (status) {
+        case FixedMapMenuReadStatus::Success:
+            return "success";
+        case FixedMapMenuReadStatus::NotAdmitted:
+            return "not-admitted";
+        case FixedMapMenuReadStatus::HeaderUnreadable:
+            return "header-unreadable";
+        case FixedMapMenuReadStatus::AliasMismatch:
+            return "alias-mismatch";
+        case FixedMapMenuReadStatus::CountOutOfRange:
+            return "count-out-of-range";
+        case FixedMapMenuReadStatus::ScrollOutOfRange:
+            return "scroll-out-of-range";
+        case FixedMapMenuReadStatus::EntryUnreadable:
+            return "entry-unreadable";
+        case FixedMapMenuReadStatus::LabelInvalid:
+            return "label-invalid";
+        case FixedMapMenuReadStatus::ConcurrentMutation:
+            return "concurrent-mutation";
+    }
+    return "unknown";
+}
+
+std::string Utf8(std::wstring_view value) {
+    if (value.empty()) return {};
+    const auto inputLength = static_cast<int>(value.size());
+    const int required = WideCharToMultiByte(
+        CP_UTF8, WC_ERR_INVALID_CHARS, value.data(), inputLength, nullptr, 0,
+        nullptr, nullptr);
+    if (required <= 0) return "<invalid-utf16>";
+    std::string output(static_cast<std::size_t>(required), '\0');
+    if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.data(),
+                            inputLength, output.data(), required, nullptr,
+                            nullptr) != required) {
+        return "<invalid-utf16>";
+    }
+    return output;
+}
+
 }  // namespace
 
 std::atomic<S4Listeners*> S4Listeners::active_{nullptr};
@@ -83,7 +132,8 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         CompletionAdmission& completionAdmission,
                         Phase3Trace& phase3Trace,
                         FixedMapRowObserver& markerObserver,
-                        CompletionMarkerRenderer& markerRenderer) {
+                        CompletionMarkerRenderer& markerRenderer,
+                        const FixedMapMenuMemoryView& fixedMapMenuMemory) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
     origin_ = &origin;
@@ -94,6 +144,7 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     phase3Trace_ = &phase3Trace;
     markerObserver_ = &markerObserver;
     markerRenderer_ = &markerRenderer;
+    fixedMapMenuMemory_ = fixedMapMenuMemory;
     return StartPublicListeners(api, logger);
 }
 
@@ -151,6 +202,10 @@ ListenerStopResult S4Listeners::Stop() {
     phase3Trace_ = nullptr;
     markerObserver_ = nullptr;
     markerRenderer_ = nullptr;
+    fixedMapMenuMemory_ = {};
+    lastFixedMapMenuSnapshot_ = {};
+    exactFixedMapPages_ = false;
+    hasFixedMapMenuSnapshot_ = false;
     activeOrigin_ = {};
     activeSessionId_ = 0u;
     inGameSeen_ = false;
@@ -223,6 +278,7 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const auto now = GetTickCount64();
     ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
+    ObserveInternalMenu(page);
     if (markerObserver_ != nullptr && markerRenderer_ != nullptr) {
         const auto frame = markerObserver_->TakeFrame(page);
         markerRenderer_->Render(surface, pillarboxWidth, frame, now);
@@ -245,6 +301,11 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     }
     currentPage_ = snapshot->primaryPage;
     listAttribution_.ObservePages(snapshot.value());
+    exactFixedMapPages_ = HasExactFixedMapPages(snapshot.value());
+    if (!exactFixedMapPages_) {
+        hasFixedMapMenuSnapshot_ = false;
+        lastFixedMapMenuSnapshot_ = {};
+    }
     if (markerObserver_ != nullptr) {
         markerObserver_->ObservePages(snapshot.value());
     }
@@ -258,6 +319,36 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     }
     message << " primary=" << currentPage_;
     logger_->Write(LogLevel::Info, message.str());
+}
+
+void S4Listeners::ObserveInternalMenu(DWORD page) {
+    if (page != S4_SCREEN_SINGLEPLAYER_MAPSELECT_USER ||
+        !exactFixedMapPages_ ||
+        logger_ == nullptr || !fixedMapMenuMemory_.admitted) {
+        return;
+    }
+    const auto snapshot = ReadFixedMapMenuSnapshot(fixedMapMenuMemory_);
+    if (hasFixedMapMenuSnapshot_ &&
+        EqualFixedMapMenuSnapshot(lastFixedMapMenuSnapshot_, snapshot)) {
+        return;
+    }
+    lastFixedMapMenuSnapshot_ = snapshot;
+    hasFixedMapMenuSnapshot_ = true;
+
+    std::ostringstream message;
+    message << "internal-menu status=" << InternalMenuStatusName(snapshot.status);
+    if (snapshot.status == FixedMapMenuReadStatus::Success) {
+        message << " count=" << snapshot.entryCount
+                << " scroll=" << snapshot.scrollBase << " rows=";
+        for (std::size_t slot = 0u; slot < snapshot.rowCount; ++slot) {
+            if (slot != 0u) message << '|';
+            message << slot << ':' << Utf8(snapshot.labels[slot].view());
+        }
+    }
+    logger_->Write(snapshot.status == FixedMapMenuReadStatus::Success
+                       ? LogLevel::Info
+                       : LogLevel::Warning,
+                   message.str());
 }
 
 void S4Listeners::ObserveMapInit() {

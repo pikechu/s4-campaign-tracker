@@ -38,6 +38,7 @@ int RunMarkerCalibrationTraceTests();
 int RunCompletionMarkerIndexTests();
 int RunFixedMapRowCalibrationTests();
 int RunBoundedMenuTextTests();
+int RunFixedMapMenuReaderTests();
 int RunFixedMapRowObserverTests();
 int RunCompletionMarkerGeometryTests();
 int RunCompletionMarkerRendererTests();
@@ -80,6 +81,7 @@ int main() {
         RunCompletionMarkerIndexTests();
         RunFixedMapRowCalibrationTests();
         RunBoundedMenuTextTests();
+        RunFixedMapMenuReaderTests();
         RunFixedMapRowObserverTests();
         RunCompletionMarkerGeometryTests();
         RunCompletionMarkerRendererTests();
