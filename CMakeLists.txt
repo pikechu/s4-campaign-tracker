@@ -32,6 +32,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/marker/BoundedMenuText.cpp
     src/marker/CompletionMarkerGeometry.cpp
     src/marker/CompletionMarkerIndex.cpp
+    src/marker/CompletionMarkerRenderer.cpp
+    src/marker/DirectDrawMarkerSurface.cpp
     src/marker/FixedMapRowObserver.cpp
     src/marker/FixedMapRowCalibration.cpp
     src/native/NativeEventAdmission.cpp
@@ -61,7 +63,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
   target_link_options(CampaignCompletionDebug PRIVATE /INCREMENTAL:NO)
   target_link_libraries(CampaignCompletionDebug PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/third_party/S4ModApi/S4ModApi.lib"
-    Version Advapi32 Crypt32 Psapi
+    Version Advapi32 Crypt32 Psapi Gdi32
   )
   set_target_properties(CampaignCompletionDebug PROPERTIES
     OUTPUT_NAME "CampaignCompletionDebug"
@@ -138,6 +140,7 @@ add_executable(campaign_completion_tests
   src/marker/BoundedMenuText.cpp
   src/marker/CompletionMarkerGeometry.cpp
   src/marker/CompletionMarkerIndex.cpp
+  src/marker/CompletionMarkerRenderer.cpp
   src/marker/FixedMapRowObserver.cpp
   src/marker/FixedMapRowCalibration.cpp
   src/runtime/CallbackGate.cpp
@@ -164,7 +167,7 @@ target_compile_definitions(campaign_completion_tests PRIVATE
   _UNICODE
 )
 target_compile_options(campaign_completion_tests PRIVATE /W4 /WX /permissive-)
-target_link_libraries(campaign_completion_tests PRIVATE Version Advapi32 Crypt32 Psapi)
+target_link_libraries(campaign_completion_tests PRIVATE Version Advapi32 Crypt32 Psapi Gdi32)
 set_target_properties(campaign_completion_tests PROPERTIES
   MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
