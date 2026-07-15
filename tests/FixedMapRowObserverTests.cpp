@@ -92,7 +92,10 @@ int RunFixedMapRowObserverTests() {
         FixedMapRowObserver observer(index);
         observer.ObserveElement(Element("Aeneas"));
         Require(observer.TakeFrame(25u).count == 0u,
-                "row evidence without exact pages and a tab is inert");
+                "a provisional row cannot draw before exact pages settle");
+        observer.ObservePages(FixedPages());
+        Require(observer.TakeFrame(25u).count == 1u,
+                "initial row evidence survives the delayed exact-page snapshot");
 
         observer.ObservePages({{4u, 22u, 23u}, 23u});
         observer.ObserveListKind(FixedMapListKind::Single);

@@ -1,25 +1,100 @@
 #include "marker/DirectDrawMarkerSurface.h"
 
+#include "resources/CompletionMarkerResources.h"
+
+#include <gdiplus.h>
+#include <objidl.h>
+
+#include <cstring>
+
 namespace campaign_completion {
+namespace {
+
+HMODULE CurrentModule() noexcept {
+    HMODULE module = nullptr;
+    const auto address = reinterpret_cast<LPCWSTR>(&CurrentModule);
+    if (GetModuleHandleExW(
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            address, &module) == FALSE) {
+        return nullptr;
+    }
+    return module;
+}
+
+IStream* OpenCheckImageResource() noexcept {
+    const auto module = CurrentModule();
+    if (module == nullptr) return nullptr;
+    const auto resource = FindResourceW(
+        module, MAKEINTRESOURCEW(IDR_COMPLETION_CHECK_PNG), RT_RCDATA);
+    if (resource == nullptr) return nullptr;
+    const auto size = SizeofResource(module, resource);
+    const auto loaded = LoadResource(module, resource);
+    const auto* bytes = loaded != nullptr ? LockResource(loaded) : nullptr;
+    if (size == 0u || bytes == nullptr) return nullptr;
+
+    const auto memory = GlobalAlloc(GMEM_MOVEABLE, size);
+    if (memory == nullptr) return nullptr;
+    auto* destination = GlobalLock(memory);
+    if (destination == nullptr) {
+        GlobalFree(memory);
+        return nullptr;
+    }
+    std::memcpy(destination, bytes, size);
+    GlobalUnlock(memory);
+
+    IStream* stream = nullptr;
+    if (FAILED(CreateStreamOnHGlobal(memory, TRUE, &stream))) {
+        GlobalFree(memory);
+        return nullptr;
+    }
+    return stream;
+}
+
+}  // namespace
 
 DirectDrawMarkerSurface::~DirectDrawMarkerSurface() { Shutdown(); }
 
 bool DirectDrawMarkerSurface::Initialize() noexcept {
     try {
-        if (darkPen_ != nullptr && greenPen_ != nullptr) return true;
-        darkPen_ = CreatePen(PS_SOLID, 3, RGB(24, 40, 24));
-        if (darkPen_ == nullptr) return false;
-        greenPen_ = CreatePen(PS_SOLID, 1, RGB(48, 208, 80));
-        if (greenPen_ == nullptr) { DeleteObject(darkPen_); darkPen_ = nullptr; return false; }
+        if (checkImage_ != nullptr) return true;
+        Gdiplus::GdiplusStartupInput input{};
+        if (Gdiplus::GdiplusStartup(&gdiplusToken_, &input, nullptr) !=
+            Gdiplus::Ok) {
+            gdiplusToken_ = 0u;
+            return false;
+        }
+        imageStream_ = OpenCheckImageResource();
+        if (imageStream_ == nullptr) {
+            Shutdown();
+            return false;
+        }
+        checkImage_ = Gdiplus::Bitmap::FromStream(imageStream_, FALSE);
+        if (checkImage_ == nullptr || checkImage_->GetLastStatus() != Gdiplus::Ok ||
+            checkImage_->GetWidth() == 0u || checkImage_->GetHeight() == 0u) {
+            Shutdown();
+            return false;
+        }
         return true;
-    } catch (...) { return false; }
+    } catch (...) {
+        Shutdown();
+        return false;
+    }
 }
 
 void DirectDrawMarkerSurface::Shutdown() noexcept {
     try {
         if (dc_ != nullptr) End();
-        if (greenPen_ != nullptr) { DeleteObject(greenPen_); greenPen_ = nullptr; }
-        if (darkPen_ != nullptr) { DeleteObject(darkPen_); darkPen_ = nullptr; }
+        delete checkImage_;
+        checkImage_ = nullptr;
+        if (imageStream_ != nullptr) {
+            imageStream_->Release();
+            imageStream_ = nullptr;
+        }
+        if (gdiplusToken_ != 0u) {
+            Gdiplus::GdiplusShutdown(gdiplusToken_);
+            gdiplusToken_ = 0u;
+        }
     } catch (...) {}
 }
 
@@ -37,8 +112,8 @@ bool DirectDrawMarkerSurface::Describe(LPDIRECTDRAWSURFACE7 surface,
 
 bool DirectDrawMarkerSurface::Begin(LPDIRECTDRAWSURFACE7 surface) noexcept {
     try {
-        if (surface == nullptr || dc_ != nullptr || darkPen_ == nullptr ||
-            greenPen_ == nullptr) return false;
+        if (surface == nullptr || dc_ != nullptr || checkImage_ == nullptr)
+            return false;
         HDC dc = nullptr;
         if (FAILED(surface->GetDC(&dc)) || dc == nullptr) return false;
         activeSurface_ = surface;
@@ -50,18 +125,34 @@ bool DirectDrawMarkerSurface::Begin(LPDIRECTDRAWSURFACE7 surface) noexcept {
 bool DirectDrawMarkerSurface::DrawOutlinedCheck(
     const MarkerCheckGeometry& geometry) noexcept {
     try {
-        if (dc_ == nullptr) return false;
+        if (dc_ == nullptr || checkImage_ == nullptr) return false;
         const int saved = SaveDC(dc_);
         if (saved == 0) return false;
         bool success = IntersectClipRect(dc_, geometry.clip.left, geometry.clip.top,
                                          geometry.clip.right, geometry.clip.bottom) != ERROR;
         if (success) {
-            success = SelectObject(dc_, darkPen_) != nullptr &&
-                      Polyline(dc_, geometry.points.data(),
-                               static_cast<int>(geometry.points.size())) != FALSE;
-            success = SelectObject(dc_, greenPen_) != nullptr &&
-                      Polyline(dc_, geometry.points.data(),
-                               static_cast<int>(geometry.points.size())) != FALSE && success;
+            const auto left = geometry.points[0].x;
+            const auto top = geometry.points[2].y;
+            const auto width = geometry.points[2].x - left + 1;
+            const auto height = geometry.points[1].y - top + 1;
+            if (width <= 0 || height <= 0) {
+                success = false;
+            } else {
+                Gdiplus::Graphics graphics(dc_);
+                success = graphics.GetLastStatus() == Gdiplus::Ok &&
+                          graphics.SetCompositingMode(
+                              Gdiplus::CompositingModeSourceOver) == Gdiplus::Ok &&
+                          graphics.SetCompositingQuality(
+                              Gdiplus::CompositingQualityHighQuality) == Gdiplus::Ok &&
+                          graphics.SetInterpolationMode(
+                              Gdiplus::InterpolationModeHighQualityBicubic) == Gdiplus::Ok &&
+                          graphics.SetPixelOffsetMode(
+                              Gdiplus::PixelOffsetModeHalf) == Gdiplus::Ok &&
+                          graphics.DrawImage(
+                              checkImage_, Gdiplus::Rect(
+                                               left, top, width, height)) ==
+                              Gdiplus::Ok;
+            }
         }
         return RestoreDC(dc_, saved) != FALSE && success;
     } catch (...) { return false; }

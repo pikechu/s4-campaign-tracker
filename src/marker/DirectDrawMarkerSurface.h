@@ -2,6 +2,12 @@
 
 #include "marker/CompletionMarkerRenderer.h"
 
+struct IStream;
+
+namespace Gdiplus {
+class Bitmap;
+}
+
 namespace campaign_completion {
 
 class DirectDrawMarkerSurface final : public IMarkerDrawingSurface {
@@ -18,8 +24,9 @@ public:
 private:
     LPDIRECTDRAWSURFACE7 activeSurface_ = nullptr;
     HDC dc_ = nullptr;
-    HPEN darkPen_ = nullptr;
-    HPEN greenPen_ = nullptr;
+    ULONG_PTR gdiplusToken_ = 0u;
+    IStream* imageStream_ = nullptr;
+    Gdiplus::Bitmap* checkImage_ = nullptr;
 };
 
 }  // namespace campaign_completion

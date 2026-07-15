@@ -407,8 +407,10 @@ int RunRuntimePolicyTests() {
     }
     Require(markerSurface.find("GetDC") != std::string::npos &&
                 markerSurface.find("ReleaseDC") != std::string::npos &&
-                markerSurface.find("Polyline") != std::string::npos,
-            "DirectDraw marker surface exclusively owns GDI drawing calls");
+                markerSurface.find("Gdiplus::Graphics") != std::string::npos &&
+                markerSurface.find("DrawImage") != std::string::npos &&
+                markerSurface.find("Polyline") == std::string::npos,
+            "DirectDraw marker surface exclusively owns PNG drawing calls");
     Require(listenerHeader.find("LPS4GUIDRAWBLTPARAMS marker") ==
                 std::string::npos &&
                 listenerHeader.find("LPCS4UIELEMENT marker") ==

@@ -1,0 +1,3 @@
+#include "CompletionMarkerResources.h"
+
+IDR_COMPLETION_CHECK_PNG RCDATA "completion-check.png"

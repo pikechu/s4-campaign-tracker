@@ -94,11 +94,16 @@ void FixedMapRowObserver::ObservePages(
         std::lock_guard<std::mutex> lock(mutex_);
         if (!enabled_) return;
         const bool exact = HasExactFixedMapPages(snapshot);
-        if (exact == exactPages_) return;
+        if (!exact) {
+            exactPages_ = false;
+            listKind_ = FixedMapListKind::Unknown;
+            ClearFrame();
+            return;
+        }
+        if (exactPages_) return;
         exactPages_ = exact;
-        listKind_ = exact ? FixedMapListKind::Single
-                          : FixedMapListKind::Unknown;
-        ClearFrame();
+        listKind_ = FixedMapListKind::Single;
+        retainedActive_.fill(false);
     } catch (...) {
     }
 }
@@ -120,11 +125,14 @@ void FixedMapRowObserver::ObserveElement(
     const FixedMapRowObservation& element) noexcept {
     try {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (!enabled_ || !exactPages_ ||
-            listKind_ == FixedMapListKind::Unknown || invalidFrame_ ||
+        if (!enabled_ || invalidFrame_ ||
             !HasBaseRowSignature(element)) {
             return;
         }
+
+        const auto matchKind = exactPages_ ? listKind_
+                                           : FixedMapListKind::Single;
+        if (matchKind == FixedMapListKind::Unknown) return;
 
         std::size_t slot = 0u;
         if (!TryGetRowSlot(element, slot)) {
@@ -138,7 +146,7 @@ void FixedMapRowObserver::ObserveElement(
 
         BoundedWideText label{};
         if (!DecodeMenuTextLossless(element.text, label) ||
-            index_.Match(listKind_, label.view()) !=
+            index_.Match(matchKind, label.view()) !=
                 MarkerMatchStatus::Unique) {
             return;
         }
@@ -173,7 +181,7 @@ MarkerFrameCommands FixedMapRowObserver::TakeFrame(DWORD page) noexcept {
         std::lock_guard<std::mutex> lock(mutex_);
         MarkerFrameCommands frame{};
         frame.generation = generation_;
-        if (!enabled_ || page != 25u) return frame;
+        if (!enabled_ || !exactPages_ || page != 25u) return frame;
 
         if (invalidFrame_) {
             retainedActive_.fill(false);

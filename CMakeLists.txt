@@ -44,6 +44,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/runtime/PluginPaths.cpp
     src/runtime/S4Listeners.cpp
     src/runtime/StopRequest.cpp
+    src/resources/CompletionMarkerResources.rc
     src/victory/LaunchOrigin.cpp
     src/victory/MapSessionPolicy.cpp
     src/victory/SettlementUiProbe.cpp
@@ -61,7 +62,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
   target_link_options(CampaignCompletionDebug PRIVATE /INCREMENTAL:NO)
   target_link_libraries(CampaignCompletionDebug PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/third_party/S4ModApi/S4ModApi.lib"
-    Version Advapi32 Crypt32 Psapi Gdi32
+    Version Advapi32 Crypt32 Psapi Gdi32 Gdiplus Ole32
   )
   set_target_properties(CampaignCompletionDebug PROPERTIES
     OUTPUT_NAME "CampaignCompletionDebug"
