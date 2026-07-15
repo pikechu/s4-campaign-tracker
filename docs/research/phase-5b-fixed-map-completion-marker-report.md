@@ -243,3 +243,41 @@ process count was zero. Post-exit SHA-256 values remained:
 No rollback has been performed. Rollback or deployment of a future diagnostic
 or corrected candidate requires a separate explicit approval after its scope
 and artifact are audited.
+
+## Render-stage diagnostic follow-up
+
+The generic live `frame-failed` record could not distinguish surface
+description, checked geometry, `GetDC`, GDI drawing, or `ReleaseDC`. RED
+`d9a9a0a` required stable bounded stage labels for `describe`, `geometry`,
+`begin`, `draw`, and `end`, plus the final stage on terminal disable. Windows
+CI run `29394445791` passed archive integration, build, and policy gates, then
+failed only at the expected missing `stage=geometry` test assertion.
+
+GREEN `5586f79` added failure-stage classification without changing the row
+observer, geometry algorithm, DirectDraw operations, completion persistence,
+or classification policy. It also moved failure-path string construction
+inside the existing exception boundary. Release CI run `29394873528`, job
+`87285983210`, passed all gates. Its artifact `8334709514` had API digest
+`sha256:f77e408c9e59d89782dc9829ef4829fb8d0ed07f3947896f743b2d362982c5e3`.
+The audited two-entry inner ZIP had SHA-256
+`b5a1af1bf8a47e6aa783a6ab8f27640232d4f03fc6802edc1a1816a3164784af`;
+the PE32/i386 diagnostic ASI had SHA-256
+`0a78c6bac79e540705986cf3f7aa0d70731268a272d519ddddde55a998e29332`.
+The packaged INI was byte-identical to the installed INI and was not deployed.
+
+After separate explicit user approval and a zero-process preflight, the
+established guarded installer replaced only the project ASI entry. Independent
+verification found:
+
+- installed archive: 1,378,045 bytes, SHA-256
+  `a1b9cac9cbdccefa0683b758fc9777ca859930f8a21856ce65068329e26a15a5`;
+- embedded ASI: SHA-256
+  `0a78c6bac79e540705986cf3f7aa0d70731268a272d519ddddde55a998e29332`;
+- all other nine ZIP entries byte-identical to the immutable original;
+- immutable original, live INI, primary database, and database backup unchanged;
+- no temporary archive sibling and a final protected-process count of zero.
+
+This diagnostic deployment does not change the Phase 5B **NO-GO** decision. A
+short live reproduction is still required to identify the exact failing stage;
+any corrected candidate remains subject to a new audit and explicit deployment
+approval.
