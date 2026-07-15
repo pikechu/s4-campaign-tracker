@@ -13,11 +13,24 @@ on:
       - "tools/**"
       - ".github/workflows/build-debug-asi.yml"
 
+concurrency:
+  group: build-debug-asi-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: windows-2022
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore incremental build cache
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: win32-release-build-${{ hashFiles('CMakeLists.txt', 'cmake/**', 'src/**', 'tests/**', 'third_party/**') }}
+          restore-keys: |
+            win32-release-build-
 
       - name: Test Settlers United archive integration
         shell: pwsh
@@ -39,49 +52,52 @@ jobs:
       - name: Reject forbidden behavior fixtures
         shell: pwsh
         run: |
-          function New-PolicyFixture([string]$name) {
-            $root = Join-Path $env:RUNNER_TEMP $name
+          $ErrorActionPreference = "Stop"
+
+          function New-PolicyFixture {
+            $root = Join-Path $env:RUNNER_TEMP "campaign-policy-fixture"
             New-Item -ItemType Directory -Path $root -Force | Out-Null
             Copy-Item -LiteralPath CMakeLists.txt -Destination $root
             Copy-Item -LiteralPath src -Destination (Join-Path $root "src") -Recurse
             return $root
           }
-          function Assert-Rejected([string]$root, [string]$message) {
+          function Assert-Rejected(
+            [string]$root,
+            [string]$relativePath,
+            [string]$token,
+            [string]$message
+          ) {
+            $fixturePath = Join-Path $root $relativePath
+            $originalPath = Join-Path $PWD $relativePath
             $accepted = $true
             try {
+              [IO.File]::AppendAllText($fixturePath, "`n// $token mutation fixture`n")
               ./tools/verify_no_process_patch.ps1 `
-                -Binary build/Release/CampaignCompletionDebug.asi `
-                -SourceRoot $root
+                -SourceRoot $root `
+                -SourceOnly
             } catch {
               $accepted = $false
+            } finally {
+              Copy-Item -LiteralPath $originalPath -Destination $fixturePath -Force
             }
             if ($accepted) { throw $message }
           }
 
-          $patchFixture = New-PolicyFixture "campaign-process-patch-policy"
-          $runtime = Join-Path $patchFixture "src/runtime/DiagnosticRuntime.cpp"
-          [IO.File]::AppendAllText($runtime, "`n// hlib::CallPatch mutation fixture`n")
-          Assert-Rejected $patchFixture `
+          $fixture = New-PolicyFixture
+          Assert-Rejected $fixture "src/runtime/DiagnosticRuntime.cpp" `
+            "hlib::CallPatch" `
             "Mutated process-patch source was unexpectedly accepted"
 
-          $luaFixture = New-PolicyFixture "campaign-lua-write-policy"
-          $bridge = Join-Path $luaFixture "src/lua/SuLuaMapBridge.cpp"
-          [IO.File]::AppendAllText($bridge, "`n// lua_setglobal mutation fixture`n")
-          Assert-Rejected $luaFixture `
+          Assert-Rejected $fixture "src/lua/SuLuaMapBridge.cpp" `
+            "lua_setglobal" `
             "Mutated Lua-write source was unexpectedly accepted"
 
-          $endCheckFixture = New-PolicyFixture "campaign-end-check-policy"
-          $listener = Join-Path $endCheckFixture "src/runtime/S4Listeners.cpp"
-          [IO.File]::AppendAllText($listener,
-            "`n// GameDefaultGameEndCheck forbidden behavior fixture`n")
-          Assert-Rejected $endCheckFixture `
+          Assert-Rejected $fixture "src/runtime/S4Listeners.cpp" `
+            "GameDefaultGameEndCheck" `
             "GameDefaultGameEndCheck fixture was unexpectedly accepted"
 
-          $luaHandlerFixture = New-PolicyFixture "campaign-lua-handler-policy"
-          $listener = Join-Path $luaHandlerFixture "src/runtime/S4Listeners.cpp"
-          [IO.File]::AppendAllText($listener,
-            "`n// VICTORY_CONDITION_CHECK mutation fixture`n")
-          Assert-Rejected $luaHandlerFixture `
+          Assert-Rejected $fixture "src/runtime/S4Listeners.cpp" `
+            "VICTORY_CONDITION_CHECK" `
             "Lua victory-handler fixture was unexpectedly accepted"
 
           $additionalTokens = @(
@@ -93,13 +109,8 @@ jobs:
             "hlib::JmpPatch"
             "MinHook"
           )
-          for ($index = 0; $index -lt $additionalTokens.Count; ++$index) {
-            $token = $additionalTokens[$index]
-            $fixture = New-PolicyFixture "campaign-forbidden-policy-$index"
-            $listener = Join-Path $fixture "src/runtime/S4Listeners.cpp"
-            [IO.File]::AppendAllText($listener,
-              "`n// $token forbidden behavior fixture`n")
-            Assert-Rejected $fixture `
+          foreach ($token in $additionalTokens) {
+            Assert-Rejected $fixture "src/runtime/S4Listeners.cpp" $token `
               "$token fixture was unexpectedly accepted"
           }
 

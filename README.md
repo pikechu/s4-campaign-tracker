@@ -189,9 +189,19 @@ Launch the game through Settlers United.
 
 ## Development Roadmap
 
-Current status: Phase 1 research and the Phase 2 diagnostic bootstrap are
-complete; Phase 2.1 hardening is under live validation. No completion-tracking
-Release plugin exists yet.
+Current status: completion persistence and fixed-map marker rendering are
+implemented, and the Phase 5B internal-menu relative-identifier rendering
+adapter passed live validation. The existing invalid main completion database
+remains isolated in read-only-backup mode and still requires separate manual
+handling. See [the Phase 5B GO report](docs/research/phase-5b-internal-menu-relative-marker-rendering-report.md)
+for the reviewed build, guarded deployment, and live acceptance evidence.
+
+Development feedback policy:
+
+- keep intermediate RED test commits local;
+- push a complete GREEN checkpoint instead of each test-first intermediate;
+- use the full Windows CI as the authoritative Win32, policy, package, and PE32
+  gate before deployment.
 
 Research and planning documents:
 

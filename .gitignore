@@ -8,6 +8,8 @@ research/evidence/*.pdb.json
 /research/backups/
 /artifacts/phase-3a-ci/
 /artifacts/phase-3-victory-diagnostics/
+/artifacts/
+/research/evidence/save-samples/
 
 # Visual Studio
 .vs/

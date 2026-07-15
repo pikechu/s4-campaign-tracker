@@ -1,56 +1,61 @@
 param(
-    [Parameter(Mandatory = $true)]
     [string]$Binary,
-    [string]$SourceRoot = "."
+    [string]$SourceRoot = ".",
+    [switch]$SourceOnly
 )
 
 $ErrorActionPreference = "Stop"
 
-$binaryPath = (Resolve-Path -LiteralPath $Binary -ErrorAction Stop).Path
 $rootPath = (Resolve-Path -LiteralPath $SourceRoot -ErrorAction Stop).Path
 $cmakePath = Join-Path $rootPath "CMakeLists.txt"
 if (-not (Test-Path -LiteralPath $cmakePath -PathType Leaf)) {
     throw "CMakeLists.txt is missing below SourceRoot: $rootPath"
 }
 
-$bytes = [IO.File]::ReadAllBytes($binaryPath)
-if ($bytes.Length -lt 0x40) {
-    throw "ASI is too small to contain a PE header"
-}
-$peOffset = [BitConverter]::ToInt32($bytes, 0x3c)
-if ($peOffset -lt 0 -or $peOffset + 26 -gt $bytes.Length -or
-    [BitConverter]::ToUInt32($bytes, $peOffset) -ne 0x00004550) {
-    throw "ASI has an invalid PE header"
-}
-$machine = [BitConverter]::ToUInt16($bytes, $peOffset + 4)
-$optionalMagic = [BitConverter]::ToUInt16($bytes, $peOffset + 24)
-if ($machine -ne 0x014c -or $optionalMagic -ne 0x010b) {
-    throw ("Expected PE32 IMAGE_FILE_MACHINE_I386, found machine=0x{0:X4} optional=0x{1:X4}" -f `
-        $machine, $optionalMagic)
-}
+if (-not $SourceOnly) {
+    if ([string]::IsNullOrWhiteSpace($Binary)) {
+        throw "Binary is required unless SourceOnly is selected"
+    }
+    $binaryPath = (Resolve-Path -LiteralPath $Binary -ErrorAction Stop).Path
+    $bytes = [IO.File]::ReadAllBytes($binaryPath)
+    if ($bytes.Length -lt 0x40) {
+        throw "ASI is too small to contain a PE header"
+    }
+    $peOffset = [BitConverter]::ToInt32($bytes, 0x3c)
+    if ($peOffset -lt 0 -or $peOffset + 26 -gt $bytes.Length -or
+        [BitConverter]::ToUInt32($bytes, $peOffset) -ne 0x00004550) {
+        throw "ASI has an invalid PE header"
+    }
+    $machine = [BitConverter]::ToUInt16($bytes, $peOffset + 4)
+    $optionalMagic = [BitConverter]::ToUInt16($bytes, $peOffset + 24)
+    if ($machine -ne 0x014c -or $optionalMagic -ne 0x010b) {
+        throw ("Expected PE32 IMAGE_FILE_MACHINE_I386, found machine=0x{0:X4} optional=0x{1:X4}" -f `
+            $machine, $optionalMagic)
+    }
 
-$vswhere = Join-Path ${env:ProgramFiles(x86)} `
-    "Microsoft Visual Studio/Installer/vswhere.exe"
-if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
-    throw "vswhere.exe is unavailable"
-}
-$dumpbin = @(& $vswhere -latest -products * `
-    -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
-    -find "VC\Tools\MSVC\**\bin\Hostx64\x86\dumpbin.exe")[0]
-if ([string]::IsNullOrWhiteSpace($dumpbin) -or
-    -not (Test-Path -LiteralPath $dumpbin -PathType Leaf)) {
-    throw "Win32 dumpbin.exe is unavailable"
-}
+    $vswhere = Join-Path ${env:ProgramFiles(x86)} `
+        "Microsoft Visual Studio/Installer/vswhere.exe"
+    if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+        throw "vswhere.exe is unavailable"
+    }
+    $dumpbin = @(& $vswhere -latest -products * `
+        -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+        -find "VC\Tools\MSVC\**\bin\Hostx64\x86\dumpbin.exe")[0]
+    if ([string]::IsNullOrWhiteSpace($dumpbin) -or
+        -not (Test-Path -LiteralPath $dumpbin -PathType Leaf)) {
+        throw "Win32 dumpbin.exe is unavailable"
+    }
 
-$exports = @(& $dumpbin /NOLOGO /EXPORTS $binaryPath 2>&1)
-if ($LASTEXITCODE -ne 0) {
-    throw "dumpbin /EXPORTS failed"
-}
-$stopExports = @($exports | Where-Object {
-    $_ -match "\bCampaignCompletionDebugStop\b"
-})
-if ($stopExports.Count -ne 1) {
-    throw "Expected exactly one CampaignCompletionDebugStop export, found $($stopExports.Count)"
+    $exports = @(& $dumpbin /NOLOGO /EXPORTS $binaryPath 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+        throw "dumpbin /EXPORTS failed"
+    }
+    $stopExports = @($exports | Where-Object {
+        $_ -match "\bCampaignCompletionDebugStop\b"
+    })
+    if ($stopExports.Count -ne 1) {
+        throw "Expected exactly one CampaignCompletionDebugStop export, found $($stopExports.Count)"
+    }
 }
 
 $cmake = [IO.File]::ReadAllText($cmakePath)
@@ -236,4 +241,8 @@ foreach ($api in $forbiddenLuaWrites) {
     }
 }
 
-Write-Host "Verified PE32 completion persistence ASI, zero process patches, and read-only Lua bridge."
+if ($SourceOnly) {
+    Write-Host "Verified zero process patches and read-only Lua bridge."
+} else {
+    Write-Host "Verified PE32 completion persistence ASI, zero process patches, and read-only Lua bridge."
+}
