@@ -40,6 +40,7 @@ int RunFixedMapRowCalibrationTests();
 int RunBoundedMenuTextTests();
 int RunFixedMapRowObserverTests();
 int RunCompletionMarkerGeometryTests();
+int RunCompletionMarkerRendererTests();
 
 int main() {
     try {
@@ -81,6 +82,7 @@ int main() {
         RunBoundedMenuTextTests();
         RunFixedMapRowObserverTests();
         RunCompletionMarkerGeometryTests();
+        RunCompletionMarkerRendererTests();
         return RunRuntimePolicyTests();
     } catch (const std::exception& error) {
         std::cerr << "FAIL: " << error.what() << '\n';

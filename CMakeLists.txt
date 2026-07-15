@@ -111,6 +111,7 @@ add_executable(campaign_completion_tests
   tests/BoundedMenuTextTests.cpp
   tests/FixedMapRowObserverTests.cpp
   tests/CompletionMarkerGeometryTests.cpp
+  tests/CompletionMarkerRendererTests.cpp
   src/diagnostics/CaptureTrace.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
