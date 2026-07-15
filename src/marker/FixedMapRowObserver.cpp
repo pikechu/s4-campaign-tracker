@@ -1,0 +1,203 @@
+#include "marker/FixedMapRowObserver.h"
+
+#include <windows.h>
+
+#include <cstddef>
+#include <limits>
+#include <string_view>
+
+namespace campaign_completion {
+namespace {
+
+constexpr DWORD kLogicalSurfaceWidth = 800u;
+constexpr DWORD kLogicalSurfaceHeight = 600u;
+constexpr WORD kRowContainerType = 0u;
+constexpr WORD kRowX = 115u;
+constexpr WORD kFirstRowY = 142u;
+constexpr WORD kRowStride = 31u;
+constexpr WORD kRowWidth = 271u;
+constexpr WORD kRowHeight = 30u;
+constexpr WORD kFirstValueLink = 2417u;
+
+bool HasExactFixedMapPages(const PageSnapshot& snapshot) noexcept {
+    return snapshot.activePages.size() == 4u &&
+           snapshot.activePages[0] == 4u &&
+           snapshot.activePages[1] == 22u &&
+           snapshot.activePages[2] == 23u &&
+           snapshot.activePages[3] == 25u;
+}
+
+bool HasBaseRowSignature(const FixedMapRowObservation& element) noexcept {
+    return element.surfaceWidth == kLogicalSurfaceWidth &&
+           element.surfaceHeight == kLogicalSurfaceHeight &&
+           element.containerType == kRowContainerType &&
+           element.x == kRowX && element.width == kRowWidth &&
+           element.height == kRowHeight &&
+           (element.textStyle == 1u || element.textStyle == 2u);
+}
+
+bool TryGetRowSlot(const FixedMapRowObservation& element,
+                   std::size_t& slot) noexcept {
+    if (element.y < kFirstRowY) {
+        return false;
+    }
+    const auto delta = static_cast<unsigned>(element.y - kFirstRowY);
+    if (delta % kRowStride != 0u) {
+        return false;
+    }
+    const auto candidate = delta / kRowStride;
+    const auto expectedLink =
+        static_cast<unsigned>(kFirstValueLink) + candidate;
+    if (expectedLink > (std::numeric_limits<WORD>::max)() ||
+        element.valueLink != static_cast<WORD>(expectedLink)) {
+        return false;
+    }
+    slot = static_cast<std::size_t>(candidate);
+    return true;
+}
+
+bool EqualLabel(std::wstring_view left,
+                std::wstring_view right) noexcept {
+    if (left.size() > static_cast<std::size_t>((std::numeric_limits<int>::max)()) ||
+        right.size() > static_cast<std::size_t>((std::numeric_limits<int>::max)())) {
+        return false;
+    }
+    return CompareStringOrdinal(
+               left.data(), static_cast<int>(left.size()), right.data(),
+               static_cast<int>(right.size()), TRUE) == CSTR_EQUAL;
+}
+
+bool EqualCommand(const MarkerDrawCommand& left,
+                  const MarkerDrawCommand& right) noexcept {
+    return left.logicalSurfaceWidth == right.logicalSurfaceWidth &&
+           left.logicalSurfaceHeight == right.logicalSurfaceHeight &&
+           left.x == right.x && left.y == right.y &&
+           left.width == right.width && left.height == right.height;
+}
+
+MarkerDrawCommand MakeCommand(
+    const FixedMapRowObservation& element) noexcept {
+    return {element.surfaceWidth, element.surfaceHeight, element.x, element.y,
+            element.width, element.height};
+}
+
+}  // namespace
+
+FixedMapRowObserver::FixedMapRowObserver(
+    const CompletionMarkerIndex& index) noexcept
+    : index_(index) {}
+
+void FixedMapRowObserver::ObservePages(
+    const PageSnapshot& snapshot) noexcept {
+    if (!enabled_) {
+        return;
+    }
+    const bool exact = HasExactFixedMapPages(snapshot);
+    if (exact == exactPages_) {
+        return;
+    }
+    exactPages_ = exact;
+    listKind_ = FixedMapListKind::Unknown;
+    ClearFrame();
+}
+
+void FixedMapRowObserver::ObserveListKind(
+    FixedMapListKind kind) noexcept {
+    if (!enabled_) {
+        return;
+    }
+    const auto admitted = exactPages_ ? kind : FixedMapListKind::Unknown;
+    if (admitted == listKind_) {
+        return;
+    }
+    listKind_ = admitted;
+    ClearFrame();
+}
+
+void FixedMapRowObserver::ObserveElement(
+    const FixedMapRowObservation& element) noexcept {
+    if (!enabled_ || !exactPages_ ||
+        listKind_ == FixedMapListKind::Unknown || invalidFrame_ ||
+        !HasBaseRowSignature(element)) {
+        return;
+    }
+
+    std::size_t slot = 0u;
+    if (!TryGetRowSlot(element, slot)) {
+        return;
+    }
+    if (slot >= kMaximumVisibleFixedRows) {
+        InvalidateFrame();
+        return;
+    }
+
+    BoundedWideText label{};
+    if (!DecodeMenuTextLossless(element.text, label) ||
+        index_.Match(listKind_, label.view()) != MarkerMatchStatus::Unique) {
+        return;
+    }
+
+    const auto command = MakeCommand(element);
+    for (std::size_t index = 0u; index < pendingCount_; ++index) {
+        auto& pending = pending_[index];
+        if (EqualLabel(pending.label.view(), label.view())) {
+            if (!EqualCommand(pending.command, command)) {
+                pending.ambiguous = true;
+            }
+            return;
+        }
+        if (EqualCommand(pending.command, command)) {
+            InvalidateFrame();
+            return;
+        }
+    }
+
+    if (pendingCount_ >= pending_.size()) {
+        InvalidateFrame();
+        return;
+    }
+    pending_[pendingCount_] = {label, command, false};
+    ++pendingCount_;
+}
+
+MarkerFrameCommands FixedMapRowObserver::TakeFrame(DWORD page) noexcept {
+    MarkerFrameCommands frame{};
+    frame.generation = generation_;
+    if (!enabled_ || page != 4u) {
+        return frame;
+    }
+
+    if (!invalidFrame_) {
+        for (std::size_t index = 0u; index < pendingCount_; ++index) {
+            if (!pending_[index].ambiguous) {
+                frame.commands[frame.count] = pending_[index].command;
+                ++frame.count;
+            }
+        }
+    }
+    ClearFrame();
+    return frame;
+}
+
+void FixedMapRowObserver::Disable() noexcept {
+    if (!enabled_) {
+        return;
+    }
+    enabled_ = false;
+    exactPages_ = false;
+    listKind_ = FixedMapListKind::Unknown;
+    ClearFrame();
+}
+
+void FixedMapRowObserver::ClearFrame() noexcept {
+    pendingCount_ = 0u;
+    invalidFrame_ = false;
+    ++generation_;
+}
+
+void FixedMapRowObserver::InvalidateFrame() noexcept {
+    pendingCount_ = 0u;
+    invalidFrame_ = true;
+}
+
+}  // namespace campaign_completion
