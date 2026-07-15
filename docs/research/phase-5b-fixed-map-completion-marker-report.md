@@ -5,9 +5,9 @@ Date: 2026-07-15 (Asia/Shanghai)
 ## Status
 
 Static implementation, code review, Release CI, artifact audit, and guarded
-deployment are complete. Live navigation, rendering, shutdown, and
-same-process refresh acceptance remain pending and no live GO/NO-GO has been
-assigned.
+deployment are complete. Live acceptance found a contained DirectDraw marker
+rendering failure. Phase 5B is **NO-GO**; no same-process refresh test was
+attempted after the required initial-marker criterion failed.
 
 ## Scope and authorization boundary
 
@@ -195,9 +195,51 @@ Deployment evidence is retained untracked at
 
 ## Deployment and live acceptance gates
 
-Deployment is complete and independently verified. This is not yet a live GO.
+Deployment is complete and independently verified, but live acceptance is
+**NO-GO**.
 
-Live GO additionally requires the planned navigation/hover/selection/scrolling
-checks, the zero-marker control, normal input and shutdown behavior, and a
-same-process newly committed victory whose marker appears without restart.
-Until all those checks pass, the result remains **PENDING LIVE ACCEPTANCE**.
+The deployed process loaded the exact audited ASI and logged:
+
+```text
+CampaignCompletionDebug bootstrap version=0.6.0 pid=23540 mode=completion-marker-rendering
+```
+
+At startup, the pre-existing primary completion database failed strict decode
+with `CompletionJsonFailure::InvalidRecord` (`failure=10`). The valid backup
+loaded read-only with two records, `Aeneas` and `Antares`, and seeded the marker
+index as designed. This read-only state would independently prevent the later
+same-process commit test; neither database file was modified.
+
+The user opened the fixed single-player list with `Aeneas` visible. The normal
+row showed no marker. Clicking the approved single-player tab produced repeated
+`fixed-map-list list_kind=single element-id=2449` evidence, but the marker still
+did not appear. Hovering and moving away also produced no marker or residual
+artifact. Live GUI evidence included the calibrated Aeneas row
+`115,142,271,30`, value link `2417`, and the exact page set `4,22,23,25`.
+
+The renderer then logged three contained failures:
+
+```text
+2026-07-15T14:22:57.555+LOCAL [ERROR] completion-marker-renderer frame-failed
+2026-07-15T14:23:02.613+LOCAL [ERROR] completion-marker-renderer frame-failed
+2026-07-15T14:23:02.953+LOCAL [ERROR] completion-marker-renderer disabled failures=3
+```
+
+This proves that matching reached a non-empty render attempt and localizes the
+live defect to the DirectDraw surface/DC/geometry render path rather than RD
+archive-name classification, the completion index, list attribution, or row
+identity. Failure containment worked: only marker rendering was disabled, the
+game remained responsive, and no persistence mutation followed.
+
+The user exited the game and Settlers United normally. The final protected
+process count was zero. Post-exit SHA-256 values remained:
+
+- live INI: `4f8aa0962482b6bc4dd63f91bd5734d749dbe436656084733a176dd9afff6c83`;
+- primary database: `31edf4f486d7e0078efa23d958482ebc23ffadda2b555c73b5f49b2493756b1f`;
+- database backup: `b372009a13739c9eafea5841c71eba8bbe91cac81e4e2a7e7b478191adfccc54`;
+- installed SU archive: `997e6146c70d7f3c0314dff99f864e3d3b1e9c251ab6509d95bd437f74fc473d`;
+- immutable original archive: `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`.
+
+No rollback has been performed. Rollback or deployment of a future diagnostic
+or corrected candidate requires a separate explicit approval after its scope
+and artifact are audited.
