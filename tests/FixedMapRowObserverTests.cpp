@@ -91,24 +91,24 @@ int RunFixedMapRowObserverTests() {
     {
         FixedMapRowObserver observer(index);
         observer.ObserveElement(Element("Aeneas"));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "row evidence without exact pages and a tab is inert");
 
         observer.ObservePages({{4u, 22u, 23u}, 23u});
         observer.ObserveListKind(FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "a non-exact fixed page set fails closed");
 
         Admit(observer, FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
-        const auto wrongPage = observer.TakeFrame(25u);
+        const auto wrongPage = observer.TakeFrame(4u);
         Require(wrongPage.count == 0u,
-                "a non-page-4 frame never draws");
-        const auto frame = observer.TakeFrame(4u);
+                "an earlier page-4 frame never draws or consumes the row");
+        const auto frame = observer.TakeFrame(25u);
         Require(frame.count == 1u && IsCommand(frame.commands[0], 0u),
-                "only page 4 consumes the calibrated Aeneas row");
-        Require(observer.TakeFrame(4u).count == 0u,
+                "the final page-25 layer consumes the calibrated Aeneas row");
+        Require(observer.TakeFrame(25u).count == 0u,
                 "a consumed frame clears all row state");
     }
 
@@ -116,13 +116,13 @@ int RunFixedMapRowObserverTests() {
         FixedMapRowObserver observer(index);
         Admit(observer, FixedMapListKind::Custom);
         observer.ObserveElement(Element("Antares", 2u));
-        const auto custom = observer.TakeFrame(4u);
+        const auto custom = observer.TakeFrame(25u);
         Require(custom.count == 1u && IsCommand(custom.commands[0], 2u),
                 "custom category accepts only its completed Antares row");
 
         observer.ObserveListKind(FixedMapListKind::Multiplayer);
         observer.ObserveElement(Element("Antares"));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "multiplayer category does not borrow a custom completion");
     }
 
@@ -132,7 +132,7 @@ int RunFixedMapRowObserverTests() {
         auto padded = Element("  Aeneas  ");
         padded.textStyle = 2u;
         observer.ObserveElement(padded);
-        Require(observer.TakeFrame(4u).count == 1u,
+        Require(observer.TakeFrame(25u).count == 1u,
                 "trimmed label and both calibrated text styles are accepted");
 
         const auto valid = Element("Aeneas");
@@ -149,7 +149,7 @@ int RunFixedMapRowObserverTests() {
         rejected[8].textStyle = 3u;
         for (const auto& element : rejected) {
             observer.ObserveElement(element);
-            Require(observer.TakeFrame(4u).count == 0u,
+            Require(observer.TakeFrame(25u).count == 0u,
                     "every mismatch in the calibrated signature fails closed");
         }
     }
@@ -159,18 +159,18 @@ int RunFixedMapRowObserverTests() {
         Admit(observer, FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
         observer.ObserveElement(Element("Aeneas"));
-        Require(observer.TakeFrame(4u).count == 1u,
+        Require(observer.TakeFrame(25u).count == 1u,
                 "identical repeated callbacks collapse to one command");
 
         observer.ObserveElement(Element("Aeneas", 0u));
         observer.ObserveElement(Element("Aeneas", 1u));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "one label at two valid rectangles is ambiguous for the frame");
 
         observer.ObserveElement(Element("Aeneas", 0u));
         observer.ObserveElement(Element("Atlas", 0u));
         observer.ObserveElement(Element("Aeneas", 1u));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "two completed labels in one slot invalidate the whole frame");
     }
 
@@ -192,7 +192,7 @@ int RunFixedMapRowObserverTests() {
             const auto name = "Row" + std::to_string(slot);
             observer.ObserveElement(Element(name.c_str(), slot));
         }
-        const auto full = observer.TakeFrame(4u);
+        const auto full = observer.TakeFrame(25u);
         Require(full.count == kMaximumVisibleFixedRows,
                 "the fixed frame capacity admits exactly six calibrated rows");
 
@@ -202,7 +202,7 @@ int RunFixedMapRowObserverTests() {
             const auto name = "Row" + std::to_string(slot);
             overflow.ObserveElement(Element(name.c_str(), slot));
         }
-        Require(overflow.TakeFrame(4u).count == 0u,
+        Require(overflow.TakeFrame(25u).count == 0u,
                 "exhausting the six-row guard invalidates the whole frame");
     }
 
@@ -211,13 +211,13 @@ int RunFixedMapRowObserverTests() {
         Admit(observer, FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
         observer.ObserveListKind(FixedMapListKind::Custom);
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "a tab change clears pending rows");
 
         observer.ObserveListKind(FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
         observer.ObservePages({{7u}, 7u});
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "a page change clears pending rows");
 
         Admit(observer, FixedMapListKind::Single);
@@ -226,7 +226,7 @@ int RunFixedMapRowObserverTests() {
         observer.ObservePages(FixedPages());
         observer.ObserveListKind(FixedMapListKind::Single);
         observer.ObserveElement(Element("Aeneas"));
-        Require(observer.TakeFrame(4u).count == 0u,
+        Require(observer.TakeFrame(25u).count == 0u,
                 "Disable clears state and remains inert");
     }
 

@@ -90,12 +90,12 @@ std::optional<MarkerCheckGeometry> BuildMarkerCheckGeometry(
 
     const auto size = std::clamp<std::uint64_t>(
         static_cast<std::uint64_t>(row.height) / 2u, 12u, 16u);
-    if (static_cast<std::uint64_t>(row.width) < size + 4u ||
+    if (static_cast<std::uint64_t>(row.width) < size + 10u ||
         static_cast<std::uint64_t>(row.height) <= size) {
         return std::nullopt;
     }
 
-    const auto logicalCheckRight = logicalRight - 4u;
+    const auto logicalCheckRight = logicalRight - 10u;
     const auto logicalCheckLeft = logicalCheckRight - size;
     const auto logicalCheckTop =
         logicalTop +

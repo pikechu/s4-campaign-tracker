@@ -40,8 +40,8 @@ int RunCompletionMarkerGeometryTests() {
             "pillarbox shifts the logical row exactly once");
     Require(geometry->clip.top == 142 && geometry->clip.bottom == 172,
             "vertical coordinates remain logical surface coordinates");
-    Require(geometry->points[2].x == 656,
-            "check right edge is inset four pixels from the row");
+    Require(geometry->points[2].x == 650,
+            "check right edge is inset ten pixels into the map-name cell");
     Require(geometry->points[2].x - geometry->points[0].x == 15,
             "height 30 produces a size-15 check");
     for (const auto& point : geometry->points) {
@@ -58,11 +58,11 @@ int RunCompletionMarkerGeometryTests() {
                 liveScaled->clip.top == 292 &&
                 liveScaled->clip.bottom == 354,
             "the live row clip uses pillarboxed X and full-height Y scaling");
-    Require(liveScaled->points[0].x == 1029 &&
+    Require(liveScaled->points[0].x == 1017 &&
                 liveScaled->points[0].y == 321 &&
-                liveScaled->points[1].x == 1039 &&
+                liveScaled->points[1].x == 1027 &&
                 liveScaled->points[1].y == 337 &&
-                liveScaled->points[2].x == 1060 &&
+                liveScaled->points[2].x == 1048 &&
                 liveScaled->points[2].y == 306,
             "the check remains at the map-name cell's scaled right end");
     for (const auto& point : liveScaled->points) {

@@ -171,7 +171,7 @@ MarkerFrameCommands FixedMapRowObserver::TakeFrame(DWORD page) noexcept {
         std::lock_guard<std::mutex> lock(mutex_);
         MarkerFrameCommands frame{};
         frame.generation = generation_;
-        if (!enabled_ || page != 4u) return frame;
+        if (!enabled_ || page != 25u) return frame;
 
         if (!invalidFrame_) {
             for (std::size_t index = 0u; index < pendingCount_; ++index) {
