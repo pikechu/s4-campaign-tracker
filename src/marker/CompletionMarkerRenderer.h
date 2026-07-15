@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <mutex>
 #include <string>
 
 namespace campaign_completion {
@@ -40,6 +41,7 @@ private:
     void SafeLog(std::string line) noexcept;
     IMarkerDrawingSurface& surface_;
     LogSink log_;
+    std::mutex mutex_;
     std::uint32_t failures_ = 0u;
     std::uint64_t lastFailureLogMs_ = 0u;
     bool failureLogged_ = false;

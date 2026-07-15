@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <limits>
+#include <mutex>
 #include <string_view>
 
 namespace campaign_completion {
@@ -89,104 +90,114 @@ FixedMapRowObserver::FixedMapRowObserver(
 
 void FixedMapRowObserver::ObservePages(
     const PageSnapshot& snapshot) noexcept {
-    if (!enabled_) {
-        return;
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!enabled_) return;
+        const bool exact = HasExactFixedMapPages(snapshot);
+        if (exact == exactPages_) return;
+        exactPages_ = exact;
+        listKind_ = FixedMapListKind::Unknown;
+        ClearFrame();
+    } catch (...) {
     }
-    const bool exact = HasExactFixedMapPages(snapshot);
-    if (exact == exactPages_) {
-        return;
-    }
-    exactPages_ = exact;
-    listKind_ = FixedMapListKind::Unknown;
-    ClearFrame();
 }
 
 void FixedMapRowObserver::ObserveListKind(
     FixedMapListKind kind) noexcept {
-    if (!enabled_) {
-        return;
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!enabled_) return;
+        const auto admitted = exactPages_ ? kind : FixedMapListKind::Unknown;
+        if (admitted == listKind_) return;
+        listKind_ = admitted;
+        ClearFrame();
+    } catch (...) {
     }
-    const auto admitted = exactPages_ ? kind : FixedMapListKind::Unknown;
-    if (admitted == listKind_) {
-        return;
-    }
-    listKind_ = admitted;
-    ClearFrame();
 }
 
 void FixedMapRowObserver::ObserveElement(
     const FixedMapRowObservation& element) noexcept {
-    if (!enabled_ || !exactPages_ ||
-        listKind_ == FixedMapListKind::Unknown || invalidFrame_ ||
-        !HasBaseRowSignature(element)) {
-        return;
-    }
-
-    std::size_t slot = 0u;
-    if (!TryGetRowSlot(element, slot)) {
-        return;
-    }
-    if (slot >= kMaximumVisibleFixedRows) {
-        InvalidateFrame();
-        return;
-    }
-
-    BoundedWideText label{};
-    if (!DecodeMenuTextLossless(element.text, label) ||
-        index_.Match(listKind_, label.view()) != MarkerMatchStatus::Unique) {
-        return;
-    }
-
-    const auto command = MakeCommand(element);
-    for (std::size_t index = 0u; index < pendingCount_; ++index) {
-        auto& pending = pending_[index];
-        if (EqualLabel(pending.label.view(), label.view())) {
-            if (!EqualCommand(pending.command, command)) {
-                pending.ambiguous = true;
-            }
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!enabled_ || !exactPages_ ||
+            listKind_ == FixedMapListKind::Unknown || invalidFrame_ ||
+            !HasBaseRowSignature(element)) {
             return;
         }
-        if (EqualCommand(pending.command, command)) {
+
+        std::size_t slot = 0u;
+        if (!TryGetRowSlot(element, slot)) {
+            return;
+        }
+        if (slot >= kMaximumVisibleFixedRows) {
             InvalidateFrame();
             return;
         }
-    }
 
-    if (pendingCount_ >= pending_.size()) {
-        InvalidateFrame();
-        return;
+        BoundedWideText label{};
+        if (!DecodeMenuTextLossless(element.text, label) ||
+            index_.Match(listKind_, label.view()) !=
+                MarkerMatchStatus::Unique) {
+            return;
+        }
+
+        const auto command = MakeCommand(element);
+        for (std::size_t index = 0u; index < pendingCount_; ++index) {
+            auto& pending = pending_[index];
+            if (EqualLabel(pending.label.view(), label.view())) {
+                if (!EqualCommand(pending.command, command)) {
+                    pending.ambiguous = true;
+                }
+                return;
+            }
+            if (EqualCommand(pending.command, command)) {
+                InvalidateFrame();
+                return;
+            }
+        }
+
+        if (pendingCount_ >= pending_.size()) {
+            InvalidateFrame();
+            return;
+        }
+        pending_[pendingCount_] = {label, command, false};
+        ++pendingCount_;
+    } catch (...) {
     }
-    pending_[pendingCount_] = {label, command, false};
-    ++pendingCount_;
 }
 
 MarkerFrameCommands FixedMapRowObserver::TakeFrame(DWORD page) noexcept {
-    MarkerFrameCommands frame{};
-    frame.generation = generation_;
-    if (!enabled_ || page != 4u) {
-        return frame;
-    }
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        MarkerFrameCommands frame{};
+        frame.generation = generation_;
+        if (!enabled_ || page != 4u) return frame;
 
-    if (!invalidFrame_) {
-        for (std::size_t index = 0u; index < pendingCount_; ++index) {
-            if (!pending_[index].ambiguous) {
-                frame.commands[frame.count] = pending_[index].command;
-                ++frame.count;
+        if (!invalidFrame_) {
+            for (std::size_t index = 0u; index < pendingCount_; ++index) {
+                if (!pending_[index].ambiguous) {
+                    frame.commands[frame.count] = pending_[index].command;
+                    ++frame.count;
+                }
             }
         }
+        ClearFrame();
+        return frame;
+    } catch (...) {
+        return {};
     }
-    ClearFrame();
-    return frame;
 }
 
 void FixedMapRowObserver::Disable() noexcept {
-    if (!enabled_) {
-        return;
+    try {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!enabled_) return;
+        enabled_ = false;
+        exactPages_ = false;
+        listKind_ = FixedMapListKind::Unknown;
+        ClearFrame();
+    } catch (...) {
     }
-    enabled_ = false;
-    exactPages_ = false;
-    listKind_ = FixedMapListKind::Unknown;
-    ClearFrame();
 }
 
 void FixedMapRowObserver::ClearFrame() noexcept {
