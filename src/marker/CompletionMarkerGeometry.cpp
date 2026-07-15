@@ -10,7 +10,42 @@ namespace {
 
 bool FitsLong(std::uint64_t value) noexcept {
     return value <=
-           static_cast<std::uint64_t>((std::numeric_limits<LONG>::max)());
+        static_cast<std::uint64_t>((std::numeric_limits<LONG>::max)());
+}
+
+std::uint64_t ScaleFloor(std::uint64_t value, std::uint64_t destination,
+                         std::uint64_t logical) noexcept {
+    return value * destination / logical;
+}
+
+std::uint64_t ScaleCeil(std::uint64_t value, std::uint64_t destination,
+                        std::uint64_t logical) noexcept {
+    const auto product = value * destination;
+    return product / logical + (product % logical != 0u ? 1u : 0u);
+}
+
+std::uint64_t ScaleNearest(std::uint64_t value,
+                           std::uint64_t destination,
+                           std::uint64_t logical) noexcept {
+    const auto product = value * destination;
+    const auto quotient = product / logical;
+    const auto remainder = product % logical;
+    return quotient +
+           (remainder >= (logical / 2u + logical % 2u) ? 1u : 0u);
+}
+
+bool HasCompatibleAspect(std::uint64_t contentWidth,
+                         std::uint64_t destinationHeight,
+                         std::uint64_t logicalWidth,
+                         std::uint64_t logicalHeight) noexcept {
+    const auto horizontal = contentWidth * logicalHeight;
+    const auto vertical = destinationHeight * logicalWidth;
+    const auto difference = horizontal >= vertical
+                                ? horizontal - vertical
+                                : vertical - horizontal;
+    const auto tolerance =
+        (std::max)(logicalWidth, logicalHeight) / 2u;
+    return difference <= tolerance;
 }
 
 }  // namespace
@@ -18,10 +53,10 @@ bool FitsLong(std::uint64_t value) noexcept {
 std::optional<MarkerCheckGeometry> BuildMarkerCheckGeometry(
     const MarkerDrawCommand& row, INT32 pillarboxWidth,
     DWORD destinationWidth, DWORD destinationHeight) noexcept {
-    if (pillarboxWidth < 0 || row.logicalSurfaceWidth == 0u ||
+    if (pillarboxWidth < 0 || destinationWidth == 0u ||
+        destinationHeight == 0u || row.logicalSurfaceWidth == 0u ||
         row.logicalSurfaceHeight == 0u || row.width == 0u ||
-        row.height == 0u ||
-        destinationHeight != row.logicalSurfaceHeight) {
+        row.height == 0u) {
         return std::nullopt;
     }
 
@@ -30,12 +65,16 @@ std::optional<MarkerCheckGeometry> BuildMarkerCheckGeometry(
     const auto logicalHeight =
         static_cast<std::uint64_t>(row.logicalSurfaceHeight);
     const auto pillar = static_cast<std::uint64_t>(pillarboxWidth);
-    const auto expectedDestinationWidth = logicalWidth + pillar * 2u;
-    if (expectedDestinationWidth >
-            static_cast<std::uint64_t>(
-                (std::numeric_limits<DWORD>::max)()) ||
-        expectedDestinationWidth !=
-            static_cast<std::uint64_t>(destinationWidth)) {
+    const auto destination = static_cast<std::uint64_t>(destinationWidth);
+    const auto destinationY =
+        static_cast<std::uint64_t>(destinationHeight);
+    const auto totalPillar = pillar * 2u;
+    if (totalPillar >= destination) {
+        return std::nullopt;
+    }
+    const auto contentWidth = destination - totalPillar;
+    if (!HasCompatibleAspect(contentWidth, destinationY, logicalWidth,
+                             logicalHeight)) {
         return std::nullopt;
     }
 
@@ -56,22 +95,41 @@ std::optional<MarkerCheckGeometry> BuildMarkerCheckGeometry(
         return std::nullopt;
     }
 
-    const auto shiftedLeft = pillar + logicalLeft;
-    const auto shiftedRight = pillar + logicalRight;
-    const auto shiftedTop = logicalTop;
-    const auto shiftedBottom = logicalBottom;
-    const auto right = shiftedRight - 4u;
-    const auto left = right - size;
-    const auto top = shiftedTop +
-                     (static_cast<std::uint64_t>(row.height) - size) / 2u;
-    const auto firstY = top + size / 2u;
-    const auto secondX = left + size / 3u;
-    const auto secondY = top + size;
+    const auto logicalCheckRight = logicalRight - 4u;
+    const auto logicalCheckLeft = logicalCheckRight - size;
+    const auto logicalCheckTop =
+        logicalTop +
+        (static_cast<std::uint64_t>(row.height) - size) / 2u;
+    const auto logicalFirstY = logicalCheckTop + size / 2u;
+    const auto logicalSecondX = logicalCheckLeft + size / 3u;
+    const auto logicalSecondY = logicalCheckTop + size;
+
+    const auto shiftedLeft =
+        pillar + ScaleFloor(logicalLeft, contentWidth, logicalWidth);
+    const auto shiftedRight =
+        pillar + ScaleCeil(logicalRight, contentWidth, logicalWidth);
+    const auto shiftedTop =
+        ScaleFloor(logicalTop, destinationY, logicalHeight);
+    const auto shiftedBottom =
+        ScaleCeil(logicalBottom, destinationY, logicalHeight);
+    const auto left =
+        pillar + ScaleNearest(logicalCheckLeft, contentWidth, logicalWidth);
+    const auto right =
+        pillar + ScaleNearest(logicalCheckRight, contentWidth, logicalWidth);
+    const auto top =
+        ScaleNearest(logicalCheckTop, destinationY, logicalHeight);
+    const auto firstY =
+        ScaleNearest(logicalFirstY, destinationY, logicalHeight);
+    const auto secondX =
+        pillar + ScaleNearest(logicalSecondX, contentWidth, logicalWidth);
+    const auto secondY =
+        ScaleNearest(logicalSecondY, destinationY, logicalHeight);
 
     if (!FitsLong(shiftedLeft) || !FitsLong(shiftedRight) ||
         !FitsLong(shiftedTop) || !FitsLong(shiftedBottom) ||
         !FitsLong(left) || !FitsLong(right) || !FitsLong(top) ||
         !FitsLong(firstY) || !FitsLong(secondX) || !FitsLong(secondY) ||
+        shiftedRight > destination || shiftedBottom > destinationY ||
         left < shiftedLeft || right >= shiftedRight ||
         firstY >= shiftedBottom || secondY >= shiftedBottom) {
         return std::nullopt;

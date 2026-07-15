@@ -49,6 +49,27 @@ int RunCompletionMarkerGeometryTests() {
                 "all check points stay inside the row clip");
     }
 
+    const auto liveScaled =
+        BuildMarkerCheckGeometry(row, 274, 2194u, 1234u);
+    Require(liveScaled.has_value(),
+            "the live HD surface scales the logical row safely");
+    Require(liveScaled->clip.left == 510 &&
+                liveScaled->clip.right == 1069 &&
+                liveScaled->clip.top == 292 &&
+                liveScaled->clip.bottom == 354,
+            "the live row clip uses pillarboxed X and full-height Y scaling");
+    Require(liveScaled->points[0].x == 1029 &&
+                liveScaled->points[0].y == 321 &&
+                liveScaled->points[1].x == 1039 &&
+                liveScaled->points[1].y == 337 &&
+                liveScaled->points[2].x == 1060 &&
+                liveScaled->points[2].y == 306,
+            "the check remains at the map-name cell's scaled right end");
+    for (const auto& point : liveScaled->points) {
+        Require(PointInside(point, liveScaled->clip),
+                "all scaled check points stay inside the map-name cell");
+    }
+
     auto lowerClamp = row;
     lowerClamp.height = 24u;
     const auto lower =
@@ -88,7 +109,9 @@ int RunCompletionMarkerGeometryTests() {
     Require(!BuildMarkerCheckGeometry(row, 274, 1348u, 599u).has_value(),
             "destination height must match the logical surface");
     Require(!BuildMarkerCheckGeometry(row, 274, 1347u, 600u).has_value(),
-            "destination width must equal logical width plus both bars");
+            "a destination aspect mismatch fails closed");
+    Require(!BuildMarkerCheckGeometry(row, 274, 2194u, 1200u).has_value(),
+            "an HD surface with inconsistent content aspect fails closed");
 
     auto overflowing = row;
     overflowing.logicalSurfaceWidth =
