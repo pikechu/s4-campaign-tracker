@@ -137,15 +137,15 @@ int RunCompletionMarkerRendererTests() {
             surface, [&logs](LogLevel level, std::string line) {
                 logs.emplace_back(level, std::move(line));
             });
-        auto invalid = Frame(2u);
-        invalid.commands[1].logicalSurfaceWidth = 100u;
-        Require(renderer.Render(destination, 0, invalid, 0u) ==
+        Require(renderer.Render(destination, 274, Frame(1u), 0u) ==
                     MarkerRenderStatus::Failed &&
                     surface.describeCalls == 1 && surface.beginCalls == 0 &&
                     logs.size() == 1u &&
                     logs[0].second ==
-                        "completion-marker-renderer frame-failed stage=geometry",
-                "invalid geometry reports its bounded failure stage");
+                        "completion-marker-renderer frame-failed stage=geometry"
+                        " pillarbox=274 destination=800,600 logical=800,600"
+                        " row=115,142,271,30",
+                "geometry failure reports only bounded scalar evidence");
     }
 
     {
