@@ -232,6 +232,13 @@ unapproved. See the [static evidence](docs/research/phase-6b-all-campaign-static
 [batch design](docs/superpowers/specs/2026-07-16-phase-6b-unified-campaign-catalog-batch-design.md),
 and [candidate audit](docs/research/phase-6b-all-campaign-public-catalog-candidate-audit.md).
 
+The first Phase 6B live catalog batch accepted sparse capture on pages 11–21
+but found that selector companion layers prevented snapshots for 3/4 and the
+shared 5/6 New World page set. The focused `0.8.1` composed-page owner fix has
+passed authoritative Windows CI and artifact audit; deployment remains
+unapproved pending normal shutdown and zero-write postflight. See the
+[initial batch and fix audit](docs/research/phase-6b-initial-batch-composed-page-fix-audit.md).
+
 Development feedback policy:
 
 - keep intermediate RED test commits local;
