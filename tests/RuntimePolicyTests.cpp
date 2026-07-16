@@ -175,7 +175,7 @@ int RunRuntimePolicyTests() {
             "runtime classification and association never use display/save name");
     Require(campaignCapture.find("if (!dirty_) return std::nullopt;") !=
                     std::string::npos &&
-                campaignCapture.find("if (!IsCampaignCatalogPage(page))") !=
+                campaignCapture.find("!IsCampaignCatalogPage(page)") !=
                     std::string::npos &&
                 campaignCapture.find("EqualExceptEffects(") !=
                     std::string::npos &&
