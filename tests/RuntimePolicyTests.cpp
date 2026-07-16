@@ -84,8 +84,8 @@ int RunRuntimePolicyTests() {
     const auto policy = ReadText(sourceRoot / "config" /
                                  "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.6.2",
-             "DiagnosticMode=InternalMenuRelativeMarkerRendering",
+             "Version=0.6.3",
+             "DiagnosticMode=DatabaseCompatibilityRecovery",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=1", "PublicMarkerFallback=1",
              "MarkerCalibration=0",
@@ -126,10 +126,10 @@ int RunRuntimePolicyTests() {
                 "Plugins/CampaignCompletion/CampaignCompletionDebug.ini") !=
                 std::string::npos,
             "workflow must require the plugin-relative INI layout");
-    Require(runtime.find("version=0.6.2") != std::string::npos &&
-                runtime.find("mode=internal-menu-relative-marker-rendering") !=
+    Require(runtime.find("version=0.6.3") != std::string::npos &&
+                runtime.find("mode=database-compatibility-recovery") !=
                     std::string::npos,
-            "runtime header identifies relative-id marker rendering");
+            "runtime header identifies database compatibility recovery");
     for (const auto* forbidden : {
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout",
              "fixedMapHook_", "hookBackend_", "originalInvoker_",

@@ -1,4 +1,5 @@
 #include "completion/CompletionStore.h"
+#include "CompletionDatabaseFixtures.h"
 
 #include <map>
 #include <stdexcept>
@@ -195,6 +196,27 @@ int RunCompletionStoreTests() {
     }
     {
         FakeFileOps files;
+        const auto mainBefore =
+            test_fixtures::LiveThreeRecordDatabase();
+        const auto backupBefore = Database(Record("backup"));
+        files.files[L"main"] = mainBefore;
+        files.files[L"backup"] = backupBefore;
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        const auto snapshot = store.Snapshot();
+        Require(load.mode == CompletionStoreMode::WritableLoaded &&
+                    load.failure == CompletionJsonFailure::None &&
+                    load.recordCount == 3u &&
+                    snapshot.records.size() == 3u &&
+                    snapshot.records[1u].stableId ==
+                        "map:map\\singleplayer\\thecross.map" &&
+                    files.writeCalls == 0u && files.replaceCalls == 0u &&
+                    files.files[L"main"] == mainBefore &&
+                    files.files[L"backup"] == backupBefore,
+                "the reviewed three-record main loads writable without file I/O");
+    }
+    {
+        FakeFileOps files;
         const auto legacy =
             LegacyRecord("antares", LaunchSource::SinglePlayerMap);
         const auto oldBytes = Database(legacy);
@@ -253,6 +275,19 @@ int RunCompletionStoreTests() {
                     CompletionAddStatus::ReadOnly &&
                     files.writeCalls == 0u,
                 "read-only backup mode must refuse all writes");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] =
+            test_fixtures::UnsupportedVersionDatabase();
+        files.files[L"backup"] = Database(Record("backup"));
+        auto store = MakeStore(files);
+        const auto load = store.Load();
+        Require(load.mode == CompletionStoreMode::ReadOnlyBackup &&
+                    load.failure == CompletionJsonFailure::InvalidRecord &&
+                    load.recordCount == 1u && files.writeCalls == 0u &&
+                    files.replaceCalls == 0u,
+                "an unreviewed persistence version still fails closed to backup");
     }
     {
         FakeFileOps files;

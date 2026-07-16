@@ -42,7 +42,10 @@ bool IsAllowedLaunchSource(LaunchSource source) noexcept {
 }
 
 bool IsAllowedPluginVersion(std::string_view version) noexcept {
-    return version == "0.4.0" || version == kCompletionPluginVersion;
+    constexpr std::array<std::string_view, 3u> allowed{
+        "0.4.0", "0.5.0", kCompletionPluginVersion};
+    return std::find(allowed.begin(), allowed.end(), version) !=
+           allowed.end();
 }
 
 std::optional<LaunchSource> ParseLaunchSource(

@@ -1,4 +1,5 @@
 #include "completion/CompletionJson.h"
+#include "CompletionDatabaseFixtures.h"
 
 #include <stdexcept>
 #include <string>
@@ -88,11 +89,44 @@ int RunCompletionJsonTests() {
     const auto compact = DecodeCompletionJson(ValidJson());
     Require(compact && compact.snapshot.records.size() == 1u,
             "decoder must preserve schema-valid 0.4.0 records");
+    const auto historical = DecodeCompletionJson(
+        ReplaceOnce(ValidJson(), "\"plugin_version\":\"0.4.0\"",
+                    "\"plugin_version\":\"0.5.0\""));
+    Require(historical && historical.snapshot.records.size() == 1u &&
+                historical.snapshot.records.front().pluginVersion ==
+                    "0.5.0",
+            "decoder must preserve the reviewed 0.5.0 persistence version");
+    const auto current = DecodeCompletionJson(
+        ReplaceOnce(ValidJson(), "\"plugin_version\":\"0.4.0\"",
+                    "\"plugin_version\":\"0.6.0\""));
+    Require(current && current.snapshot.records.size() == 1u,
+            "decoder must accept the current persistence writer version");
+    const auto liveBytes = test_fixtures::LiveThreeRecordDatabase();
+    const auto live = DecodeCompletionJson(liveBytes);
+    const auto liveRoundTrip = live
+                                   ? EncodeCompletionJson(live.snapshot)
+                                   : std::optional<std::string>{};
+    Require(live && live.snapshot.records.size() == 3u &&
+                live.snapshot.records[1u].stableId ==
+                    "map:map\\singleplayer\\thecross.map" &&
+                live.snapshot.records[1u].pluginVersion == "0.5.0" &&
+                liveRoundTrip.has_value() && *liveRoundTrip == liveBytes,
+            "the exact three-record primary fixture must round-trip losslessly");
     RequireFailure(
         ReplaceOnce(ValidJson(), "\"plugin_version\":\"0.4.0\"",
                     "\"plugin_version\":\"0.3.3\""),
         CompletionJsonFailure::InvalidRecord,
         "decoder must reject pre-persistence plugin versions");
+    for (const auto* unsupported : {
+             "0.5.1", "0.6.1", "9.9.9", ""}) {
+        RequireFailure(
+            ReplaceOnce(
+                ValidJson(), "\"plugin_version\":\"0.4.0\"",
+                "\"plugin_version\":\"" +
+                    std::string(unsupported) + "\""),
+            CompletionJsonFailure::InvalidRecord,
+            "decoder must reject unreviewed persistence versions");
+    }
 
     RequireFailure(std::string(kMaximumCompletionJsonBytes + 1u, ' '),
                    CompletionJsonFailure::Oversized,
