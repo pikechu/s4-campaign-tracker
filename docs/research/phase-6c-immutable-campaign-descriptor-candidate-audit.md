@@ -103,3 +103,52 @@ need another launch. An unavailable or locked representative leaves only that
 group dynamically unanchored. It never authorizes database, save, or progress
 changes. Postflight must preserve the completion database main and backup bytes
 and timestamps and leave zero temporary siblings.
+
+## Guarded deployment
+
+The user confirmed both protected applications were closed and explicitly
+approved deployment of the exact Phase 6C candidate. Preflight independently
+confirmed zero processes and the accepted Phase 6B installed state:
+
+- prior archive: 1,395,795 bytes, SHA-256
+  `3faaa2c537713e04b642d4adb15a495650ee0f5479c5558c939abe009dfcf936`;
+- prior embedded/live ASI SHA-256
+  `097aac07991ed0f6324bfadec333afff8f16fe1ebd8a10cc6c72d660979666b1`;
+- prior live INI SHA-256
+  `55c664baaf4f58d38c970686e36859eae6b58b718cdce1eca0b442a5ae45a1c2`;
+- database and backup identities exactly matched the Phase 6B postflight;
+- archive, INI, and database temporary siblings were absent.
+
+Because the SU archive is administrator-owned, deployment used a UAC-elevated
+fixed-hash script. Before mutation it made and verified a complete rollback
+snapshot at
+`research/backups/campaign-completion/2026-07-16-pre-v0.9.0-descriptor-diagnostic`.
+The established guarded installer replaced only the project ASI entry, and the
+matching game-side INI used an atomic same-directory replacement.
+
+Independent post-deployment verification produced:
+
+| Item | Result |
+| --- | --- |
+| installed `Plugin_SU.zip` | 1,398,739 bytes; SHA-256 `058c4dc251b321d06f9a006af54a6b50b20857f010127cf8749a6fff96ef9a46` |
+| embedded project ASI | SHA-256 `2079ca5d510fca250e4c2427b464e8dae7ab4c5f64521c4c429e3041de44af4e` |
+| live project INI | 1,148 bytes; SHA-256 `4e870e63d8cfeadfd38e90dedf26481acb34b5406a22f119017bcfa7a1b16850` |
+| immutable original archive | SHA-256 `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265` |
+
+The archive retains ten ZIP entries including two directory entries. Comparing
+its eight file entries against the immutable original found exactly one changed
+entry: `Plugins/CampaignCompletionDebug.asi`.
+
+Database state remained byte- and timestamp-identical:
+
+- `completed_maps.json`: 1,260 bytes, timestamp
+  `2026-07-16T05:41:41.3482563Z`, SHA-256
+  `49b81aaffddd0380c6cfa69f870ad911d9b82f0ba55a213f305ad7955d4ff26e`;
+- `completed_maps.json.bak`: 951 bytes, timestamp
+  `2026-07-14T11:13:02.1756072Z`, SHA-256
+  `31edf4f486d7e0078efa23d958482ebc23ffadda2b555c73b5f49b2493756b1f`.
+
+Post-deployment protected-process count was zero and no authorized temporary
+sibling remained. The exact machine-readable result is retained in the ignored
+artifact directory as `artifacts/phase-6c-e7890c2/deployment-result.json`.
+Deployment is complete; live anchor acceptance remains pending.
