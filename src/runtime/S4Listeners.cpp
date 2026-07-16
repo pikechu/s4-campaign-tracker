@@ -115,6 +115,17 @@ std::string Utf8(std::wstring_view value) {
     return output;
 }
 
+DWORD ActiveCampaignCatalogOwner(S4API api) noexcept {
+    if (api == nullptr) return S4_GUI_UNKNOWN;
+    std::array<bool, kCampaignCatalogPages.size()> active{};
+    for (std::size_t index = 0u; index < active.size(); ++index) {
+        const DWORD page = kCampaignCatalogPages[index];
+        active[index] =
+            api->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page)) != FALSE;
+    }
+    return SelectCampaignCatalogOwner(active);
+}
+
 const char* CampaignSnapshotStatusName(
     CampaignMenuSnapshotStatus status) noexcept {
     switch (status) {
@@ -310,20 +321,18 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const auto now = GetTickCount64();
     ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
-    const bool campaignPageActive =
-        api_ != nullptr && IsCampaignCatalogPage(page) &&
-        api_->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page)) != FALSE;
+    const DWORD campaignPage = ActiveCampaignCatalogOwner(api_);
+    const bool campaignPageActive = campaignPage != S4_GUI_UNKNOWN;
     if (!campaignPageActive) {
         hasCampaignSnapshot_ = false;
         lastCampaignSnapshot_ = {};
     }
     if (campaignAssociation_ != nullptr) {
-        campaignAssociation_->ObservePage(
-            campaignPageActive ? page : S4_GUI_UNKNOWN);
+        campaignAssociation_->ObservePage(campaignPage);
     }
     if (campaignCapture_ != nullptr) {
         const auto campaignSnapshot =
-            campaignCapture_->ObserveFrame(page, campaignPageActive);
+            campaignCapture_->ObserveFrame(campaignPage, campaignPageActive);
         if (campaignSnapshot.has_value()) {
             if (campaignAssociation_ != nullptr) {
                 campaignAssociation_->ObserveSnapshot(

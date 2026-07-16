@@ -25,6 +25,21 @@ campaign_completion::CampaignMenuFeature Feature(WORD id, WORD x = 10u) {
 int RunCampaignMenuCaptureTests() {
     using namespace campaign_completion;
 
+    std::array<bool, kCampaignCatalogPages.size()> activePages{};
+    Require(SelectCampaignCatalogOwner(activePages) == S4_GUI_UNKNOWN,
+            "no active campaign page has no catalog owner");
+    activePages[0] = true;
+    Require(SelectCampaignCatalogOwner(activePages) == S4_SCREEN_ADDON,
+            "an Add-on selector owns its composed public layers");
+    activePages[4] = true;
+    Require(SelectCampaignCatalogOwner(activePages) == S4_SCREEN_ADDON_TROJAN,
+            "a child campaign page outranks its selector during transition");
+    activePages = {};
+    activePages[2] = true;
+    activePages[3] = true;
+    Require(SelectCampaignCatalogOwner(activePages) == S4_SCREEN_NEWWORLD2,
+            "the stable 5/6 composite uses one deterministic owner");
+
     for (const DWORD page : {3u, 4u, 5u, 6u, 11u, 12u, 13u, 14u,
                              15u, 16u, 17u, 18u, 19u, 20u, 21u}) {
         Require(IsCampaignCatalogPage(page),

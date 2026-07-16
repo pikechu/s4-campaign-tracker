@@ -43,26 +43,19 @@ bool LessFeature(const CampaignMenuFeature& left,
 }  // namespace
 
 bool IsCampaignCatalogPage(DWORD page) noexcept {
-    switch (page) {
-        case S4_SCREEN_ADDON:
-        case S4_SCREEN_MISSIONCD:
-        case S4_SCREEN_NEWWORLD:
-        case S4_SCREEN_NEWWORLD2:
-        case S4_SCREEN_ADDON_TROJAN:
-        case S4_SCREEN_ADDON_ROMAN:
-        case S4_SCREEN_ADDON_MAYAN:
-        case S4_SCREEN_ADDON_VIKING:
-        case S4_SCREEN_ADDON_SETTLE:
-        case S4_SCREEN_MISSIONCD_ROMAN:
-        case S4_SCREEN_MISSIONCD_VIKING:
-        case S4_SCREEN_MISSIONCD_MAYAN:
-        case S4_SCREEN_MISSIONCD_CONFL:
-        case S4_SCREEN_SINGLEPLAYER_CAMPAIGN:
-        case S4_SCREEN_SINGLEPLAYER_DARKTRIBE:
-            return true;
-        default:
-            return false;
+    for (const DWORD admitted : kCampaignCatalogPages) {
+        if (page == admitted) return true;
     }
+    return false;
+}
+
+DWORD SelectCampaignCatalogOwner(
+    const std::array<bool, kCampaignCatalogPages.size()>& active) noexcept {
+    DWORD owner = S4_GUI_UNKNOWN;
+    for (std::size_t index = 0u; index < active.size(); ++index) {
+        if (active[index]) owner = kCampaignCatalogPages[index];
+    }
+    return owner;
 }
 
 bool CopyCampaignMenuFeature(LPS4GUIDRAWBLTPARAMS source,

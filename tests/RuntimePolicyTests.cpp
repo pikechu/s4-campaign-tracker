@@ -69,7 +69,7 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.8.0",
+             "Version=0.8.1",
              "DiagnosticMode=AllCampaignPublicCatalogCalibration",
              "InternalMenuReadOnly=0", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
@@ -104,7 +104,7 @@ int RunRuntimePolicyTests() {
     const auto campaignAssociation = ReadText(
         root / "src" / "campaign" / "CampaignLaunchAssociation.cpp");
 
-    Require(runtime.find("version=0.8.0") != std::string::npos &&
+    Require(runtime.find("version=0.8.1") != std::string::npos &&
                 runtime.find("mode=all-campaign-public-catalog-calibration") !=
                     std::string::npos,
             "runtime identifies the Phase 6B diagnostic mode");
@@ -148,14 +148,14 @@ int RunRuntimePolicyTests() {
                     "CampaignLaunchAssociation* campaignAssociation_") !=
                     std::string::npos,
             "listeners borrow but do not own campaign diagnostic state");
-    Require(listeners.find("IsCampaignCatalogPage(page)") !=
+    Require(listeners.find("ActiveCampaignCatalogOwner(api_)") !=
                     std::string::npos &&
                 listeners.find(
-                    "api_->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page))") !=
+                    "api->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page))") !=
                     std::string::npos &&
-                listeners.find("campaignCapture_->ObserveFrame(page, campaignPageActive)") !=
+                listeners.find("campaignCapture_->ObserveFrame(campaignPage, campaignPageActive)") !=
                     std::string::npos,
-            "page-specific frames and live public page admission gate capture");
+            "one deterministic public owner retains composed campaign layers");
     Require(listeners.find("CopyCampaignMenuFeature(element, feature)") !=
                     std::string::npos &&
                 listeners.find("campaignCapture_->Invalidate()") !=

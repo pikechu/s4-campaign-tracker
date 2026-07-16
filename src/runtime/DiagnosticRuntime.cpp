@@ -74,7 +74,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.8.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.8.1 pid="
            << GetCurrentProcessId()
            << " mode=all-campaign-public-catalog-calibration";
     logger_.Write(LogLevel::Info, header.str());
