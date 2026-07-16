@@ -69,8 +69,8 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.9.0",
-             "DiagnosticMode=ImmutableCampaignDescriptorDiagnostic",
+             "Version=0.9.1",
+             "DiagnosticMode=DescriptorFamilySessionGateCorrection",
              "InternalMenuReadOnly=0", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
@@ -86,8 +86,8 @@ int RunRuntimePolicyTests() {
              "CampaignLaunchLeaseMs=30000",
              "CampaignDescriptorCatalog=ImmutableStaticReadOnly",
              "CampaignDescriptorIdentity=SameSessionRelativeExact",
-             "CampaignDescriptorGroups=AddOn,MissionCD,Original,DarkTribe",
-             "CampaignDescriptorEvidenceGaps=NewWorld,NewWorld2",
+             "CampaignDescriptorGroups=AddOn,MdRoman,Original,DarkTribe",
+             "CampaignDescriptorEvidenceGaps=MissionCdSiblingPages,NewWorld,NewWorld2",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
                 "Phase 6C packaged policy field is missing");
@@ -110,8 +110,8 @@ int RunRuntimePolicyTests() {
     const auto campaignDescriptors = ReadText(
         root / "src" / "campaign" / "CampaignDescriptorCatalog.cpp");
 
-    Require(runtime.find("version=0.9.0") != std::string::npos &&
-                runtime.find("mode=immutable-campaign-descriptor-diagnostic") !=
+    Require(runtime.find("version=0.9.1") != std::string::npos &&
+                runtime.find("mode=descriptor-family-session-gate-correction") !=
                     std::string::npos,
             "runtime identifies the Phase 6C diagnostic mode");
     Require(runtime.find("kModuleInventoryRetryCount = 20u") !=
@@ -152,7 +152,7 @@ int RunRuntimePolicyTests() {
         Require((runtime + runtimeHeader).find(forbidden) == std::string::npos,
                 "Phase 6C runtime must not own a writer, native event, marker, or Hook path");
     }
-    Require(runtime.find("phase-6c-read-only storage=disabled") !=
+    Require(runtime.find("phase-6c-1-read-only storage=disabled") !=
                     std::string::npos,
             "runtime logs the enforced read-only construction boundary");
 
@@ -184,7 +184,9 @@ int RunRuntimePolicyTests() {
                     std::string::npos,
             "GUI values use bounded copy and malformed callbacks fail closed");
     Require(listeners.find(
-                "campaignAssociation_->ObserveClick(message, element, now)") !=
+                "campaignAssociation_->ObserveClick(message, element,") !=
+                    std::string::npos &&
+                listeners.find("*campaignDescriptors_, now") !=
                     std::string::npos &&
                 listeners.find("campaignAssociation_->BeginSession(") !=
                     std::string::npos &&
@@ -217,6 +219,12 @@ int RunRuntimePolicyTests() {
             "sparse page cache survives empty intervals and updates only volatile effects");
     Require(campaignAssociation.find(
                 "return feature.hasText && feature.text.length != 0u;") !=
+                    std::string::npos &&
+                campaignAssociation.find("FindAdmittedCampaignDescriptor(") !=
+                    std::string::npos &&
+                campaignAssociation.find("origin.source != LaunchSource::Campaign") ==
+                    std::string::npos &&
+                campaignAssociation.find("ExcludedOnlineMultiplayer") !=
                     std::string::npos &&
                 campaignAssociation.find(
                     "campaignPageActive && page != activePage_ && hasPending_") !=

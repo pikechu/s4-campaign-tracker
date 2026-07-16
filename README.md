@@ -243,16 +243,19 @@ page-isolation calibration, but does not authorize inferred mission mappings or
 campaign markers. See the
 [initial batch and fix audit](docs/research/phase-6b-initial-batch-composed-page-fix-audit.md).
 
-Phase 6C immutable descriptor diagnostic development is approved and in
-pre-deployment validation. Exact-version and bounded-window admission now
-fail-closes independently for the observed Add-on, Mission CD, Original, and
-Dark Tribe records. New World and New World 2 remain disabled evidence gaps.
-Runtime comparison accepts only the existing same-MapInit-session exact
-`identity.relative`; it does not use display/save names and does not enable
-storage or marker code. Deployment is not yet approved, and marker rendering
-remains a later Phase 6D decision. See the
+The first Phase 6C live batch was NO-GO for two independent reasons: the
+page-16 record belonged to the wrong `mcd2_*` formatter family, and the Add-on
+known-control lease was rejected by a presentation-sensitive origin tracker.
+Phase 6C.1 correction development is approved. The exact static chain now
+admits only page-16 controls `1903/1904` as `md_roman1/2`; sibling Mission CD
+pages and both New World groups remain disabled. A lease can be created only
+by an exact admitted page/control/rectangle, while the next fresh session may
+bind with unknown independent origin but still rejects explicit online origin.
+Final acceptance remains exact same-session `identity.relative`; display/save
+names, storage, and marker code remain excluded. Deployment is not approved,
+and marker rendering remains a later Phase 6D decision. See the
 [Phase 6C design](docs/superpowers/specs/2026-07-16-phase-6c-immutable-campaign-descriptor-anchor-design.md)
-and [static evidence](docs/research/phase-6c-immutable-campaign-descriptor-evidence.md).
+and [corrected path evidence](docs/research/phase-6c-1-descriptor-family-path-evidence.md).
 
 Development feedback policy:
 

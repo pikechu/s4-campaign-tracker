@@ -459,9 +459,14 @@ void S4Listeners::ObserveMapInit() {
         campaignAssociation_->BeginSession(activeSessionId_, activeOrigin_,
                                            now) &&
         logger_ != nullptr) {
-        logger_->Write(LogLevel::Info,
-                       "campaign-menu-association session-armed=" +
-                           std::to_string(activeSessionId_));
+        std::ostringstream armed;
+        armed << "campaign-menu-association session-armed="
+              << activeSessionId_ << " key="
+              << campaignAssociation_->PendingDescriptorKey()
+              << " origin-source=" << LaunchSourceName(activeOrigin_.source)
+              << " origin-eligibility="
+              << SessionEligibilityName(activeOrigin_.eligibility);
+        logger_->Write(LogLevel::Info, armed.str());
     }
     if (phase3Trace_ != nullptr) {
         phase3Trace_->Write(
@@ -707,9 +712,13 @@ void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
     }
     if (element != nullptr) {
         if (campaignAssociation_ != nullptr &&
-            campaignAssociation_->ObserveClick(message, element, now)) {
+            campaignDescriptors_ != nullptr &&
+            campaignAssociation_->ObserveClick(message, element,
+                                                *campaignDescriptors_, now)) {
             std::ostringstream armed;
-            armed << "campaign-menu-click armed control=" << element->id
+            armed << "campaign-menu-click armed key="
+                  << campaignAssociation_->PendingDescriptorKey()
+                  << " control=" << element->id
                   << " rect=" << element->x << ',' << element->y << ','
                   << element->w << ',' << element->h;
             logger_->Write(LogLevel::Info, armed.str());

@@ -21,15 +21,12 @@ constexpr CampaignDescriptorRecord kDescriptors[]{
     {"addon-mayan-01", CampaignDescriptorGroup::AddOn,
      S4_SCREEN_ADDON_MAYAN, {34u, 480u, 177u, 175u, 30u}, 0u, 0x0Du,
      L"Map\\Campaign\\ao_maya1.map"},
-    {"missioncd-roman-01", CampaignDescriptorGroup::MissionCd,
-     S4_SCREEN_MISSIONCD_ROMAN, {1903u, 237u, 148u, 175u, 30u}, 0u, 0x11u,
-     L"Map\\Campaign\\mcd2_roman1.map"},
-    {"missioncd-roman-02", CampaignDescriptorGroup::MissionCd,
-     S4_SCREEN_MISSIONCD_ROMAN, {1904u, 237u, 195u, 175u, 30u}, 1u, 0x11u,
-     L"Map\\Campaign\\mcd2_roman2.map"},
-    {"missioncd-mayan-01", CampaignDescriptorGroup::MissionCd,
-     S4_SCREEN_MISSIONCD_MAYAN, {1889u, 430u, 177u, 175u, 30u}, 0u, 0x13u,
-     L"Map\\Campaign\\mcd2_maya1.map"},
+    {"md-roman-01", CampaignDescriptorGroup::MdRoman,
+     S4_SCREEN_MISSIONCD_ROMAN, {1903u, 237u, 148u, 175u, 30u}, 0u, 0x05u,
+     L"Map\\Campaign\\md_roman1.map"},
+    {"md-roman-02", CampaignDescriptorGroup::MdRoman,
+     S4_SCREEN_MISSIONCD_ROMAN, {1904u, 237u, 195u, 175u, 30u}, 1u, 0x05u,
+     L"Map\\Campaign\\md_roman2.map"},
     {"original-viking-02", CampaignDescriptorGroup::Original,
      S4_SCREEN_SINGLEPLAYER_CAMPAIGN, {2039u, 420u, 150u, 175u, 30u}, 1u,
      0x01u, L"Map\\Campaign\\viking02.map"},
@@ -95,10 +92,7 @@ CampaignDescriptorGroup GroupForPage(DWORD page) noexcept {
         case S4_SCREEN_ADDON_SETTLE:
             return CampaignDescriptorGroup::AddOn;
         case S4_SCREEN_MISSIONCD_ROMAN:
-        case S4_SCREEN_MISSIONCD_VIKING:
-        case S4_SCREEN_MISSIONCD_MAYAN:
-        case S4_SCREEN_MISSIONCD_CONFL:
-            return CampaignDescriptorGroup::MissionCd;
+            return CampaignDescriptorGroup::MdRoman;
         case S4_SCREEN_SINGLEPLAYER_CAMPAIGN:
             return CampaignDescriptorGroup::Original;
         case S4_SCREEN_SINGLEPLAYER_DARKTRIBE:
@@ -147,6 +141,46 @@ bool Match(const ModuleInfo& executable, std::uint32_t rva,
 #endif
 }
 
+bool MatchRelocatedPointer(const ModuleInfo& executable, std::uint32_t rva,
+                           std::uint32_t targetRva) noexcept {
+    if (executable.baseAddress == 0u || rva > executable.size ||
+        sizeof(std::uint32_t) > executable.size - rva ||
+        executable.baseAddress >
+            (std::numeric_limits<std::uint32_t>::max)() - targetRva) {
+        return false;
+    }
+    const auto* address = reinterpret_cast<const void*>(
+        executable.baseAddress + static_cast<std::uintptr_t>(rva));
+    if (!Readable(address, sizeof(std::uint32_t))) return false;
+    std::uint32_t actual = 0u;
+#if defined(_MSC_VER)
+    __try {
+        std::memcpy(&actual, address, sizeof(actual));
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        return false;
+    }
+#else
+    std::memcpy(&actual, address, sizeof(actual));
+#endif
+    return actual == static_cast<std::uint32_t>(executable.baseAddress) +
+                         targetRva;
+}
+
+template <std::size_t N>
+bool MatchRelocatedRvaTable(
+    const ModuleInfo& executable, std::uint32_t rva,
+    const std::array<std::uint32_t, N>& targetRvas) noexcept {
+    for (std::size_t index = 0u; index < N; ++index) {
+        if (!MatchRelocatedPointer(
+                executable,
+                rva + static_cast<std::uint32_t>(index * sizeof(std::uint32_t)),
+                targetRvas[index])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 }  // namespace
 
 bool CampaignDescriptorCatalog::GroupAdmitted(
@@ -168,13 +202,55 @@ CampaignDescriptorEvidence InspectCampaignDescriptorEvidence(
         Match(executable, 0x0006A25Bu,
               std::array<BYTE, 12u>{0x0F, 0xB7, 0x45, 0x0C, 0x83, 0xC0,
                                     0xDF, 0x83, 0xF8, 0x04, 0x0F, 0x87});
-    result.missionCd =
-        Match(executable, 0x00095E36u,
-              std::array<BYTE, 8u>{0x85, 0xC9, 0x0F, 0x84, 0x08, 0x01,
-                                   0x00, 0x00}) &&
+    result.mdRoman =
         Match(executable, 0x000961F6u,
               std::array<BYTE, 8u>{0x85, 0xC9, 0x0F, 0x84, 0x08, 0x01,
-                                   0x00, 0x00});
+                                   0x00, 0x00}) &&
+        Match(executable, 0x000963EBu,
+              std::array<BYTE, 14u>{0x0F, 0xB7, 0x45, 0x0C, 0x05, 0x91, 0xF8,
+                                    0xFF, 0xFF, 0x83, 0xF8, 0x0C, 0x0F, 0x87}) &&
+        Match(executable, 0x000965A0u,
+              std::array<BYTE, 13u>{0x00, 0x01, 0x02, 0x03, 0x04, 0x06, 0x06,
+                                    0x06, 0x06, 0x06, 0x06, 0x06, 0x05}) &&
+        MatchRelocatedRvaTable(
+            executable, 0x00096584u,
+            std::array<std::uint32_t, 7u>{0x0009643Eu, 0x00096471u,
+                                          0x000964A4u, 0x000964D4u,
+                                          0x00096504u, 0x0009640Bu,
+                                          0x0009653Eu}) &&
+        Match(executable, 0x00096452u,
+              std::array<BYTE, 11u>{0x6A, 0x00, 0x6A, 0x00, 0x6A, 0x00,
+                                    0x68, 0x60, 0x1B, 0x00, 0x00}) &&
+        Match(executable, 0x00096485u,
+              std::array<BYTE, 11u>{0x6A, 0x00, 0x6A, 0x00, 0x6A, 0x01,
+                                    0x68, 0x60, 0x1B, 0x00, 0x00}) &&
+        Match(executable, 0x00125368u,
+              std::array<BYTE, 20u>{0x8B, 0x4D, 0x08, 0x8B, 0x51, 0x04, 0x8B,
+                                    0xC2, 0x83, 0xE8, 0x0B, 0x74, 0x30, 0x2D,
+                                    0x55, 0x1B, 0x00, 0x00, 0x74, 0x14}) &&
+        Match(executable, 0x00125390u,
+              std::array<BYTE, 3u>{0x8B, 0x51, 0x08}) &&
+        Match(executable, 0x00125398u,
+              std::array<BYTE, 6u>{0xC1, 0xE2, 0x10, 0x83, 0xCA, 0x05}) &&
+        Match(executable, 0x00124701u,
+              std::array<BYTE, 9u>{0x8B, 0x46, 0x04, 0x83, 0xE8, 0x05, 0x8D,
+                                   0x04, 0x40}) &&
+        MatchRelocatedPointer(executable, 0x0012470Du, 0x0109C32Cu) &&
+        MatchRelocatedPointer(executable, 0x00124715u, 0x0109C318u) &&
+        Match(executable, 0x0012471Du,
+              std::array<BYTE, 6u>{0x8B, 0x46, 0x08, 0x40, 0x50, 0x51}) &&
+        Match(executable, 0x00023ADCu,
+              std::array<BYTE, 4u>{0x6A, 0x1D, 0x33, 0xC0}) &&
+        MatchRelocatedPointer(executable, 0x00023AEBu, 0x00C573E0u) &&
+        MatchRelocatedPointer(executable, 0x00023AF0u, 0x0109C318u) &&
+        Match(executable, 0x00C573E0u,
+              std::array<BYTE, 60u>{
+                  0x4D, 0x00, 0x61, 0x00, 0x70, 0x00, 0x5C, 0x00, 0x43, 0x00,
+                  0x61, 0x00, 0x6D, 0x00, 0x70, 0x00, 0x61, 0x00, 0x69, 0x00,
+                  0x67, 0x00, 0x6E, 0x00, 0x5C, 0x00, 0x6D, 0x00, 0x64, 0x00,
+                  0x5F, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x6D, 0x00, 0x61, 0x00,
+                  0x6E, 0x00, 0x25, 0x00, 0x30, 0x00, 0x31, 0x00, 0x69, 0x00,
+                  0x2E, 0x00, 0x6D, 0x00, 0x61, 0x00, 0x70, 0x00, 0x00, 0x00});
     result.original =
         Match(executable, 0x0007BF96u,
               std::array<BYTE, 8u>{0x85, 0xC9, 0x0F, 0x84, 0xA2, 0x01,
@@ -205,8 +281,8 @@ CampaignDescriptorCatalog AdmitCampaignDescriptorCatalog(
         CheckTargetExecutable(executable) == CompatibilityResult::Compatible;
     if (!result.executableAdmitted) return result;
     result.groups[GroupIndex(CampaignDescriptorGroup::AddOn)] = evidence.addOn;
-    result.groups[GroupIndex(CampaignDescriptorGroup::MissionCd)] =
-        evidence.missionCd;
+    result.groups[GroupIndex(CampaignDescriptorGroup::MdRoman)] =
+        evidence.mdRoman;
     result.groups[GroupIndex(CampaignDescriptorGroup::Original)] =
         evidence.original;
     result.groups[GroupIndex(CampaignDescriptorGroup::DarkTribe)] =
@@ -244,6 +320,20 @@ CampaignDescriptorValidation ValidateCampaignDescriptor(
         return {CampaignDescriptorValidationStatus::Matched, &record};
     }
     return {CampaignDescriptorValidationStatus::ControlUnknown, nullptr};
+}
+
+const CampaignDescriptorRecord* FindAdmittedCampaignDescriptor(
+    const CampaignDescriptorCatalog& catalog, DWORD page,
+    const CampaignControlIdentity& control) noexcept {
+    if (!catalog.executableAdmitted) return nullptr;
+    for (const auto& record : kDescriptors) {
+        if (record.page == page && record.control.controlId == control.controlId &&
+            SameGeometry(record.control, control) &&
+            catalog.GroupAdmitted(record.group)) {
+            return &record;
+        }
+    }
+    return nullptr;
 }
 
 }  // namespace campaign_completion

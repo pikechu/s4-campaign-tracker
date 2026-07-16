@@ -11,7 +11,7 @@ namespace campaign_completion {
 
 enum class CampaignDescriptorGroup : std::uint8_t {
     AddOn,
-    MissionCd,
+    MdRoman,
     Original,
     DarkTribe,
     NewWorld,
@@ -31,7 +31,7 @@ struct CampaignDescriptorRecord final {
 
 struct CampaignDescriptorEvidence final {
     bool addOn = false;
-    bool missionCd = false;
+    bool mdRoman = false;
     bool original = false;
     bool darkTribe = false;
 };
@@ -69,5 +69,8 @@ CampaignDescriptorCatalog AdmitCampaignDescriptorCatalog(
 CampaignDescriptorValidation ValidateCampaignDescriptor(
     const CampaignDescriptorCatalog& catalog,
     const CampaignMenuAssociation& association) noexcept;
+const CampaignDescriptorRecord* FindAdmittedCampaignDescriptor(
+    const CampaignDescriptorCatalog& catalog, DWORD page,
+    const CampaignControlIdentity& control) noexcept;
 
 }  // namespace campaign_completion

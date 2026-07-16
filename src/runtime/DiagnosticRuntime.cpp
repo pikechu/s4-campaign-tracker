@@ -75,9 +75,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.9.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.9.1 pid="
            << GetCurrentProcessId()
-           << " mode=immutable-campaign-descriptor-diagnostic";
+           << " mode=descriptor-family-session-gate-correction";
     logger_.Write(LogLevel::Info, header.str());
     constexpr DWORD kModuleInventoryRetryCount = 20u;
     constexpr DWORD kModuleInventoryRetryDelayMs = 100u;
@@ -136,9 +136,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         << " addon="
         << (campaignDescriptors_.GroupAdmitted(CampaignDescriptorGroup::AddOn)
                 ? "admitted" : "disabled")
-        << " missioncd="
+        << " mdroman="
         << (campaignDescriptors_.GroupAdmitted(
-                CampaignDescriptorGroup::MissionCd) ? "admitted" : "disabled")
+                CampaignDescriptorGroup::MdRoman) ? "admitted" : "disabled")
         << " original="
         << (campaignDescriptors_.GroupAdmitted(
                 CampaignDescriptorGroup::Original) ? "admitted" : "disabled")
@@ -149,7 +149,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     logger_.Write(LogLevel::Info, descriptorAdmission.str());
 
     logger_.Write(LogLevel::Info,
-                  "phase-6c-read-only storage=disabled native-events=disabled "
+                  "phase-6c-1-read-only storage=disabled native-events=disabled "
                   "markers=disabled internal-menu-adapter=disabled");
 
     constexpr DWORD kWaitStepMs = 100;

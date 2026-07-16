@@ -24,13 +24,13 @@ int RunCampaignDescriptorCatalogTests() {
 
     CampaignDescriptorEvidence evidence{};
     evidence.addOn = true;
-    evidence.missionCd = true;
+    evidence.mdRoman = true;
     evidence.original = true;
     evidence.darkTribe = true;
     const auto catalog = AdmitCampaignDescriptorCatalog(ApprovedModule(), evidence);
     Require(catalog.executableAdmitted, "exact executable admits the catalog");
     Require(catalog.GroupAdmitted(CampaignDescriptorGroup::AddOn) &&
-                catalog.GroupAdmitted(CampaignDescriptorGroup::MissionCd) &&
+                catalog.GroupAdmitted(CampaignDescriptorGroup::MdRoman) &&
                 catalog.GroupAdmitted(CampaignDescriptorGroup::Original) &&
                 catalog.GroupAdmitted(CampaignDescriptorGroup::DarkTribe),
             "independent frozen groups are admitted");
@@ -60,11 +60,28 @@ int RunCampaignDescriptorCatalogTests() {
             "public rectangle is part of descriptor identity");
 
     association.page = S4_SCREEN_MISSIONCD_ROMAN;
-    association.control = {1904u, 237u, 195u, 175u, 30u};
-    association.relative = L"Map\\Campaign\\mcd2_roman2.map";
+    association.control = {1903u, 237u, 148u, 175u, 30u};
+    association.relative = L"Map\\Campaign\\md_roman1.map";
     Require(ValidateCampaignDescriptor(catalog, association).status ==
                 CampaignDescriptorValidationStatus::Matched,
-            "Mission CD second Roman mission is independently fixed");
+            "page-16 Roman mission one uses the closed md formatter chain");
+    association.relative = L"Map\\Campaign\\mcd2_roman1.map";
+    Require(ValidateCampaignDescriptor(catalog, association).status ==
+                CampaignDescriptorValidationStatus::RelativeMismatch,
+            "the independently disproven mcd2 family remains rejected");
+    association.relative = L"map\\campaign\\md_roman1.map";
+    Require(ValidateCampaignDescriptor(catalog, association).status ==
+                CampaignDescriptorValidationStatus::RelativeMismatch,
+            "case variation cannot weaken exact relative identity");
+    association.relative = L"Map\\Campaign\\prefix_md_roman1.map";
+    Require(ValidateCampaignDescriptor(catalog, association).status ==
+                CampaignDescriptorValidationStatus::RelativeMismatch,
+            "a plausible prefix cannot weaken exact relative identity");
+    association.control = {1904u, 237u, 195u, 175u, 30u};
+    association.relative = L"Map\\Campaign\\md_roman2.map";
+    Require(ValidateCampaignDescriptor(catalog, association).status ==
+                CampaignDescriptorValidationStatus::Matched,
+            "page-16 Roman mission two shares the proven dispatch and formatter family");
 
     association.page = S4_SCREEN_SINGLEPLAYER_CAMPAIGN;
     association.control = {2039u, 420u, 150u, 175u, 30u};
@@ -95,7 +112,7 @@ int RunCampaignDescriptorCatalogTests() {
                     CampaignDescriptorValidationStatus::CatalogNotAdmitted,
             "executable mismatch rejects every descriptor");
 
-    evidence.missionCd = false;
+    evidence.mdRoman = false;
     const auto localFailure =
         AdmitCampaignDescriptorCatalog(ApprovedModule(), evidence);
     association.page = S4_SCREEN_MISSIONCD_ROMAN;

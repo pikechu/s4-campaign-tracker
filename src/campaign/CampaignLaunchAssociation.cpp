@@ -1,4 +1,5 @@
 #include "campaign/CampaignLaunchAssociation.h"
+#include "campaign/CampaignDescriptorCatalog.h"
 
 #include <windows.h>
 
@@ -21,8 +22,7 @@ bool IsMissionCandidate(const CampaignMenuFeature& feature) noexcept {
 void CampaignLaunchAssociation::ObservePage(DWORD page) noexcept {
     if (!enabled_) return;
     const bool campaignPageActive = IsCampaignCatalogPage(page);
-    if (campaignPageActive && page != activePage_ && hasPending_ &&
-        sessionId_ == 0u) {
+    if (campaignPageActive && page != activePage_ && hasPending_) {
         ClearPending();
     }
     pageActive_ = campaignPageActive;
@@ -37,6 +37,7 @@ void CampaignLaunchAssociation::ObserveSnapshot(
     const CampaignMenuSnapshot& snapshot) noexcept {
     if (!enabled_ || !pageActive_ || snapshot.page != activePage_ ||
         snapshot.status != CampaignMenuSnapshotStatus::Success) {
+        if (hasPending_) ClearPending();
         hasSnapshot_ = false;
         snapshot_ = {};
         return;
@@ -47,12 +48,16 @@ void CampaignLaunchAssociation::ObserveSnapshot(
 
 bool CampaignLaunchAssociation::ObserveClick(
     DWORD message, const S4UiElement* element,
+    const CampaignDescriptorCatalog& catalog,
     std::uint64_t nowMs) noexcept {
     if (!enabled_ || !pageActive_ || message != WM_LBUTTONUP ||
         element == nullptr) {
         return false;
     }
-    ClearPending();
+    if (hasPending_) {
+        ClearPending();
+        return false;
+    }
     if (!hasSnapshot_) return false;
     std::size_t matches = 0u;
     CampaignControlIdentity candidate{};
@@ -69,7 +74,14 @@ bool CampaignLaunchAssociation::ObserveClick(
         ClearPending();
         return false;
     }
+    const auto* descriptor = FindAdmittedCampaignDescriptor(
+        catalog, snapshot_.page, candidate);
+    if (descriptor == nullptr) {
+        ClearPending();
+        return false;
+    }
     pendingControl_ = candidate;
+    pendingDescriptorKey_ = descriptor->key;
     pendingPage_ = snapshot_.page;
     clickedAtMs_ = nowMs;
     sessionId_ = 0u;
@@ -81,9 +93,15 @@ bool CampaignLaunchAssociation::BeginSession(
     std::uint64_t sessionId, LaunchOriginSnapshot origin,
     std::uint64_t nowMs) noexcept {
     Expire(nowMs);
-    if (!enabled_ || !hasPending_ || sessionId == 0u ||
-        origin.source != LaunchSource::Campaign ||
-        origin.eligibility != SessionEligibility::Eligible) {
+    const bool explicitlyOnline =
+        origin.eligibility == SessionEligibility::ExcludedOnlineMultiplayer ||
+        origin.source == LaunchSource::OnlineMultiplayer ||
+        origin.source == LaunchSource::LoadOnlineMultiplayer;
+    if (!enabled_ || !hasPending_ || sessionId == 0u || explicitlyOnline) {
+        ClearPending();
+        return false;
+    }
+    if (sessionId_ != 0u) {
         ClearPending();
         return false;
     }
@@ -107,6 +125,7 @@ CampaignLaunchAssociation::ObserveIdentity(
     result.page = pendingPage_;
     result.control = pendingControl_;
     result.sessionId = sessionId_;
+    result.descriptorKey = pendingDescriptorKey_;
     try {
         result.relative = identity.relative;
     } catch (...) {
@@ -134,8 +153,15 @@ void CampaignLaunchAssociation::Disable() noexcept {
     ClearPending();
 }
 
+std::string_view CampaignLaunchAssociation::PendingDescriptorKey() const noexcept {
+    return hasPending_ && pendingDescriptorKey_ != nullptr
+               ? std::string_view(pendingDescriptorKey_)
+               : std::string_view{};
+}
+
 void CampaignLaunchAssociation::ClearPending() noexcept {
     pendingControl_ = {};
+    pendingDescriptorKey_ = nullptr;
     pendingPage_ = S4_GUI_UNKNOWN;
     clickedAtMs_ = 0u;
     sessionId_ = 0u;

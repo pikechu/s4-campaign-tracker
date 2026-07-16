@@ -7,8 +7,11 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <string_view>
 
 namespace campaign_completion {
+
+struct CampaignDescriptorCatalog;
 
 inline constexpr std::uint64_t kCampaignLaunchAssociationLeaseMs = 30'000u;
 
@@ -24,6 +27,7 @@ struct CampaignMenuAssociation final {
     DWORD page = S4_GUI_UNKNOWN;
     CampaignControlIdentity control{};
     std::uint64_t sessionId = 0u;
+    const char* descriptorKey = nullptr;
     std::wstring relative;
 };
 
@@ -32,6 +36,7 @@ public:
     void ObservePage(DWORD page) noexcept;
     void ObserveSnapshot(const CampaignMenuSnapshot& snapshot) noexcept;
     bool ObserveClick(DWORD message, const S4UiElement* element,
+                      const CampaignDescriptorCatalog& catalog,
                       std::uint64_t nowMs) noexcept;
     bool BeginSession(std::uint64_t sessionId, LaunchOriginSnapshot origin,
                       std::uint64_t nowMs) noexcept;
@@ -40,12 +45,14 @@ public:
         std::uint64_t nowMs) noexcept;
     void Expire(std::uint64_t nowMs) noexcept;
     void Disable() noexcept;
+    std::string_view PendingDescriptorKey() const noexcept;
 
 private:
     void ClearPending() noexcept;
 
     CampaignMenuSnapshot snapshot_{};
     CampaignControlIdentity pendingControl_{};
+    const char* pendingDescriptorKey_ = nullptr;
     std::uint64_t clickedAtMs_ = 0u;
     std::uint64_t sessionId_ = 0u;
     DWORD activePage_ = S4_GUI_UNKNOWN;
