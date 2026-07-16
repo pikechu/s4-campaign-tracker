@@ -51,7 +51,7 @@ int RunCampaignMenuCaptureTests() {
     raw.tooltipLink = 44u;
     raw.tooltipLinkExtra = 45u;
     raw.imageStyle = S4_UI_TYPE::MAP;
-    raw.effects = S4_UI_EFFECTS::HOVER;
+    raw.effects = S4_UI_EFFECTS::NONE;
     raw.textStyle = S4_UI_TEXTSTYLE::SMALL_WHITE;
     raw.showTexture = 46u;
     raw.backTexture = 47u;
@@ -73,10 +73,37 @@ int RunCampaignMenuCaptureTests() {
                 snapshot->count == 1u &&
                 EqualCampaignMenuFeature(snapshot->features[0], copied),
             "a complete admitted epoch publishes one deterministic feature");
+    for (int frame = 0; frame < 100; ++frame) {
+        Require(!capture.ObserveFrame(kDarkTribeCampaignPage, true).has_value(),
+                "empty callback intervals retain the page-residency cache");
+    }
+    auto hovered = copied;
+    hovered.effects = static_cast<std::uint16_t>(S4_UI_EFFECTS::HOVER);
+    Require(capture.ObserveFeature(hovered),
+            "a volatile effects transition updates the cached control");
+    const auto hoverSnapshot =
+        capture.ObserveFrame(kDarkTribeCampaignPage, true);
+    Require(hoverSnapshot.has_value() &&
+                hoverSnapshot->status == CampaignMenuSnapshotStatus::Success &&
+                hoverSnapshot->count == 1u &&
+                EqualCampaignMenuFeature(hoverSnapshot->features[0], hovered),
+            "the sparse cache republishes only the updated volatile state");
 
     capture.ObserveFrame(kDarkTribeCampaignPage, false);
     Require(!capture.Active() && !capture.ObserveFeature(Feature(2u)),
             "leaving page 21 clears and closes capture");
+    Require(!capture.ObserveFrame(kDarkTribeCampaignPage, true).has_value(),
+            "re-entering starts with an empty cache rather than stale features");
+
+    CampaignMenuCapture ambiguous;
+    ambiguous.ObserveFrame(kDarkTribeCampaignPage, true);
+    Require(ambiguous.ObserveFeature(Feature(3u)),
+            "ambiguous-page fixture admits a feature");
+    Require(!ambiguous.ObserveFrame(20u, true).has_value() &&
+                !ambiguous.Active(),
+            "a page-number disagreement clears the cache and fails closed");
+    Require(!ambiguous.ObserveFrame(kDarkTribeCampaignPage, true).has_value(),
+            "a later valid page visit cannot recover stale ambiguous data");
 
     CampaignMenuCapture conflict;
     conflict.ObserveFrame(kDarkTribeCampaignPage, true);

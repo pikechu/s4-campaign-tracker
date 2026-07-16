@@ -74,9 +74,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.7.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.7.1 pid="
            << GetCurrentProcessId()
-           << " mode=dark-tribe-campaign-menu-forensics";
+           << " mode=dark-tribe-campaign-sparse-menu-forensics";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;

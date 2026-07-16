@@ -69,11 +69,12 @@ public:
 private:
     void ClearWorking() noexcept;
 
-    std::array<CampaignMenuFeature, kMaximumCampaignMenuFeatures> working_{};
+    std::array<CampaignMenuFeature, kMaximumCampaignMenuFeatures> cached_{};
     std::size_t count_ = 0u;
     std::uint64_t generation_ = 0u;
     bool collecting_ = false;
     bool invalid_ = false;
+    bool dirty_ = false;
     bool enabled_ = true;
 };
 

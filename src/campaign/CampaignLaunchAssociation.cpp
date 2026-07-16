@@ -12,16 +12,22 @@ bool Matches(const CampaignMenuFeature& feature,
            feature.height == element.h;
 }
 
+bool IsMissionCandidate(const CampaignMenuFeature& feature) noexcept {
+    return feature.hasText && feature.text.length != 0u;
+}
+
 }  // namespace
 
 void CampaignLaunchAssociation::ObservePage(
     bool darkTribeActive) noexcept {
     if (!enabled_) return;
+    if (darkTribeActive && !pageActive_ && hasPending_ && sessionId_ == 0u) {
+        ClearPending();
+    }
     pageActive_ = darkTribeActive;
     if (!pageActive_) {
         hasSnapshot_ = false;
         snapshot_ = {};
-        if (sessionId_ == 0u) ClearPending();
     }
 }
 
@@ -40,15 +46,19 @@ void CampaignLaunchAssociation::ObserveSnapshot(
 bool CampaignLaunchAssociation::ObserveClick(
     DWORD message, const S4UiElement* element,
     std::uint64_t nowMs) noexcept {
-    if (!enabled_ || !pageActive_ || !hasSnapshot_ ||
-        message != WM_LBUTTONUP || element == nullptr) {
+    if (!enabled_ || !pageActive_ || message != WM_LBUTTONUP ||
+        element == nullptr) {
         return false;
     }
+    ClearPending();
+    if (!hasSnapshot_) return false;
     std::size_t matches = 0u;
     CampaignControlIdentity candidate{};
     for (std::size_t index = 0u; index < snapshot_.count; ++index) {
         const auto& feature = snapshot_.features[index];
-        if (!Matches(feature, *element)) continue;
+        if (!Matches(feature, *element) || !IsMissionCandidate(feature)) {
+            continue;
+        }
         ++matches;
         candidate = {element->id, element->x, element->y,
                      element->w, element->h};
@@ -83,8 +93,11 @@ CampaignLaunchAssociation::ObserveIdentity(
     const ConfirmedMapIdentity& identity,
     std::uint64_t nowMs) noexcept {
     Expire(nowMs);
-    if (!enabled_ || !hasPending_ || sessionId_ == 0u ||
-        identity.sessionId != sessionId_ || identity.relative.empty()) {
+    if (!enabled_ || !hasPending_ || sessionId_ == 0u) {
+        return std::nullopt;
+    }
+    if (identity.sessionId != sessionId_ || identity.relative.empty()) {
+        ClearPending();
         return std::nullopt;
     }
     CampaignMenuAssociation result{};

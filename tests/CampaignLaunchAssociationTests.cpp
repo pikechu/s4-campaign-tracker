@@ -17,6 +17,10 @@ campaign_completion::CampaignMenuSnapshot Snapshot() {
     snapshot.features[0].y = 20u;
     snapshot.features[0].width = 100u;
     snapshot.features[0].height = 30u;
+    snapshot.features[0].hasText = true;
+    snapshot.features[0].text.bytes[0] = 'M';
+    snapshot.features[0].text.bytes[1] = '\0';
+    snapshot.features[0].text.length = 1u;
     return snapshot;
 }
 
@@ -57,25 +61,41 @@ int RunCampaignLaunchAssociationTests() {
     association.ObserveSnapshot(Snapshot());
     Require(association.ObserveClick(WM_LBUTTONUP, &element, 200u),
             "a fresh unique click can arm again");
+    CampaignMenuSnapshot invalid{};
+    invalid.status = CampaignMenuSnapshotStatus::Invalid;
+    association.ObserveSnapshot(invalid);
+    association.ObservePage(false);
     Require(association.BeginSession(
                 9u,
                 {LaunchSource::Campaign, SessionEligibility::Eligible},
                 210u),
-            "MapInit binds an armed campaign click to its exact session");
-    association.ObservePage(false);
+            "an armed click survives invalid redraw and briefing-page exit until MapInit");
     Require(!association.ObserveIdentity(
                  {8u, L"RD_PlayerSave", L"Map\\Campaign\\Wrong.map"},
                  220u)
                  .has_value(),
-            "session mismatch cannot associate even with an RD save name");
-    const auto result = association.ObserveIdentity(
+            "session mismatch clears association even with an RD save name");
+    Require(!association.ObserveIdentity(
         {9u, L"RD_PlayerSave", L"Map\\Campaign\\Dark\\Mission01.map"},
-        230u);
+        230u).has_value(),
+            "a cleared session mismatch cannot later be promoted");
+
+    CampaignLaunchAssociation successful;
+    successful.ObservePage(true);
+    successful.ObserveSnapshot(Snapshot());
+    Require(successful.ObserveClick(WM_LBUTTONUP, &element, 200u) &&
+                successful.BeginSession(
+                    9u,
+                    {LaunchSource::Campaign, SessionEligibility::Eligible},
+                    210u),
+            "success fixture binds an exact campaign session");
+    const auto result = successful.ObserveIdentity(
+        {9u, L"RD_PlayerSave", L"Map\\Campaign\\Dark\\Mission01.map"}, 230u);
     Require(result.has_value() && result->page == kDarkTribeCampaignPage &&
                 result->control.controlId == 700u && result->sessionId == 9u &&
                 result->relative == L"Map\\Campaign\\Dark\\Mission01.map",
             "only the same-session confirmed relative identity is emitted");
-    Require(!association.ObserveIdentity(
+    Require(!successful.ObserveIdentity(
                  {9u, L"other", L"Map\\Campaign\\Dark\\Other.map"}, 240u)
                  .has_value(),
             "association is single-use");
@@ -97,10 +117,51 @@ int RunCampaignLaunchAssociationTests() {
     Require(left.ObserveClick(WM_LBUTTONUP, &element, 1u),
             "page-exit fixture arms a candidate");
     left.ObservePage(false);
+    left.ObservePage(true);
     Require(!left.BeginSession(
                 11u,
                 {LaunchSource::Campaign, SessionEligibility::Eligible}, 2u),
-            "leaving page before MapInit clears click and snapshot state");
+            "returning to page 21 before MapInit clears an abandoned click");
+
+    CampaignLaunchAssociation nonMission;
+    auto backSnapshot = Snapshot();
+    backSnapshot.features[0].hasText = false;
+    backSnapshot.features[0].text = {};
+    nonMission.ObservePage(true);
+    nonMission.ObserveSnapshot(backSnapshot);
+    Require(!nonMission.ObserveClick(WM_LBUTTONUP, &element, 3u),
+            "a textless navigation control cannot arm a mission association");
+
+    CampaignLaunchAssociation replaced;
+    replaced.ObservePage(true);
+    replaced.ObserveSnapshot(Snapshot());
+    Require(replaced.ObserveClick(WM_LBUTTONUP, &element, 4u),
+            "replacement fixture arms a mission click");
+    CampaignMenuSnapshot invalidClick{};
+    invalidClick.status = CampaignMenuSnapshotStatus::Invalid;
+    replaced.ObserveSnapshot(invalidClick);
+    Require(!replaced.ObserveClick(WM_LBUTTONUP, &element, 5u) &&
+                !replaced.BeginSession(
+                    12u,
+                    {LaunchSource::Campaign, SessionEligibility::Eligible},
+                    6u),
+            "another page-21 click without a valid snapshot clears the lease");
+
+    CampaignLaunchAssociation emptyRelative;
+    emptyRelative.ObservePage(true);
+    emptyRelative.ObserveSnapshot(Snapshot());
+    Require(emptyRelative.ObserveClick(WM_LBUTTONUP, &element, 7u) &&
+                emptyRelative.BeginSession(
+                    13u,
+                    {LaunchSource::Campaign, SessionEligibility::Eligible},
+                    8u),
+            "empty-relative fixture binds a session");
+    Require(!emptyRelative.ObserveIdentity({13u, L"display", L""}, 9u)
+                 .has_value() &&
+                !emptyRelative.ObserveIdentity(
+                     {13u, L"display", L"Map\\Campaign\\late.map"}, 10u)
+                     .has_value(),
+            "an empty session-bound relative identity clears the lease");
 
     return 0;
 }

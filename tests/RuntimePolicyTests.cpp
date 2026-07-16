@@ -69,8 +69,8 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.7.0",
-             "DiagnosticMode=DarkTribeCampaignMenuForensics",
+             "Version=0.7.1",
+             "DiagnosticMode=DarkTribeCampaignSparseMenuForensics",
              "InternalMenuReadOnly=0", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
@@ -81,6 +81,8 @@ int RunRuntimePolicyTests() {
              "CompletionStorage=0", "CompletionMarkers=0",
              "CampaignMenuPublicCapture=1", "CampaignMenuPage=21",
              "CampaignMenuAssociation=SettlersUnitedLua",
+             "CampaignMenuCache=PageResidencySparse",
+             "CampaignLaunchLeaseMs=30000",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
                 "Phase 6A packaged policy field is missing");
@@ -96,9 +98,13 @@ int RunRuntimePolicyTests() {
         ReadText(root / "src" / "runtime" / "S4Listeners.cpp");
     const auto listenerHeader =
         ReadText(root / "src" / "runtime" / "S4Listeners.h");
+    const auto campaignCapture =
+        ReadText(root / "src" / "campaign" / "CampaignMenuCapture.cpp");
+    const auto campaignAssociation = ReadText(
+        root / "src" / "campaign" / "CampaignLaunchAssociation.cpp");
 
-    Require(runtime.find("version=0.7.0") != std::string::npos &&
-                runtime.find("mode=dark-tribe-campaign-menu-forensics") !=
+    Require(runtime.find("version=0.7.1") != std::string::npos &&
+                runtime.find("mode=dark-tribe-campaign-sparse-menu-forensics") !=
                     std::string::npos,
             "runtime identifies the Phase 6A diagnostic mode");
     Require(runtimeHeader.find("std::unique_ptr<CampaignMenuCapture>") !=
@@ -164,6 +170,25 @@ int RunRuntimePolicyTests() {
     Require(listeners.find("identity->relative") != std::string::npos &&
                 listeners.find("identity->name") == std::string::npos,
             "runtime classification and association never use display/save name");
+    Require(campaignCapture.find("if (!dirty_) return std::nullopt;") !=
+                    std::string::npos &&
+                campaignCapture.find(
+                    "if (page != kDarkTribeCampaignPage) {") !=
+                    std::string::npos &&
+                campaignCapture.find("EqualExceptEffects(") !=
+                    std::string::npos &&
+                campaignCapture.find("cached_[index].effects = feature.effects") !=
+                    std::string::npos,
+            "sparse page cache survives empty intervals and updates only volatile effects");
+    Require(campaignAssociation.find(
+                "return feature.hasText && feature.text.length != 0u;") !=
+                    std::string::npos &&
+                campaignAssociation.find(
+                    "darkTribeActive && !pageActive_ && hasPending_") !=
+                    std::string::npos &&
+                listeners.find("campaignAssociation_->Expire(now);") !=
+                    std::string::npos,
+            "only labeled mission controls arm a bounded lease that expires on Tick and clears on abandoned re-entry");
 
     Require(listeners.find("AddMapInitListener(&OnMapInit)") !=
                     std::string::npos &&

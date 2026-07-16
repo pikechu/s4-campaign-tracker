@@ -204,6 +204,11 @@ campaign mapping or marker is authorized. See the [Phase 6A report](docs/researc
 [design](docs/superpowers/specs/2026-07-16-phase-6a-dark-tribe-campaign-menu-forensics-design.md),
 and [static evidence](docs/research/phase-6a-dark-tribe-campaign-menu-static-evidence.md).
 
+Phase 6A.1 development addresses only the public association subproblem with a
+bounded page-residency sparse cache and a 30-second click-to-MapInit lease. It
+does not add an internal reader or authorize campaign markers. See the
+[Phase 6A.1 design](docs/superpowers/specs/2026-07-16-phase-6a-1-public-sparse-campaign-association-design.md).
+
 Development feedback policy:
 
 - keep intermediate RED test commits local;

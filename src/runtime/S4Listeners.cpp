@@ -313,6 +313,10 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const bool darkTribeActive =
         api_ != nullptr &&
         api_->IsCurrentlyOnScreen(kDarkTribeCampaignPage) != FALSE;
+    if (!darkTribeActive) {
+        hasCampaignSnapshot_ = false;
+        lastCampaignSnapshot_ = {};
+    }
     if (campaignAssociation_ != nullptr) {
         campaignAssociation_->ObservePage(darkTribeActive);
     }
@@ -485,6 +489,9 @@ void S4Listeners::ObserveTick(BOOL delayed) {
     const bool inGame =
         api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
     const auto now = GetTickCount64();
+    if (campaignAssociation_ != nullptr) {
+        campaignAssociation_->Expire(now);
+    }
     if (inGame && nativeReinsertPending_ && nativeSubscriber_ != nullptr &&
         nativeSubscriber_->state() == NativeSubscriptionState::Attached) {
         nativeReinsertPending_ = false;

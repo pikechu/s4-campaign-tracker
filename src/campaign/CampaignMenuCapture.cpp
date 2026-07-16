@@ -20,6 +20,15 @@ bool SameControlKey(const CampaignMenuFeature& left,
            left.height == right.height;
 }
 
+bool EqualExceptEffects(const CampaignMenuFeature& left,
+                        const CampaignMenuFeature& right) noexcept {
+    auto normalizedLeft = left;
+    auto normalizedRight = right;
+    normalizedLeft.effects = 0u;
+    normalizedRight.effects = 0u;
+    return EqualCampaignMenuFeature(normalizedLeft, normalizedRight);
+}
+
 bool LessFeature(const CampaignMenuFeature& left,
                  const CampaignMenuFeature& right) noexcept {
     if (left.valueLink != right.valueLink) {
@@ -113,52 +122,61 @@ std::optional<CampaignMenuSnapshot> CampaignMenuCapture::ObserveFrame(
         ClearWorking();
         return std::nullopt;
     }
-    if (page != kDarkTribeCampaignPage) return std::nullopt;
-
-    std::optional<CampaignMenuSnapshot> published;
-    if (collecting_) {
-        CampaignMenuSnapshot snapshot{};
-        snapshot.generation = generation_;
-        snapshot.status = invalid_
-                              ? CampaignMenuSnapshotStatus::Invalid
-                              : (count_ == 0u
-                                     ? CampaignMenuSnapshotStatus::Empty
-                                     : CampaignMenuSnapshotStatus::Success);
-        if (!invalid_) {
-            snapshot.count = count_;
-            for (std::size_t index = 0u; index < count_; ++index) {
-                snapshot.features[index] = working_[index];
-            }
-            std::sort(snapshot.features.begin(),
-                      snapshot.features.begin() + snapshot.count,
-                      LessFeature);
-        }
-        published = snapshot;
+    if (page != kDarkTribeCampaignPage) {
+        ClearWorking();
+        collecting_ = false;
+        return std::nullopt;
     }
-    ClearWorking();
-    collecting_ = true;
     ++generation_;
-    return published;
+    if (!collecting_) {
+        ClearWorking();
+        collecting_ = true;
+        return std::nullopt;
+    }
+    if (!dirty_) return std::nullopt;
+
+    CampaignMenuSnapshot snapshot{};
+    snapshot.generation = generation_;
+    snapshot.status = invalid_ ? CampaignMenuSnapshotStatus::Invalid
+                               : CampaignMenuSnapshotStatus::Success;
+    if (!invalid_) {
+        snapshot.count = count_;
+        for (std::size_t index = 0u; index < count_; ++index) {
+            snapshot.features[index] = cached_[index];
+        }
+        std::sort(snapshot.features.begin(),
+                  snapshot.features.begin() + snapshot.count, LessFeature);
+    }
+    dirty_ = false;
+    return snapshot;
 }
 
 bool CampaignMenuCapture::ObserveFeature(
     const CampaignMenuFeature& feature) noexcept {
     if (!enabled_ || !collecting_ || invalid_) return false;
     for (std::size_t index = 0u; index < count_; ++index) {
-        if (EqualCampaignMenuFeature(working_[index], feature)) return true;
-        if (SameControlKey(working_[index], feature)) {
+        if (EqualCampaignMenuFeature(cached_[index], feature)) return true;
+        if (SameControlKey(cached_[index], feature)) {
+            if (EqualExceptEffects(cached_[index], feature)) {
+                cached_[index].effects = feature.effects;
+                dirty_ = true;
+                return true;
+            }
             invalid_ = true;
             count_ = 0u;
+            dirty_ = true;
             return false;
         }
     }
-    if (count_ >= working_.size()) {
+    if (count_ >= cached_.size()) {
         invalid_ = true;
         count_ = 0u;
+        dirty_ = true;
         return false;
     }
-    working_[count_] = feature;
+    cached_[count_] = feature;
     ++count_;
+    dirty_ = true;
     return true;
 }
 
@@ -166,6 +184,7 @@ void CampaignMenuCapture::Invalidate() noexcept {
     if (!enabled_ || !collecting_) return;
     invalid_ = true;
     count_ = 0u;
+    dirty_ = true;
 }
 
 void CampaignMenuCapture::Disable() noexcept {
@@ -177,6 +196,7 @@ void CampaignMenuCapture::Disable() noexcept {
 void CampaignMenuCapture::ClearWorking() noexcept {
     count_ = 0u;
     invalid_ = false;
+    dirty_ = false;
 }
 
 }  // namespace campaign_completion
