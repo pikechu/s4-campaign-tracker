@@ -234,7 +234,9 @@ and [candidate audit](docs/research/phase-6b-all-campaign-public-catalog-candida
 
 The first Phase 6B live catalog batch accepted sparse capture on pages 11–21
 but found that selector companion layers prevented snapshots for 3/4 and the
-shared 5/6 New World page set. The focused `0.8.1` composed-page owner fix has
+shared 5/6 New World page set. The focused composed-page owner fix passed its
+gates, but its first retest exposed a fail-closed transient empty module
+inventory at game bootstrap. The bounded `0.8.2` read-only startup retry has
 passed authoritative Windows CI and artifact audit; deployment remains
 unapproved pending normal shutdown and zero-write postflight. See the
 [initial batch and fix audit](docs/research/phase-6b-initial-batch-composed-page-fix-audit.md).
