@@ -95,3 +95,49 @@ A future replacement of
 requires a fresh explicit deployment approval after the user has normally
 closed both relevant processes. The efficient live batch remains limited to
 Add-on Trojan 1 and page-16 Roman 1.
+
+## Guarded deployment
+
+The user subsequently confirmed both protected applications were closed and
+explicitly approved deployment of this exact Phase 6C.1 candidate. A fresh
+preflight confirmed:
+
+- protected-process count `0`;
+- prior installed archive size `1,398,739` bytes and SHA-256
+  `058c4dc251b321d06f9a006af54a6b50b20857f010127cf8749a6fff96ef9a46`;
+- prior live INI SHA-256
+  `4e870e63d8cfeadfd38e90dedf26481acb34b5406a22f119017bcfa7a1b16850`;
+- candidate ASI and INI exactly matched the audited hashes above;
+- immutable original archive SHA-256 remained
+  `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`;
+- database main/backup bytes and timestamps exactly matched the Phase 6C
+  normal-shutdown postflight;
+- no authorized temporary sibling existed.
+
+Before mutation, the elevated fixed-hash script created and verified the full
+rollback snapshot at
+`research/backups/campaign-completion/2026-07-16-pre-v0.9.1-descriptor-family-session-gate`.
+The established guarded installer then replaced only the project ASI archive
+entry, and the project INI was replaced atomically in its existing directory.
+
+Independent post-deployment verification recorded:
+
+| Item | Result |
+| --- | --- |
+| installed `Plugin_SU.zip` | `1,399,996` bytes; SHA-256 `ac69b07181c2e832b750591921e1fe73308c2eff8910f6ce17068137b6894988` |
+| embedded ASI | SHA-256 `342f2c97b49f2f507f006f64dbb10322050b77c460598b40f724862d034d457c`, exact candidate |
+| live INI | `1,180` bytes; SHA-256 `024c92062fbdd42703dfa0b30a0de2dc609d61fa075ba31abd4cadc35c899e7b`, exact candidate |
+| database main | `1,260` bytes; timestamp `2026-07-16T05:41:41.3482563Z`; SHA-256 `49b81aaffddd0380c6cfa69f870ad911d9b82f0ba55a213f305ad7955d4ff26e` |
+| database backup | `951` bytes; timestamp `2026-07-14T11:13:02.1756072Z`; SHA-256 `31edf4f486d7e0078efa23d958482ebc23ffadda2b555c73b5f49b2493756b1f` |
+
+The installed archive contains the same seven immutable original file entries
+plus the project ASI. Its only changed/added file entry relative to the
+immutable original is `Plugins/CampaignCompletionDebug.asi`. Installer metadata
+matches both the installed archive and embedded ASI hashes. Protected-process
+count remained zero, and the archive, INI, and database temporary siblings were
+all absent. The machine-readable result is retained at
+`artifacts/phase6c1-8b27ce4/deployment-result.json`.
+
+Deployment is complete. Dynamic acceptance remains pending and is restricted
+to the Add-on Trojan 1 and page-16 Roman 1 paths; no database, save, progress,
+or marker authority follows from deployment.
