@@ -1,15 +1,16 @@
-# Phase 6D campaign completion marker index and rendering design
+# Phase 6D unified all-campaign evidence, completion index, and batch rendering design
 
 Date: 2026-07-16 (Asia/Shanghai)
 
 ## Objective and present authorization
 
-Phase 6D connects the Phase 6C.1 immutable campaign descriptor contract to the
-existing completion database, marker index, PNG renderer, and public campaign
-menu snapshots so a completed admitted campaign mission can display the same
-check image at the end of its mission button.
+Phase 6D closes the remaining campaign descriptors as one evidence set, then
+connects that set to the existing completion database, PNG marker renderer, and
+public campaign snapshots in one implementation candidate. The user should not
+have to validate one campaign family at a time or repeat the same menu test for
+each mission.
 
-The current approval covers this design only. It does not authorize
+The current approval covers this revised design only. It does not authorize
 implementation, deployment, reading or writing the live completion database,
 save access, campaign-progress access, process control, a live victory, or a
 marker test. Those actions retain their separate boundaries.
@@ -19,23 +20,115 @@ game-memory writes, Lua writes, campaign-progress writes, or a name/display
 fallback. The installed Phase 6C.1 candidate remains unchanged until a later
 audited deployment is explicitly approved.
 
-## Inputs already accepted
+## Unified scope
 
-- Phase 5B PNG loading, geometry, DirectDraw/GDI surface lifecycle, persistent
-  redraw, first-entry rendering, and scroll replay are GO.
-- Phase 5C database `0.5.0` compatibility, normal writable load without a
-  startup write, atomic one-record commit, and same-process index publication
-  are GO.
-- Phase 6C.1 exact admitted descriptor and click/session/relative association
-  is GO.
-- The only identity authority remains confirmed same-MapInit-session
-  `identity.relative`.
+The target is one descriptor matrix for every accessible mission control in:
 
-The currently admitted descriptor set is intentionally incomplete: Add-on
-Trojan 1, Add-on Mayan 1, page-16 Roman 1/2, Original Viking 2/3, and Dark
-Tribe 1–12. Pages 17–19, New World, New World 2, and all other unproven
-controls must remain unmarked. Phase 6D does not infer or manufacture missing
-descriptor records.
+- Add-on pages 11 through 15;
+- Mission CD pages 16 through 19;
+- New World and New World 2 composed pages 5/6;
+- Original campaigns on page 20;
+- Dark Tribe on page 21.
+
+Selectors 3 and 4 are navigation evidence, not mission identities. Locked or
+unavailable content is recorded as unavailable and is never unlocked,
+manufactured, or treated as a failed mission.
+
+Already accepted Phase 6B public snapshots, scroll/re-entry observations, and
+Phase 6C.1 exact descriptor chains are reusable. Dark Tribe's complete static
+catalog is reusable. No accepted family is retested merely because the catalog
+is expanded.
+
+The previous Phase 6D subset boundary is withdrawn. Phase 6D must not ship a
+campaign-marker implementation that deliberately leaves an accessible family
+for another repetitive marker phase. Before implementation, every accessible
+mission is classified in one frozen matrix as either:
+
+- `CLOSED`: exact control, dispatch ordinal, transition/formatter selection,
+  exact relative, public page, and logical geometry are all proven; or
+- `UNAVAILABLE`: the exact installed game exposes no selectable control for the
+  content during the accepted full catalog sweep.
+
+`EVIDENCE GAP` is allowed while research is in progress, but it blocks the
+all-campaign implementation checkpoint. It is not converted to `CLOSED` from a
+label, neighboring ordinal, filename pattern, or apparent menu order.
+
+## Stage 1: one offline evidence closure
+
+Perform one bounded offline analysis of the exact accepted executable and PDB,
+using the already frozen identities:
+
+- `S4_Main.exe` SHA-256
+  `3b561269fb7ce4c281959f8f0db691cebf7cd36a04ad3594461b94290c5d3816`;
+- `S4_MainR.pdb` SHA-256
+  `702df42ef4d7e8f6ba39aee96b5c83780c3266a7e9a174f81db13c6934050ae6`.
+
+For every mission control, close this chain independently:
+
+```text
+public page/control/rectangle
+  -> exact constructor slot
+  -> exact click-dispatch ordinal/event
+  -> exact transition kind
+  -> exact formatter slot or literal
+  -> exact Map\Campaign\... relative
+```
+
+The analysis may group controls only when exact control-flow proves that they
+share the same bounded dispatch and formatter implementation. A format string
+proves possible relatives but does not by itself prove which public control
+selects which ordinal.
+
+Mine the frozen Phase 6B catalog logs for public controls, logical rectangles,
+entry/scroll/top states, and composed-page ownership before requesting any new
+live pass. Historical sparse observations may confirm geometry or page
+residency; absence remains absence.
+
+Produce one reviewable evidence artifact containing, for each mission:
+
+```text
+descriptor key | content group | page | control | rectangle | ordinal/event
+transition kind | formatter/literal | exact relative | static window hashes
+public evidence source | status
+```
+
+The artifact must explicitly supersede the historical incorrect `mcd2_*`
+association where Phase 6C.1 proved `md_roman*`. Historical reports remain
+unchanged as audit history.
+
+## Stage 2: one gap-only catalog sweep, if needed
+
+If offline analysis plus existing Phase 6B evidence leaves public geometry or
+availability gaps, use one read-only diagnostic candidate and one continuous
+game process. Do not deploy a sequence of family-specific probes.
+
+The user performs one uninterrupted traversal of all campaign pages and every
+available scroll state, then reports completion once. No mission launch, hover,
+victory, database access, save access, or per-page message is required. The
+candidate writes only the existing project-owned diagnostic log.
+
+Do not run game processes concurrently. The installed archive, plugin log,
+completion database, session IDs, and menu callbacks are shared; multiple
+processes would make attribution ambiguous. Batching is achieved inside one
+process, not by parallel game instances.
+
+After the sweep, finish the remaining dispatch analysis offline and freeze the
+single all-campaign matrix. If any accessible mission still has an evidence
+gap, stop before marker implementation and report that specific chain rather
+than beginning a partial campaign rollout.
+
+## Strict identity and RD boundary
+
+The only runtime identity authority remains confirmed same-MapInit-session
+`identity.relative`. Static descriptor records constrain the expected identity
+but never replace this confirmation for a live launch.
+
+Never classify from `identity.name`, visible or translated text, a player save
+name, database display fields, page ownership, filename stem, or an `RD` string
+found anywhere except the confirmed relative identity. In particular,
+`RD_PlayerSave` as a display/save value cannot make a fixed or campaign map
+random. A true confirmed relative beginning with `RD_` remains random and can
+never enter the campaign index.
 
 ## Campaign-session completion gate
 
@@ -44,7 +137,7 @@ descriptor matched while the independent presentation origin was
 `random-map/eligible`. Passing that origin directly into the older completion
 pipeline would record the campaign mission as an ordinary single-player map.
 
-A new bounded `CampaignSessionAdmission` therefore owns only:
+A bounded `CampaignSessionAdmission` owns only:
 
 - one nonzero active MapInit session ID;
 - the exact matched immutable descriptor key;
@@ -53,7 +146,7 @@ A new bounded `CampaignSessionAdmission` therefore owns only:
 
 It becomes admitted only after all of these are true in the same session:
 
-1. an exact public page/control/rectangle armed an admitted descriptor lease;
+1. an exact public page/control/rectangle armed a `CLOSED` descriptor lease;
 2. the next fresh MapInit session bound that lease;
 3. confirmed `identity.relative` arrived for that exact session;
 4. `ValidateCampaignDescriptor` returned `Matched` for the same key and exact
@@ -62,200 +155,175 @@ It becomes admitted only after all of these are true in the same session:
 
 Only then may the completion pipeline receive
 `{LaunchSource::Campaign, SessionEligibility::Eligible}` for that session. A
-prefix such as `Map\Campaign\`, a page number, a translated label, a display or
-save name, an `RD` string, or temporal proximity cannot admit campaign
-completion. Session change, descriptor mismatch, empty relative, online
-origin, malformed snapshot, expiry, second click, page abandonment, or
-shutdown clears the gate.
+`Map\Campaign\` prefix or temporal proximity cannot admit completion. Session
+change, descriptor mismatch, empty relative, online origin, malformed snapshot,
+expiry, second click, page abandonment, or shutdown clears the gate.
 
 Loaded campaigns without a fresh descriptor click retain the established
 `LoadCampaign` origin path and may canonicalize to `Campaign` only through the
-existing load-origin contract. Phase 6D does not use an uncorrelated menu
-visit to classify a loaded save.
+existing load-origin contract. An uncorrelated menu visit cannot classify a
+loaded save.
 
 ## Campaign completion index
 
 Add a separate `CampaignCompletionMarkerIndex` rather than weakening the
 fixed-map `CompletionMarkerIndex` list-kind rules. Publication consumes an
-owned `CompletionDatabaseSnapshot` and the already admitted immutable
-descriptor catalog.
+owned `CompletionDatabaseSnapshot` and the frozen all-campaign descriptor
+catalog.
 
-A database record is admitted to the campaign index only when:
+A database record enters the campaign index only when:
 
 - `mapKind == Fixed`;
 - `launchSource == Campaign`;
 - strict UTF-8 decoding succeeds within existing bounds;
 - `stableId` exactly equals `BuildStableMapId(decoded relative)`;
-- the decoded relative resolves to exactly one currently admitted descriptor;
-- the decoded relative is exactly equal, including case and separators, to the
-  descriptor's frozen relative;
+- the decoded relative resolves to exactly one `CLOSED` descriptor;
+- it exactly equals that descriptor's relative, including case and separators;
 - no second valid record resolves to the same descriptor key.
 
 The index publishes an immutable set of descriptor keys/relatives under one
-mutex and answers bounded, allocation-free lookup queries from the render
-callback. `displayName`, translated menu text, save name, record order, page
-position, and filename stem are never queried. Invalid, duplicate, ambiguous,
-online, random, wrong-source, unknown-descriptor, and evidence-gap records are
-silently excluded with one bounded summary diagnostic outside the draw loop.
+mutex and answers bounded, allocation-free render queries. Invalid, duplicate,
+ambiguous, online, random, wrong-source, unknown-descriptor, and inconsistent
+records are excluded with one bounded summary diagnostic outside the draw loop.
 
-The fixed-map index and its existing RD behavior remain unchanged. A player
-save/display value such as `RD_PlayerSave` cannot affect either index. A true
-confirmed relative beginning `RD_` remains a random-map completion and cannot
-enter the campaign index.
+The fixed-map index and its accepted RD behavior remain unchanged. No design or
+test step authorizes reading the live database. Tests use constructed in-memory
+snapshots only.
 
-## Public campaign marker observer
+## All-campaign marker observer
 
-Add a `CampaignMarkerObserver` that consumes only successful owned
-`CampaignMenuSnapshot` values plus the immutable catalog and campaign index.
-For every visible feature it requires:
+Add one `CampaignMarkerObserver` that consumes successful owned
+`CampaignMenuSnapshot` values, the frozen descriptor catalog, and the campaign
+index. Each visible marker requires:
 
-- nonempty bounded public text, used only to reject navigation/decorative
-  controls;
 - exact snapshot page;
 - exact control ID and rectangle;
-- a uniquely admitted immutable descriptor record;
-- a unique completed descriptor-key match in the campaign index;
+- one unique `CLOSED` descriptor;
+- one exact completed descriptor-key match;
 - nonzero logical surface dimensions and checked geometry bounds.
 
-The observer emits a draw command from the public feature's logical surface and
-button rectangle. It never uses the text as an identity or database key. A
-successful new snapshot atomically replaces the retained page frame; an empty,
-invalid, ambiguous, over-capacity, page-changing, or non-campaign snapshot
+Public text is used only to reject navigation/decorative controls; it is never
+an identity or database key. A successful snapshot atomically replaces the
+retained owner frame. Invalid, ambiguous, over-capacity, or non-campaign state
 clears it. Hover/effects-only updates retain the same identity and geometry.
 
-The observer supports at least 12 commands so the admitted Dark Tribe page
-cannot be truncated. The shared marker frame type should use a neutral maximum
-such as 16 commands; `FixedMapRowObserver` continues to emit at most six.
+Size the neutral marker frame from the frozen matrix's maximum simultaneously
+visible mission controls, with a compile-time bound no smaller than 16. Dark
+Tribe's 12 controls must not truncate. `FixedMapRowObserver` remains limited to
+its six accepted rows.
 
-## Render scheduling and geometry
-
-Reuse the accepted embedded check PNG, `DirectDrawMarkerSurface`, and checked
-`BuildMarkerCheckGeometry`. The marker remains anchored at the mission button's
-right end, with pillarbox adjustment applied exactly once and clipping to the
+Reuse the accepted embedded PNG, `DirectDrawMarkerSurface`, and checked
+`BuildMarkerCheckGeometry`. The marker remains anchored at each mission
+button's right end, with pillarbox adjustment exactly once and clipping to the
 button/destination surface.
 
 On each public UI-frame callback:
 
-1. compute the deterministic active campaign owner already used by public
-   capture;
+1. compute the deterministic active campaign owner already used by capture;
 2. finalize any changed public snapshot;
-3. publish it to both launch association and campaign marker observer;
-4. render campaign commands only when the callback page equals that exact
-   owner;
-5. otherwise clear/skip the campaign frame;
-6. preserve the existing fixed-map page-25 render path unchanged.
+3. publish it to launch association and the campaign observer;
+4. render commands only when the callback page equals that exact owner;
+5. otherwise clear or skip the campaign frame;
+6. preserve the fixed-map page-25 path unchanged.
 
 There is one shared drawing surface and one renderer call per eligible frame.
-The first stable page epoch must display without mouse hover. Re-entry,
-effects-only repaint, and any campaign menu scroll that produces a fresh public
-snapshot must replace and redraw commands immediately. Rendering failure uses
-the existing three-failure disable policy and never affects navigation,
-identity, completion admission, or persistence.
+The first stable page epoch displays without hover. Re-entry, effects-only
+repaint, and scroll snapshots immediately replace and redraw the frame.
 
-## Runtime composition
+## One implementation candidate
 
-The proposed `0.10.0` candidate restores only previously accepted production
-components plus the new campaign-specific gate/index/observer:
+After the evidence matrix is fully frozen, one implementation approval covers
+the whole closed matrix. Do not merge or deploy family-specific intermediate
+marker candidates. Keep intermediate RED commits local and push only the
+complete GREEN checkpoint.
 
-- compatible `CompletionStore` load and owned snapshot publication;
-- existing bounded worker and atomic commit path;
-- existing native terminal event `609` admission;
-- fixed-map marker index/observer/renderer behavior;
-- Phase 6C.1 descriptor catalog and association;
-- new campaign-session completion gate;
-- new campaign marker index and public observer.
+The production candidate restores only previously accepted components plus:
 
-Startup must publish the loaded database snapshot without writing it. A
-compatible unchanged database produces no normalization or commit. Any
-read-only/failure store mode may publish its valid read-only snapshot for
-markers but cannot accept completion writes. Campaign completion is written
-only after a later, explicitly authorized live victory reaches the exact gate
-above.
+- the frozen all-campaign descriptor table and exact compatibility windows;
+- the campaign-session completion gate;
+- the campaign completion index;
+- the all-campaign public observer and shared renderer scheduling.
 
-Shutdown ordering is:
+Startup publishes an owned compatible store snapshot without writing it. An
+unchanged database causes no normalization or commit. Campaign completion is
+written only after a later explicitly authorized live victory reaches the exact
+gate. Shutdown disables admission and observers, drains the bounded worker,
+removes listeners in reverse order, and releases renderer/store objects without
+leaving callback pointers to destroyed state.
 
-1. stop accepting completion candidates;
-2. disable campaign/fixed observers and both indexes;
-3. disable completion, descriptor, identity, and native-event admission;
-4. drain the worker within the existing bounded timeout;
-5. close the callback gate and remove public listeners in reverse order;
-6. release the renderer surface and store-owned objects.
+## RED/GREEN and batch test contract
 
-No callback may retain a pointer to a destroyed catalog, snapshot, index, or
-drawing surface.
+Tests must enumerate every `CLOSED` matrix row, not a hand-picked subset, and
+prove:
 
-## RED/GREEN test contract
+- unique page/control/rectangle keys and exact relatives;
+- compatibility admission requires all frozen windows for each family;
+- control-to-relative validation rejects wrong ordinal, group, case, prefix,
+  geometry, session, and historical `mcd2_*` guesses;
+- exact same-session descriptor admission promotes only that session to
+  Campaign, including the Trojan origin regression;
+- explicit online origin and every mismatch never promote or write;
+- index admission accepts only exact self-consistent Campaign records;
+- `RD_PlayerSave` in every presentation field has no classification effect;
+- a constructed in-memory completion snapshot containing every descriptor
+  emits markers for every visible completed control across every layout and
+  scroll state;
+- non-completed, unavailable, duplicate, ambiguous, and malformed records do
+  not emit markers;
+- entry, repaint, scroll, re-entry, page transition, composed ownership, and a
+  12-control Dark Tribe frame redraw without hover or truncation;
+- pillarbox, scaling, clipping, overflow, PNG lifecycle, renderer failure,
+  fixed-map markers, same-process index publication, and shutdown retain their
+  existing GREEN regressions.
 
-Implementation approval should begin with local RED tests and keep intermediate
-RED commits local. Tests must prove at least:
-
-- a valid `Campaign` record with self-consistent stable ID and exact admitted
-  relative publishes one descriptor key;
-- wrong source, random kind, online source, malformed UTF-8, wrong stable ID,
-  `mcd2_roman1`, case/prefix-only guesses, evidence-gap relatives, and duplicate
-  descriptor records do not publish;
-- `RD_PlayerSave` in display/name fields cannot affect a correct or incorrect
-  result;
-- exact descriptor match promotes only that same session to Campaign for
-  completion; the Trojan `random-map` presentation origin regression becomes
-  Campaign only after the exact descriptor match;
-- explicit online origin, session mismatch, wrong relative, and descriptor
-  rejection never promote or write;
-- a successful Trojan snapshot emits one command at
-  `320,200,175,30` without hover;
-- page-16 Roman and Original controls emit only for completed admitted
-  descriptors;
-- a 12-control Dark Tribe page is not truncated;
-- invalid snapshot, page change, re-entry, effects-only repaint, and changed
-  visible controls replace or clear retained commands correctly;
-- pillarbox, scaling, clipping, overflow, PNG lifecycle, rendering failure,
-  fixed-map markers, same-process index publication, and shutdown order retain
-  their existing GREEN tests;
-- source policy rejects internal calls, process-memory writes, Hooks, patches,
-  synthetic input, Lua writes, campaign-progress access, display-name identity,
-  and database manipulation outside the established store transaction.
+The all-completed in-memory fixture is test-only. It is never packaged,
+activated in production, written to disk, or substituted for live database
+evidence.
 
 Complete MSVC Win32 CI, mutation fixtures, full tests, PE32/export verification,
-package audit, and candidate hashes remain mandatory before any deployment
-request.
+package audit, and immutable artifact hashes remain mandatory before any
+deployment request.
 
-## Future live authorization and acceptance
+## Efficient future live acceptance
 
-Implementation and artifact audit alone perform no live database access. A
-future live acceptance requires two new explicit approvals:
+Implementation and artifact audit perform no live database access. Future live
+acceptance requires separate explicit approvals for exact guarded deployment
+and for a bounded database read/one-record campaign victory transaction.
 
-1. exact guarded deployment approval while both protected applications are
-   normally closed;
-2. after deployment, explicit approval to read the existing completion
-   database and allow one campaign victory to add at most one record through
-   the established atomic store transaction.
+Use one game process and one user report for the visual batch:
 
-The efficient one-process acceptance is:
+1. preflight exact archive/ASI/INI and, only after database-read approval,
+   main/backup hashes, timestamps, record count, and temp siblings;
+2. start at the main menu and prove compatible load causes no startup write;
+3. traverse one representative of each distinct layout/ownership family:
+   Add-on child, Mission CD child, composed New World 5/6, Original page 20,
+   and scrolling Dark Tribe page 21;
+4. exercise entry, one scroll where available, return, and re-entry without
+   hover, then report the entire menu batch once;
+5. use at most one explicitly authorized selectable campaign victory to prove
+   the exact descriptor/session gate, one atomic record commit, same-process
+   index publication, and immediate marker appearance;
+6. close normally and perform one postflight audit.
 
-1. preflight exact archive/ASI/INI and database main/backup bytes, timestamps,
-   hashes, record count, and absence of temporary siblings;
-2. start at the main menu and require compatible store load with no startup
-   write;
-3. enter Add-on Trojan 1, require exact descriptor/session match, and allow its
-   automatic victory to commit exactly one `Campaign` record;
-4. return to the Trojan page without hover and require the PNG marker to appear
-   at control `91` immediately and remain stable across repaint/re-entry;
-5. require no second commit, no rejected descriptor promoted to completion,
-   and no marker on an uncompleted/evidence-gap control;
-6. close normally and verify the main database gained exactly one record, the
-   backup equals the exact pre-commit main, all earlier records are preserved,
-   installed files remain exact, and no temporary sibling remains.
+The user does not launch every mission and does not win every campaign. Full
+descriptor and layout coverage is authoritative in static analysis and the
+all-row in-memory test matrix; the live pass verifies shared integration and
+representative layouts. Existing exact completion records may display normally,
+but no record is created merely to make a marker visible.
 
-If Trojan 1 is already present by exact stable ID at acceptance time, the
-transaction must be `Duplicate` with no write; choose another admitted mission
-only through a new explicit live-write approval. No manual JSON edit, restore,
-save manipulation, or game-progress modification is implied.
+If the chosen mission already exists by exact stable ID, the transaction must
+be `Duplicate` with no write. Selecting another mission requires renewed exact
+live-write approval. No manual JSON edit, restore, save manipulation, campaign
+unlock, or progress modification is implied.
 
 ## Completion boundary
 
-Phase 6D GO would cover only the currently admitted descriptor subset and the
-exact campaign completion/marker contract. It would not make all campaign
-missions complete. Expanding markers to pages 17–19, New World, New World 2,
-or any other missing control requires closing each descriptor's own static and
-public-geometry evidence chain in a later separately approved phase. Missing
-missions stay unmarked rather than inferred.
+Phase 6D GO means the exact accepted executable's accessible campaign mission
+catalog is frozen as one evidence set and the common completion/marker contract
+is GREEN across that set. It does not mean every mission has been completed by
+the player, does not create completion records, and does not claim unavailable
+content.
+
+A future game executable change invalidates affected window hashes and requires
+compatibility research. It must fail closed rather than infer identities from
+names, ordering, neighboring missions, or path patterns.

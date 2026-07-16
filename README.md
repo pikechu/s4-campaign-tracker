@@ -251,13 +251,17 @@ main/backup bytes and timestamps remained unchanged through normal shutdown.
 See the [corrected path evidence](docs/research/phase-6c-1-descriptor-family-path-evidence.md)
 and [final audit](docs/research/phase-6c-1-descriptor-family-session-gate-candidate-audit.md).
 
-Phase 6D campaign completion marker design is approved, but implementation is
-not. It proposes a separate campaign index, exact descriptor-gated Campaign
-completion source, public snapshot observer, and reuse of the accepted PNG
-renderer. It deliberately covers only currently admitted descriptors; missing
-campaign controls remain unmarked. Future live acceptance requires separate
-deployment approval and explicit authorization for a bounded completion
-database read/one-record campaign victory transaction. See the
+Phase 6D's revised all-campaign design is approved, but evidence closure and
+implementation are not. It first closes one unified descriptor matrix for all
+accessible Add-on, Mission CD, New World, New World 2, Original, and Dark Tribe
+missions, reusing the Phase 6B batch instead of testing campaign families one at
+a time. Only after that matrix has no accessible evidence gaps does one common
+candidate add the separate campaign index, exact descriptor-gated Campaign
+completion source, public snapshot observer, and accepted PNG renderer. Static
+and in-memory tests cover every descriptor; a later live pass samples layout
+families and at most one authorized victory rather than launching every
+mission. Deployment and any bounded completion-database read/one-record write
+still require their own explicit approvals. See the
 [Phase 6D design](docs/superpowers/specs/2026-07-16-phase-6d-campaign-completion-marker-index-and-rendering-design.md).
 
 Development feedback policy:
