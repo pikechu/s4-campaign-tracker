@@ -243,6 +243,13 @@ page-isolation calibration, but does not authorize inferred mission mappings or
 campaign markers. See the
 [initial batch and fix audit](docs/research/phase-6b-initial-batch-composed-page-fix-audit.md).
 
+Phase 6C is designed as an immutable descriptor-admission phase. It will freeze
+the complete public-control-to-formatter static chain first, then use one live
+anchor per distinctly proven transition implementation instead of launching
+every mission. Runtime development and deployment remain unapproved; campaign
+marker rendering remains a later Phase 6D decision. See the
+[Phase 6C design](docs/superpowers/specs/2026-07-16-phase-6c-immutable-campaign-descriptor-anchor-design.md).
+
 Development feedback policy:
 
 - keep intermediate RED test commits local;
