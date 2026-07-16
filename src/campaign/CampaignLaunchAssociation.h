@@ -21,7 +21,7 @@ struct CampaignControlIdentity final {
 };
 
 struct CampaignMenuAssociation final {
-    DWORD page = kDarkTribeCampaignPage;
+    DWORD page = S4_GUI_UNKNOWN;
     CampaignControlIdentity control{};
     std::uint64_t sessionId = 0u;
     std::wstring relative;
@@ -29,7 +29,7 @@ struct CampaignMenuAssociation final {
 
 class CampaignLaunchAssociation final {
 public:
-    void ObservePage(bool darkTribeActive) noexcept;
+    void ObservePage(DWORD page) noexcept;
     void ObserveSnapshot(const CampaignMenuSnapshot& snapshot) noexcept;
     bool ObserveClick(DWORD message, const S4UiElement* element,
                       std::uint64_t nowMs) noexcept;
@@ -48,6 +48,8 @@ private:
     CampaignControlIdentity pendingControl_{};
     std::uint64_t clickedAtMs_ = 0u;
     std::uint64_t sessionId_ = 0u;
+    DWORD activePage_ = S4_GUI_UNKNOWN;
+    DWORD pendingPage_ = S4_GUI_UNKNOWN;
     bool pageActive_ = false;
     bool hasSnapshot_ = false;
     bool hasPending_ = false;

@@ -14,6 +14,8 @@ inline constexpr S4_GUI_ENUM kDarkTribeCampaignPage =
     S4_SCREEN_SINGLEPLAYER_DARKTRIBE;
 inline constexpr std::size_t kMaximumCampaignMenuFeatures = 128u;
 
+bool IsCampaignCatalogPage(DWORD page) noexcept;
+
 struct CampaignMenuFeature final {
     DWORD surfaceWidth = 0u;
     DWORD surfaceHeight = 0u;
@@ -45,6 +47,7 @@ enum class CampaignMenuSnapshotStatus {
 
 struct CampaignMenuSnapshot final {
     CampaignMenuSnapshotStatus status = CampaignMenuSnapshotStatus::Empty;
+    DWORD page = S4_GUI_UNKNOWN;
     std::array<CampaignMenuFeature, kMaximumCampaignMenuFeatures> features{};
     std::size_t count = 0u;
     std::uint64_t generation = 0u;
@@ -60,11 +63,14 @@ bool EqualCampaignMenuSnapshot(const CampaignMenuSnapshot& left,
 class CampaignMenuCapture final {
 public:
     std::optional<CampaignMenuSnapshot> ObserveFrame(
-        DWORD page, bool darkTribeActive) noexcept;
+        DWORD page, bool campaignPageActive) noexcept;
     bool ObserveFeature(const CampaignMenuFeature& feature) noexcept;
     void Invalidate() noexcept;
     void Disable() noexcept;
     bool Active() const noexcept { return enabled_ && collecting_; }
+    DWORD ActivePage() const noexcept {
+        return Active() ? activePage_ : S4_GUI_UNKNOWN;
+    }
 
 private:
     void ClearWorking() noexcept;
@@ -72,6 +78,7 @@ private:
     std::array<CampaignMenuFeature, kMaximumCampaignMenuFeatures> cached_{};
     std::size_t count_ = 0u;
     std::uint64_t generation_ = 0u;
+    DWORD activePage_ = S4_GUI_UNKNOWN;
     bool collecting_ = false;
     bool invalid_ = false;
     bool dirty_ = false;

@@ -74,9 +74,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.7.1 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.8.0 pid="
            << GetCurrentProcessId()
-           << " mode=dark-tribe-campaign-sparse-menu-forensics";
+           << " mode=all-campaign-public-catalog-calibration";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -113,7 +113,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     logger_.Write(LogLevel::Info,
-                  "phase-6a-read-only storage=disabled native-events=disabled "
+                  "phase-6b-read-only storage=disabled native-events=disabled "
                   "markers=disabled internal-menu-adapter=disabled");
 
     constexpr DWORD kWaitStepMs = 100;

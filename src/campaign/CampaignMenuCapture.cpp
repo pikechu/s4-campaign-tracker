@@ -42,6 +42,29 @@ bool LessFeature(const CampaignMenuFeature& left,
 
 }  // namespace
 
+bool IsCampaignCatalogPage(DWORD page) noexcept {
+    switch (page) {
+        case S4_SCREEN_ADDON:
+        case S4_SCREEN_MISSIONCD:
+        case S4_SCREEN_NEWWORLD:
+        case S4_SCREEN_NEWWORLD2:
+        case S4_SCREEN_ADDON_TROJAN:
+        case S4_SCREEN_ADDON_ROMAN:
+        case S4_SCREEN_ADDON_MAYAN:
+        case S4_SCREEN_ADDON_VIKING:
+        case S4_SCREEN_ADDON_SETTLE:
+        case S4_SCREEN_MISSIONCD_ROMAN:
+        case S4_SCREEN_MISSIONCD_VIKING:
+        case S4_SCREEN_MISSIONCD_MAYAN:
+        case S4_SCREEN_MISSIONCD_CONFL:
+        case S4_SCREEN_SINGLEPLAYER_CAMPAIGN:
+        case S4_SCREEN_SINGLEPLAYER_DARKTRIBE:
+            return true;
+        default:
+            return false;
+    }
+}
+
 bool CopyCampaignMenuFeature(LPS4GUIDRAWBLTPARAMS source,
                              CampaignMenuFeature& output) noexcept {
     if (source == nullptr) return false;
@@ -104,7 +127,10 @@ bool EqualCampaignMenuFeature(const CampaignMenuFeature& left,
 
 bool EqualCampaignMenuSnapshot(const CampaignMenuSnapshot& left,
                                const CampaignMenuSnapshot& right) noexcept {
-    if (left.status != right.status || left.count != right.count) return false;
+    if (left.status != right.status || left.page != right.page ||
+        left.count != right.count) {
+        return false;
+    }
     for (std::size_t index = 0u; index < left.count; ++index) {
         if (!EqualCampaignMenuFeature(left.features[index],
                                       right.features[index])) {
@@ -115,28 +141,30 @@ bool EqualCampaignMenuSnapshot(const CampaignMenuSnapshot& left,
 }
 
 std::optional<CampaignMenuSnapshot> CampaignMenuCapture::ObserveFrame(
-    DWORD page, bool darkTribeActive) noexcept {
+    DWORD page, bool campaignPageActive) noexcept {
     if (!enabled_) return std::nullopt;
-    if (!darkTribeActive) {
+    if (!campaignPageActive || !IsCampaignCatalogPage(page)) {
         collecting_ = false;
+        activePage_ = S4_GUI_UNKNOWN;
         ClearWorking();
         return std::nullopt;
     }
-    if (page != kDarkTribeCampaignPage) {
+    if (collecting_ && page != activePage_) {
         ClearWorking();
         collecting_ = false;
-        return std::nullopt;
     }
     ++generation_;
     if (!collecting_) {
         ClearWorking();
         collecting_ = true;
+        activePage_ = page;
         return std::nullopt;
     }
     if (!dirty_) return std::nullopt;
 
     CampaignMenuSnapshot snapshot{};
     snapshot.generation = generation_;
+    snapshot.page = activePage_;
     snapshot.status = invalid_ ? CampaignMenuSnapshotStatus::Invalid
                                : CampaignMenuSnapshotStatus::Success;
     if (!invalid_) {
@@ -190,6 +218,7 @@ void CampaignMenuCapture::Invalidate() noexcept {
 void CampaignMenuCapture::Disable() noexcept {
     enabled_ = false;
     collecting_ = false;
+    activePage_ = S4_GUI_UNKNOWN;
     ClearWorking();
 }
 

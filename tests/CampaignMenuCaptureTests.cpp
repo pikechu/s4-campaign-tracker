@@ -25,14 +25,29 @@ campaign_completion::CampaignMenuFeature Feature(WORD id, WORD x = 10u) {
 int RunCampaignMenuCaptureTests() {
     using namespace campaign_completion;
 
+    for (const DWORD page : {3u, 4u, 5u, 6u, 11u, 12u, 13u, 14u,
+                             15u, 16u, 17u, 18u, 19u, 20u, 21u}) {
+        Require(IsCampaignCatalogPage(page),
+                "every approved campaign catalog page is admitted");
+    }
+    for (const DWORD page :
+         {0u, 1u, 2u, 7u, 10u, 22u,
+          static_cast<unsigned int>(S4_GUI_ENUM_MAXVALUE)}) {
+        Require(!IsCampaignCatalogPage(page),
+                "non-campaign and out-of-range pages are rejected");
+    }
+
     CampaignMenuCapture capture;
     Require(!capture.ObserveFeature(Feature(1u)),
             "features outside an admitted epoch are ignored");
-    Require(!capture.ObserveFrame(20u, true).has_value() &&
-                !capture.Active(),
-            "a non-Dark-Tribe page cannot open capture");
+    Require(!capture.ObserveFrame(7u, true).has_value() && !capture.Active(),
+            "a non-campaign page cannot open capture");
+    Require(!capture.ObserveFrame(20u, true).has_value() && capture.Active() &&
+                capture.ActivePage() == 20u,
+            "an approved original-campaign page opens capture");
+    capture.ObserveFrame(20u, false);
     Require(!capture.ObserveFrame(kDarkTribeCampaignPage, true).has_value() &&
-                capture.Active(),
+                capture.Active() && capture.ActivePage() == 21u,
             "the first admitted Dark Tribe frame opens capture");
 
     char label[] = "Mission One";
@@ -70,6 +85,7 @@ int RunCampaignMenuCaptureTests() {
         capture.ObserveFrame(kDarkTribeCampaignPage, true);
     Require(snapshot.has_value() &&
                 snapshot->status == CampaignMenuSnapshotStatus::Success &&
+                snapshot->page == kDarkTribeCampaignPage &&
                 snapshot->count == 1u &&
                 EqualCampaignMenuFeature(snapshot->features[0], copied),
             "a complete admitted epoch publishes one deterministic feature");
@@ -100,10 +116,28 @@ int RunCampaignMenuCaptureTests() {
     Require(ambiguous.ObserveFeature(Feature(3u)),
             "ambiguous-page fixture admits a feature");
     Require(!ambiguous.ObserveFrame(20u, true).has_value() &&
-                !ambiguous.Active(),
-            "a page-number disagreement clears the cache and fails closed");
+                ambiguous.Active() && ambiguous.ActivePage() == 20u,
+            "switching campaign pages clears the old page cache");
     Require(!ambiguous.ObserveFrame(kDarkTribeCampaignPage, true).has_value(),
             "a later valid page visit cannot recover stale ambiguous data");
+
+    CampaignMenuCapture allCampaigns;
+    Require(!allCampaigns.ObserveFrame(S4_SCREEN_ADDON_ROMAN, true).has_value(),
+            "an Add-on child page opens an independent sparse cache");
+    Require(allCampaigns.ObserveFeature(Feature(1201u)),
+            "the Add-on page retains its public feature");
+    const auto addOn =
+        allCampaigns.ObserveFrame(S4_SCREEN_ADDON_ROMAN, true);
+    Require(addOn.has_value() && addOn->page == S4_SCREEN_ADDON_ROMAN &&
+                addOn->count == 1u,
+            "an Add-on page publishes a page-typed snapshot");
+    Require(!allCampaigns.ObserveFrame(S4_SCREEN_MISSIONCD_ROMAN, true)
+                 .has_value() &&
+                allCampaigns.ActivePage() == S4_SCREEN_MISSIONCD_ROMAN,
+            "a Mission CD page begins empty rather than inheriting Add-on data");
+    Require(!allCampaigns.ObserveFrame(S4_SCREEN_MISSIONCD_ROMAN, true)
+                 .has_value(),
+            "an empty new page cannot republish the previous page catalog");
 
     CampaignMenuCapture conflict;
     conflict.ObserveFrame(kDarkTribeCampaignPage, true);

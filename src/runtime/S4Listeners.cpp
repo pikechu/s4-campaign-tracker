@@ -130,7 +130,7 @@ const char* CampaignSnapshotStatusName(
 
 std::string CampaignSnapshotRecord(const CampaignMenuSnapshot& snapshot) {
     std::ostringstream output;
-    output << "campaign-menu-snapshot page=" << kDarkTribeCampaignPage
+    output << "campaign-menu-snapshot page=" << snapshot.page
            << " generation=" << snapshot.generation
            << " status=" << CampaignSnapshotStatusName(snapshot.status)
            << " count=" << snapshot.count;
@@ -310,19 +310,20 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const auto now = GetTickCount64();
     ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
-    const bool darkTribeActive =
-        api_ != nullptr &&
-        api_->IsCurrentlyOnScreen(kDarkTribeCampaignPage) != FALSE;
-    if (!darkTribeActive) {
+    const bool campaignPageActive =
+        api_ != nullptr && IsCampaignCatalogPage(page) &&
+        api_->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page)) != FALSE;
+    if (!campaignPageActive) {
         hasCampaignSnapshot_ = false;
         lastCampaignSnapshot_ = {};
     }
     if (campaignAssociation_ != nullptr) {
-        campaignAssociation_->ObservePage(darkTribeActive);
+        campaignAssociation_->ObservePage(
+            campaignPageActive ? page : S4_GUI_UNKNOWN);
     }
     if (campaignCapture_ != nullptr) {
         const auto campaignSnapshot =
-            campaignCapture_->ObserveFrame(page, darkTribeActive);
+            campaignCapture_->ObserveFrame(page, campaignPageActive);
         if (campaignSnapshot.has_value()) {
             if (campaignAssociation_ != nullptr) {
                 campaignAssociation_->ObserveSnapshot(

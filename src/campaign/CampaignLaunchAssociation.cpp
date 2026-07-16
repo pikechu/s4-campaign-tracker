@@ -18,13 +18,15 @@ bool IsMissionCandidate(const CampaignMenuFeature& feature) noexcept {
 
 }  // namespace
 
-void CampaignLaunchAssociation::ObservePage(
-    bool darkTribeActive) noexcept {
+void CampaignLaunchAssociation::ObservePage(DWORD page) noexcept {
     if (!enabled_) return;
-    if (darkTribeActive && !pageActive_ && hasPending_ && sessionId_ == 0u) {
+    const bool campaignPageActive = IsCampaignCatalogPage(page);
+    if (campaignPageActive && page != activePage_ && hasPending_ &&
+        sessionId_ == 0u) {
         ClearPending();
     }
-    pageActive_ = darkTribeActive;
+    pageActive_ = campaignPageActive;
+    activePage_ = pageActive_ ? page : S4_GUI_UNKNOWN;
     if (!pageActive_) {
         hasSnapshot_ = false;
         snapshot_ = {};
@@ -33,7 +35,7 @@ void CampaignLaunchAssociation::ObservePage(
 
 void CampaignLaunchAssociation::ObserveSnapshot(
     const CampaignMenuSnapshot& snapshot) noexcept {
-    if (!enabled_ || !pageActive_ ||
+    if (!enabled_ || !pageActive_ || snapshot.page != activePage_ ||
         snapshot.status != CampaignMenuSnapshotStatus::Success) {
         hasSnapshot_ = false;
         snapshot_ = {};
@@ -68,6 +70,7 @@ bool CampaignLaunchAssociation::ObserveClick(
         return false;
     }
     pendingControl_ = candidate;
+    pendingPage_ = snapshot_.page;
     clickedAtMs_ = nowMs;
     sessionId_ = 0u;
     hasPending_ = true;
@@ -101,6 +104,7 @@ CampaignLaunchAssociation::ObserveIdentity(
         return std::nullopt;
     }
     CampaignMenuAssociation result{};
+    result.page = pendingPage_;
     result.control = pendingControl_;
     result.sessionId = sessionId_;
     try {
@@ -124,6 +128,7 @@ void CampaignLaunchAssociation::Expire(std::uint64_t nowMs) noexcept {
 void CampaignLaunchAssociation::Disable() noexcept {
     enabled_ = false;
     pageActive_ = false;
+    activePage_ = S4_GUI_UNKNOWN;
     hasSnapshot_ = false;
     snapshot_ = {};
     ClearPending();
@@ -131,6 +136,7 @@ void CampaignLaunchAssociation::Disable() noexcept {
 
 void CampaignLaunchAssociation::ClearPending() noexcept {
     pendingControl_ = {};
+    pendingPage_ = S4_GUI_UNKNOWN;
     clickedAtMs_ = 0u;
     sessionId_ = 0u;
     hasPending_ = false;

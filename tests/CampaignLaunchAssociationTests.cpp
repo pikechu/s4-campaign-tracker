@@ -8,9 +8,11 @@ void Require(bool condition, const char* message) {
     if (!condition) throw std::runtime_error(message);
 }
 
-campaign_completion::CampaignMenuSnapshot Snapshot() {
+campaign_completion::CampaignMenuSnapshot Snapshot(
+    DWORD page = campaign_completion::kDarkTribeCampaignPage) {
     campaign_completion::CampaignMenuSnapshot snapshot{};
     snapshot.status = campaign_completion::CampaignMenuSnapshotStatus::Success;
+    snapshot.page = page;
     snapshot.count = 1u;
     snapshot.features[0].valueLink = 700u;
     snapshot.features[0].x = 10u;
@@ -41,7 +43,7 @@ int RunCampaignLaunchAssociationTests() {
 
     CampaignLaunchAssociation association;
     auto element = Element();
-    association.ObservePage(true);
+    association.ObservePage(kDarkTribeCampaignPage);
     association.ObserveSnapshot(Snapshot());
     Require(!association.ObserveClick(WM_LBUTTONDOWN, &element, 100u),
             "only left-button release can arm association");
@@ -64,7 +66,7 @@ int RunCampaignLaunchAssociationTests() {
     CampaignMenuSnapshot invalid{};
     invalid.status = CampaignMenuSnapshotStatus::Invalid;
     association.ObserveSnapshot(invalid);
-    association.ObservePage(false);
+    association.ObservePage(S4_GUI_UNKNOWN);
     Require(association.BeginSession(
                 9u,
                 {LaunchSource::Campaign, SessionEligibility::Eligible},
@@ -81,7 +83,7 @@ int RunCampaignLaunchAssociationTests() {
             "a cleared session mismatch cannot later be promoted");
 
     CampaignLaunchAssociation successful;
-    successful.ObservePage(true);
+    successful.ObservePage(kDarkTribeCampaignPage);
     successful.ObserveSnapshot(Snapshot());
     Require(successful.ObserveClick(WM_LBUTTONUP, &element, 200u) &&
                 successful.BeginSession(
@@ -101,7 +103,7 @@ int RunCampaignLaunchAssociationTests() {
             "association is single-use");
 
     CampaignLaunchAssociation expired;
-    expired.ObservePage(true);
+    expired.ObservePage(kDarkTribeCampaignPage);
     expired.ObserveSnapshot(Snapshot());
     Require(expired.ObserveClick(WM_LBUTTONUP, &element, 1u),
             "expiry fixture arms");
@@ -112,12 +114,12 @@ int RunCampaignLaunchAssociationTests() {
             "expired click cannot bind to a later session");
 
     CampaignLaunchAssociation left;
-    left.ObservePage(true);
+    left.ObservePage(kDarkTribeCampaignPage);
     left.ObserveSnapshot(Snapshot());
     Require(left.ObserveClick(WM_LBUTTONUP, &element, 1u),
             "page-exit fixture arms a candidate");
-    left.ObservePage(false);
-    left.ObservePage(true);
+    left.ObservePage(S4_GUI_UNKNOWN);
+    left.ObservePage(kDarkTribeCampaignPage);
     Require(!left.BeginSession(
                 11u,
                 {LaunchSource::Campaign, SessionEligibility::Eligible}, 2u),
@@ -127,13 +129,13 @@ int RunCampaignLaunchAssociationTests() {
     auto backSnapshot = Snapshot();
     backSnapshot.features[0].hasText = false;
     backSnapshot.features[0].text = {};
-    nonMission.ObservePage(true);
+    nonMission.ObservePage(kDarkTribeCampaignPage);
     nonMission.ObserveSnapshot(backSnapshot);
     Require(!nonMission.ObserveClick(WM_LBUTTONUP, &element, 3u),
             "a textless navigation control cannot arm a mission association");
 
     CampaignLaunchAssociation replaced;
-    replaced.ObservePage(true);
+    replaced.ObservePage(kDarkTribeCampaignPage);
     replaced.ObserveSnapshot(Snapshot());
     Require(replaced.ObserveClick(WM_LBUTTONUP, &element, 4u),
             "replacement fixture arms a mission click");
@@ -148,7 +150,7 @@ int RunCampaignLaunchAssociationTests() {
             "another page-21 click without a valid snapshot clears the lease");
 
     CampaignLaunchAssociation emptyRelative;
-    emptyRelative.ObservePage(true);
+    emptyRelative.ObservePage(kDarkTribeCampaignPage);
     emptyRelative.ObserveSnapshot(Snapshot());
     Require(emptyRelative.ObserveClick(WM_LBUTTONUP, &element, 7u) &&
                 emptyRelative.BeginSession(
@@ -162,6 +164,35 @@ int RunCampaignLaunchAssociationTests() {
                      {13u, L"display", L"Map\\Campaign\\late.map"}, 10u)
                      .has_value(),
             "an empty session-bound relative identity clears the lease");
+
+    CampaignLaunchAssociation crossFamily;
+    const auto newWorldPage = static_cast<DWORD>(S4_SCREEN_NEWWORLD);
+    crossFamily.ObservePage(newWorldPage);
+    crossFamily.ObserveSnapshot(Snapshot(newWorldPage));
+    Require(crossFamily.ObserveClick(WM_LBUTTONUP, &element, 20u),
+            "a New World public catalog can arm the common association path");
+    crossFamily.ObservePage(S4_SCREEN_MISSIONCD_ROMAN);
+    Require(!crossFamily.BeginSession(
+                14u,
+                {LaunchSource::Campaign, SessionEligibility::Eligible}, 21u),
+            "entering another campaign page clears a cross-family candidate");
+
+    CampaignLaunchAssociation newWorld;
+    newWorld.ObservePage(newWorldPage);
+    newWorld.ObserveSnapshot(Snapshot(newWorldPage));
+    Require(newWorld.ObserveClick(WM_LBUTTONUP, &element, 30u) &&
+                newWorld.BeginSession(
+                    15u,
+                    {LaunchSource::Campaign, SessionEligibility::Eligible},
+                    31u),
+            "a same-page New World click binds a fresh campaign session");
+    const auto newWorldResult = newWorld.ObserveIdentity(
+        {15u, L"RD_PlayerSave", L"Map\\Campaign\\md_roman1.map"}, 32u);
+    Require(newWorldResult.has_value() &&
+                newWorldResult->page == newWorldPage &&
+                newWorldResult->relative ==
+                    L"Map\\Campaign\\md_roman1.map",
+            "RD-like display names never override the confirmed relative identity");
 
     return 0;
 }

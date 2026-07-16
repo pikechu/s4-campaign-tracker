@@ -69,8 +69,8 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.7.1",
-             "DiagnosticMode=DarkTribeCampaignSparseMenuForensics",
+             "Version=0.8.0",
+             "DiagnosticMode=AllCampaignPublicCatalogCalibration",
              "InternalMenuReadOnly=0", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
@@ -79,13 +79,14 @@ int RunRuntimePolicyTests() {
              "GameDefaultGameEndCheckCalls=0", "LuaWrites=0",
              "GameDataWrites=0", "CompletionDetection=0",
              "CompletionStorage=0", "CompletionMarkers=0",
-             "CampaignMenuPublicCapture=1", "CampaignMenuPage=21",
+             "CampaignMenuPublicCapture=1",
+             "CampaignMenuPages=3,4,5,6,11,12,13,14,15,16,17,18,19,20,21",
              "CampaignMenuAssociation=SettlersUnitedLua",
              "CampaignMenuCache=PageResidencySparse",
              "CampaignLaunchLeaseMs=30000",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
-                "Phase 6A packaged policy field is missing");
+                "Phase 6B packaged policy field is missing");
     }
     Require(policy.find("CaptureTraceRoot=F:") == std::string::npos,
             "packaged trace root remains empty");
@@ -103,10 +104,10 @@ int RunRuntimePolicyTests() {
     const auto campaignAssociation = ReadText(
         root / "src" / "campaign" / "CampaignLaunchAssociation.cpp");
 
-    Require(runtime.find("version=0.7.1") != std::string::npos &&
-                runtime.find("mode=dark-tribe-campaign-sparse-menu-forensics") !=
+    Require(runtime.find("version=0.8.0") != std::string::npos &&
+                runtime.find("mode=all-campaign-public-catalog-calibration") !=
                     std::string::npos,
-            "runtime identifies the Phase 6A diagnostic mode");
+            "runtime identifies the Phase 6B diagnostic mode");
     Require(runtimeHeader.find("std::unique_ptr<CampaignMenuCapture>") !=
                     std::string::npos &&
                 runtimeHeader.find(
@@ -130,9 +131,9 @@ int RunRuntimePolicyTests() {
              "CompletionMarkerRenderer", "AdmitFixedMapMenuMemory",
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout"}) {
         Require((runtime + runtimeHeader).find(forbidden) == std::string::npos,
-                "Phase 6A runtime must not own a writer, native event, marker, or Hook path");
+                "Phase 6B runtime must not own a writer, native event, marker, or Hook path");
     }
-    Require(runtime.find("phase-6a-read-only storage=disabled") !=
+    Require(runtime.find("phase-6b-read-only storage=disabled") !=
                     std::string::npos,
             "runtime logs the enforced read-only construction boundary");
 
@@ -147,10 +148,12 @@ int RunRuntimePolicyTests() {
                     "CampaignLaunchAssociation* campaignAssociation_") !=
                     std::string::npos,
             "listeners borrow but do not own campaign diagnostic state");
-    Require(listeners.find(
-                "api_->IsCurrentlyOnScreen(kDarkTribeCampaignPage)") !=
+    Require(listeners.find("IsCampaignCatalogPage(page)") !=
                     std::string::npos &&
-                listeners.find("campaignCapture_->ObserveFrame(page, darkTribeActive)") !=
+                listeners.find(
+                    "api_->IsCurrentlyOnScreen(static_cast<S4_GUI_ENUM>(page))") !=
+                    std::string::npos &&
+                listeners.find("campaignCapture_->ObserveFrame(page, campaignPageActive)") !=
                     std::string::npos,
             "page-specific frames and live public page admission gate capture");
     Require(listeners.find("CopyCampaignMenuFeature(element, feature)") !=
@@ -172,8 +175,7 @@ int RunRuntimePolicyTests() {
             "runtime classification and association never use display/save name");
     Require(campaignCapture.find("if (!dirty_) return std::nullopt;") !=
                     std::string::npos &&
-                campaignCapture.find(
-                    "if (page != kDarkTribeCampaignPage) {") !=
+                campaignCapture.find("if (!IsCampaignCatalogPage(page))") !=
                     std::string::npos &&
                 campaignCapture.find("EqualExceptEffects(") !=
                     std::string::npos &&
@@ -184,7 +186,7 @@ int RunRuntimePolicyTests() {
                 "return feature.hasText && feature.text.length != 0u;") !=
                     std::string::npos &&
                 campaignAssociation.find(
-                    "darkTribeActive && !pageActive_ && hasPending_") !=
+                    "campaignPageActive && page != activePage_ && hasPending_") !=
                     std::string::npos &&
                 listeners.find("campaignAssociation_->Expire(now);") !=
                     std::string::npos,
@@ -201,7 +203,7 @@ int RunRuntimePolicyTests() {
                     std::string::npos &&
                 listeners.find("AddTickListener(&OnTick)") !=
                     std::string::npos,
-            "Phase 6A uses only the approved public listener surface");
+            "Phase 6B uses only the approved public listener surface");
     Require((runtime + runtimeHeader + listeners + listenerHeader)
                     .find("GameDefaultGameEndCheck") == std::string::npos,
             "diagnostic never invokes the behavior-producing game-end check");
