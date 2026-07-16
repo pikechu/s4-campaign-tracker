@@ -10,7 +10,7 @@
 
 namespace campaign_completion {
 
-inline constexpr DWORD kDarkTribeCampaignPage =
+inline constexpr S4_GUI_ENUM kDarkTribeCampaignPage =
     S4_SCREEN_SINGLEPLAYER_DARKTRIBE;
 inline constexpr std::size_t kMaximumCampaignMenuFeatures = 128u;
 
