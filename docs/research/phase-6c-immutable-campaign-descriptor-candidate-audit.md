@@ -1,0 +1,105 @@
+# Phase 6C immutable campaign descriptor candidate audit
+
+Date: 2026-07-16 (Asia/Shanghai)
+
+## Decision
+
+Candidate `0.9.0` is **GREEN for deployment review only**. It is not deployed.
+Replacing the installed Settlers United archive still requires a fresh exact
+approval after the user has closed both protected processes.
+
+This candidate adds only exact-version-gated immutable descriptor admission
+and diagnostic comparison against the existing confirmed same-session
+`identity.relative`. Completion storage, database access, save access, marker
+rendering, internal menu access, native events, hooks, patches, writes, and
+synthetic input remain disabled.
+
+## Source checkpoint
+
+- commit: `e7890c2f277ae6f35bdb11bc5b761586bdb51e6b`;
+- commit subject: `feat: add immutable campaign descriptor diagnostics`;
+- static evidence:
+  `docs/research/phase-6c-immutable-campaign-descriptor-evidence.md`;
+- untracked `docs/handoffs/` was not staged or committed.
+
+The catalog contains only the observed Add-on, Mission CD, Original, and Dark
+Tribe records listed in the evidence report. New World and New World 2 are
+unconditionally disabled evidence gaps. Exact rectangle and exact relative
+identifier mismatches fail closed; no presentation-name fallback exists.
+
+## Local gates
+
+- `git diff --check`: passed before commit;
+- `tools/verify_no_process_patch.ps1 -SourceOnly`: passed;
+- frozen EXE/PDB hashes and every selected RVA window were independently
+  re-read from disk and matched the evidence report;
+- ASLR review removed relocated absolute operands from runtime window matches.
+
+The local host does not have `dumpbin.exe`, so the downloaded-binary invocation
+of the policy script stopped at its explicit dumpbin availability gate. The
+same full script, including dumpbin checks, passed on the authoritative Windows
+CI runner. Local `file` and GNU `objdump` independently confirmed PE32 i386,
+DLL characteristics, and the sole named export
+`CampaignCompletionDebugStop`.
+
+## Authoritative Windows CI
+
+- workflow run: `29488225956`;
+- job: `87587748369`;
+- head SHA: `e7890c2f277ae6f35bdb11bc5b761586bdb51e6b`;
+- conclusion: success;
+- duration: 2 minutes 33 seconds.
+
+The run passed:
+
+- Settlers United archive integration fixture;
+- Win32 Release configuration and build;
+- zero-process-patch/read-only policy verification;
+- all forbidden-behavior mutation fixtures;
+- the full unit and runtime-policy test suite;
+- package generation;
+- PE32, export, and package-content verification;
+- artifact upload.
+
+The Node.js action-runtime deprecation annotation is infrastructure-only and
+did not affect the successful build or artifact.
+
+## Artifact audit
+
+- artifact ID: `8371340487`;
+- artifact name: `CampaignCompletionDebug-Win32`;
+- service artifact size: 239,521 bytes;
+- service digest:
+  `sha256:3adc3ac44484f44aafcd52c9449c7a3a2964f53beee68ba9d1ee96e82870ed5c`;
+- downloaded candidate archive `CampaignCompletionDebug.zip`: 239,476 bytes,
+  SHA-256
+  `7321b8861a47dfa80fc5fabe5051c72d3b3a13e992a52457001fc6ec4f391865`.
+
+The candidate archive contains exactly:
+
+| Path | Size | SHA-256 |
+| --- | ---: | --- |
+| `Plugins/CampaignCompletionDebug.asi` | 428,032 | `2079ca5d510fca250e4c2427b464e8dae7ab4c5f64521c4c429e3041de44af4e` |
+| `Plugins/CampaignCompletion/CampaignCompletionDebug.ini` | 1,148 | `4e870e63d8cfeadfd38e90dedf26481acb34b5406a22f119017bcfa7a1b16850` |
+
+The packaged INI is text-identical to the repository policy after the expected
+LF-to-CRLF packaging conversion. The ASI is PE32 i386 and exports only the
+controlled-stop entry point.
+
+## Live acceptance boundary
+
+If separately approved for deployment, one process and one uninterrupted batch
+are sufficient:
+
+1. Add-on Trojan control `91`, expect exact
+   `Map\Campaign\ao_trojan01.map`;
+2. Mission CD Roman control `1903`, expect exact
+   `Map\Campaign\mcd2_roman1.map`;
+3. Original Viking control `2039`, expect exact
+   `Map\Campaign\viking02.map`.
+
+Dark Tribe control `2083` retains its accepted unchanged anchor and does not
+need another launch. An unavailable or locked representative leaves only that
+group dynamically unanchored. It never authorizes database, save, or progress
+changes. Postflight must preserve the completion database main and backup bytes
+and timestamps and leave zero temporary siblings.
