@@ -225,9 +225,12 @@ ownership for original, Add-on, Mission CD, New World, and New World 2
 campaigns. It does not promote incomplete non-Dark control catalogs to GO.
 The unified design keeps each descriptor independently gated and replaces
 per-mission repetition with one sequential single-process catalog pass plus at
-most one dynamic anchor per distinct proven menu implementation. Runtime
-development and deployment remain unapproved. See the [static evidence](docs/research/phase-6b-all-campaign-static-catalog-evidence.md)
-and [batch design](docs/superpowers/specs/2026-07-16-phase-6b-unified-campaign-catalog-batch-design.md).
+most one dynamic anchor per distinct proven menu implementation. The `0.8.0`
+read-only public catalog calibration candidate is now implemented and passed
+the authoritative Windows CI and artifact audit; deployment remains
+unapproved. See the [static evidence](docs/research/phase-6b-all-campaign-static-catalog-evidence.md),
+[batch design](docs/superpowers/specs/2026-07-16-phase-6b-unified-campaign-catalog-batch-design.md),
+and [candidate audit](docs/research/phase-6b-all-campaign-public-catalog-candidate-audit.md).
 
 Development feedback policy:
 
