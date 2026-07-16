@@ -1,0 +1,113 @@
+#include "campaign/CampaignMenuCapture.h"
+
+#include <stdexcept>
+#include <string_view>
+
+namespace {
+
+void Require(bool condition, const char* message) {
+    if (!condition) throw std::runtime_error(message);
+}
+
+campaign_completion::CampaignMenuFeature Feature(WORD id, WORD x = 10u) {
+    campaign_completion::CampaignMenuFeature feature{};
+    feature.valueLink = id;
+    feature.x = x;
+    feature.y = 20u;
+    feature.width = 100u;
+    feature.height = 24u;
+    feature.mainTexture = 31u;
+    return feature;
+}
+
+}  // namespace
+
+int RunCampaignMenuCaptureTests() {
+    using namespace campaign_completion;
+
+    CampaignMenuCapture capture;
+    Require(!capture.ObserveFeature(Feature(1u)),
+            "features outside an admitted epoch are ignored");
+    Require(!capture.ObserveFrame(20u, true).has_value() &&
+                !capture.Active(),
+            "a non-Dark-Tribe page cannot open capture");
+    Require(!capture.ObserveFrame(kDarkTribeCampaignPage, true).has_value() &&
+                capture.Active(),
+            "the first admitted Dark Tribe frame opens capture");
+
+    char label[] = "Mission One";
+    S4GuiElementBltParams raw{};
+    raw.surfaceWidth = 1024u;
+    raw.surfaceHeight = 768u;
+    raw.currentGFXCollection = 7u;
+    raw.containerType = 9u;
+    raw.x = 12u;
+    raw.y = 34u;
+    raw.width = 120u;
+    raw.height = 30u;
+    raw.mainTexture = 42u;
+    raw.valueLink = 600u;
+    raw.buttonPressedTexture = 43u;
+    raw.tooltipLink = 44u;
+    raw.tooltipLinkExtra = 45u;
+    raw.imageStyle = S4_UI_TYPE::MAP;
+    raw.effects = S4_UI_EFFECTS::HOVER;
+    raw.textStyle = S4_UI_TEXTSTYLE::SMALL_WHITE;
+    raw.showTexture = 46u;
+    raw.backTexture = 47u;
+    raw.text = label;
+    CampaignMenuFeature copied{};
+    Require(CopyCampaignMenuFeature(&raw, copied),
+            "public GUI fields copy into owned storage");
+    label[0] = 'X';
+    Require(copied.hasText && copied.text.length == 11u &&
+                std::string_view(copied.text.bytes.data(), copied.text.length) ==
+                    "Mission One",
+            "copied text is pointer-free and survives source mutation");
+    Require(capture.ObserveFeature(copied) && capture.ObserveFeature(copied),
+            "identical duplicate callbacks deduplicate");
+    const auto snapshot =
+        capture.ObserveFrame(kDarkTribeCampaignPage, true);
+    Require(snapshot.has_value() &&
+                snapshot->status == CampaignMenuSnapshotStatus::Success &&
+                snapshot->count == 1u &&
+                EqualCampaignMenuFeature(snapshot->features[0], copied),
+            "a complete admitted epoch publishes one deterministic feature");
+
+    capture.ObserveFrame(kDarkTribeCampaignPage, false);
+    Require(!capture.Active() && !capture.ObserveFeature(Feature(2u)),
+            "leaving page 21 clears and closes capture");
+
+    CampaignMenuCapture conflict;
+    conflict.ObserveFrame(kDarkTribeCampaignPage, true);
+    auto first = Feature(10u);
+    auto second = first;
+    second.mainTexture = 99u;
+    Require(conflict.ObserveFeature(first) &&
+                !conflict.ObserveFeature(second),
+            "a control-key collision invalidates the epoch");
+    const auto invalid =
+        conflict.ObserveFrame(kDarkTribeCampaignPage, true);
+    Require(invalid.has_value() &&
+                invalid->status == CampaignMenuSnapshotStatus::Invalid &&
+                invalid->count == 0u,
+            "a conflicted epoch fails closed");
+
+    CampaignMenuCapture overflow;
+    overflow.ObserveFrame(kDarkTribeCampaignPage, true);
+    for (std::size_t index = 0u; index < kMaximumCampaignMenuFeatures; ++index) {
+        Require(overflow.ObserveFeature(
+                    Feature(static_cast<WORD>(index + 1u),
+                            static_cast<WORD>(index + 1u))),
+                "features up to the fixed bound are accepted");
+    }
+    Require(!overflow.ObserveFeature(Feature(500u, 500u)),
+            "capacity overflow invalidates instead of truncating");
+    const auto overflowed =
+        overflow.ObserveFrame(kDarkTribeCampaignPage, true);
+    Require(overflowed.has_value() &&
+                overflowed->status == CampaignMenuSnapshotStatus::Invalid,
+            "overflow publishes only an invalid diagnostic snapshot");
+
+    return 0;
+}

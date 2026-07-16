@@ -22,6 +22,8 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/completion/CompletionStore.cpp
     src/completion/CompletionWorker.cpp
     src/completion/Win32CompletionFileOps.cpp
+    src/campaign/CampaignLaunchAssociation.cpp
+    src/campaign/CampaignMenuCapture.cpp
     src/identity/ListAttribution.cpp
     src/identity/LuaMapSession.cpp
     src/identity/MapIdentityCoordinator.cpp
@@ -76,6 +78,8 @@ endif()
 add_executable(campaign_completion_tests
   tests/TestMain.cpp
   tests/CaptureTraceTests.cpp
+  tests/CampaignLaunchAssociationTests.cpp
+  tests/CampaignMenuCaptureTests.cpp
   tests/FixedMapCaptureStateTests.cpp
   tests/FixedMapIdentityProbeTests.cpp
   tests/FixedMapLoadHookTests.cpp
@@ -118,6 +122,8 @@ add_executable(campaign_completion_tests
   tests/CompletionMarkerRendererTests.cpp
   tests/UiPageCycleTests.cpp
   src/diagnostics/CaptureTrace.cpp
+  src/campaign/CampaignLaunchAssociation.cpp
+  src/campaign/CampaignMenuCapture.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
   src/diagnostics/MarkerCalibrationTrace.cpp

@@ -1,27 +1,15 @@
 #pragma once
 
-#include "completion/CompletionAdmission.h"
-#include "completion/CompletionStore.h"
-#include "completion/CompletionWorker.h"
-#include "completion/Win32CompletionFileOps.h"
+#include "campaign/CampaignLaunchAssociation.h"
+#include "campaign/CampaignMenuCapture.h"
 #include "diagnostics/Logger.h"
 #include "diagnostics/Phase3Trace.h"
 #include "identity/MapIdentityCoordinator.h"
 #include "lua/LuaApi.h"
 #include "lua/SuLuaMapBridge.h"
-#include "marker/CompletionMarkerIndex.h"
-#include "marker/CompletionMarkerRenderer.h"
-#include "marker/DirectDrawMarkerSurface.h"
-#include "marker/FixedMapMenuReader.h"
-#include "marker/FixedMapRowObserver.h"
-#include "native/NativeEventAdmission.h"
-#include "native/NativeEventRegistration.h"
-#include "native/NativeVictoryEventSubscriber.h"
 #include "runtime/PluginPaths.h"
 #include "runtime/S4Listeners.h"
 #include "victory/LaunchOrigin.h"
-#include "victory/SettlementUiProbe.h"
-#include "victory/VictoryEventProbe.h"
 
 #include <windows.h>
 
@@ -47,26 +35,13 @@ private:
     std::mutex mutex_;
     Phase3Trace phase3Trace_;
     Logger logger_;
-    std::unique_ptr<Win32CompletionFileOps> fileOps_;
-    std::unique_ptr<CompletionStore> store_;
-    std::unique_ptr<CompletionMarkerIndex> markerIndex_;
-    std::unique_ptr<FixedMapRowObserver> markerObserver_;
-    std::unique_ptr<DirectDrawMarkerSurface> markerSurface_;
-    std::unique_ptr<CompletionMarkerRenderer> markerRenderer_;
-    FixedMapMenuMemoryView fixedMapMenuMemory_{};
-    std::unique_ptr<CompletionWorker> worker_;
-    std::unique_ptr<CompletionCandidateCoordinator> completionCoordinator_;
-    std::unique_ptr<CompletionAdmission> completionAdmission_;
+    std::unique_ptr<CampaignMenuCapture> campaignCapture_;
+    std::unique_ptr<CampaignLaunchAssociation> campaignAssociation_;
     S4Listeners listeners_;
     S4LuaApi luaApi_;
     S4LuaMapBridge luaBridge_{luaApi_};
     std::unique_ptr<MapIdentityCoordinator> coordinator_;
     LaunchOriginTracker origin_;
-    SettlementUiProbe settlement_;
-    NativeEventAdmission nativeAdmission_{};
-    std::unique_ptr<NativeEventRegistration> nativeRegistration_;
-    NativeVictoryEventSubscriber nativeSubscriber_;
-    VictoryEventProbe victoryProbe_;
     S4API api_ = nullptr;
     std::optional<PluginPaths> paths_;
     std::filesystem::path stopRequestPath_;

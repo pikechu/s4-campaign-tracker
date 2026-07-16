@@ -1,6 +1,8 @@
 #pragma once
 
 #include "S4ModApi.h"
+#include "campaign/CampaignLaunchAssociation.h"
+#include "campaign/CampaignMenuCapture.h"
 #include "completion/CompletionAdmission.h"
 #include "diagnostics/Logger.h"
 #include "diagnostics/Phase3Trace.h"
@@ -55,14 +57,9 @@ public:
                MapIdentityCoordinator& coordinator,
                ILuaMapBridge& bridge,
                LaunchOriginTracker& origin,
-               SettlementUiProbe& settlement,
-               NativeVictoryEventSubscriber& subscriber,
-               VictoryEventProbe& victoryProbe,
-               CompletionAdmission& completionAdmission,
                Phase3Trace& phase3Trace,
-               FixedMapRowObserver& markerObserver,
-               CompletionMarkerRenderer& markerRenderer,
-               const FixedMapMenuMemoryView& fixedMapMenuMemory);
+               CampaignMenuCapture& campaignCapture,
+               CampaignLaunchAssociation& campaignAssociation);
     ListenerStopResult Stop();
 
 private:
@@ -132,6 +129,9 @@ private:
     Phase3Trace* phase3Trace_ = nullptr;
     FixedMapRowObserver* markerObserver_ = nullptr;
     CompletionMarkerRenderer* markerRenderer_ = nullptr;
+    CampaignMenuCapture* campaignCapture_ = nullptr;
+    CampaignLaunchAssociation* campaignAssociation_ = nullptr;
+    CampaignMenuSnapshot lastCampaignSnapshot_{};
     FixedMapMenuMemoryView fixedMapMenuMemory_{};
     FixedMapMenuSnapshot lastFixedMapMenuSnapshot_{};
     std::vector<S4HOOK> hooks_;
@@ -152,6 +152,7 @@ private:
     bool nativeReinsertPending_ = false;
     bool exactFixedMapPages_ = false;
     bool hasFixedMapMenuSnapshot_ = false;
+    bool hasCampaignSnapshot_ = false;
     std::atomic<NativeSubscriptionState> lastNativeState_{
         NativeSubscriptionState::Idle};
 

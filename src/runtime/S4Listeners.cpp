@@ -115,6 +115,43 @@ std::string Utf8(std::wstring_view value) {
     return output;
 }
 
+const char* CampaignSnapshotStatusName(
+    CampaignMenuSnapshotStatus status) noexcept {
+    switch (status) {
+        case CampaignMenuSnapshotStatus::Success:
+            return "success";
+        case CampaignMenuSnapshotStatus::Empty:
+            return "empty";
+        case CampaignMenuSnapshotStatus::Invalid:
+            return "invalid";
+    }
+    return "unknown";
+}
+
+std::string CampaignSnapshotRecord(const CampaignMenuSnapshot& snapshot) {
+    std::ostringstream output;
+    output << "campaign-menu-snapshot page=" << kDarkTribeCampaignPage
+           << " generation=" << snapshot.generation
+           << " status=" << CampaignSnapshotStatusName(snapshot.status)
+           << " count=" << snapshot.count;
+    for (std::size_t index = 0u; index < snapshot.count; ++index) {
+        const auto& feature = snapshot.features[index];
+        output << " feature=" << index << ':' << feature.valueLink << ','
+               << feature.x << ',' << feature.y << ',' << feature.width << ','
+               << feature.height << ',' << feature.mainTexture << ','
+               << feature.buttonPressedTexture << ',' << feature.tooltipLink
+               << ',' << feature.tooltipLinkExtra << ',' << feature.imageStyle
+               << ',' << feature.effects << ',' << feature.textStyle << ','
+               << feature.showTexture << ',' << feature.backTexture;
+        if (feature.hasText) {
+            output << ",text="
+                   << std::string(feature.text.bytes.data(),
+                                  feature.text.length);
+        }
+    }
+    return output.str();
+}
+
 }  // namespace
 
 std::atomic<S4Listeners*> S4Listeners::active_{nullptr};
@@ -126,25 +163,15 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         MapIdentityCoordinator& coordinator,
                         ILuaMapBridge& bridge,
                         LaunchOriginTracker& origin,
-                        SettlementUiProbe& settlement,
-                        NativeVictoryEventSubscriber& subscriber,
-                        VictoryEventProbe& victoryProbe,
-                        CompletionAdmission& completionAdmission,
                         Phase3Trace& phase3Trace,
-                        FixedMapRowObserver& markerObserver,
-                        CompletionMarkerRenderer& markerRenderer,
-                        const FixedMapMenuMemoryView& fixedMapMenuMemory) {
+                        CampaignMenuCapture& campaignCapture,
+                        CampaignLaunchAssociation& campaignAssociation) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
     origin_ = &origin;
-    settlement_ = &settlement;
-    nativeSubscriber_ = &subscriber;
-    victoryProbe_ = &victoryProbe;
-    completionAdmission_ = &completionAdmission;
     phase3Trace_ = &phase3Trace;
-    markerObserver_ = &markerObserver;
-    markerRenderer_ = &markerRenderer;
-    fixedMapMenuMemory_ = fixedMapMenuMemory;
+    campaignCapture_ = &campaignCapture;
+    campaignAssociation_ = &campaignAssociation;
     return StartPublicListeners(api, logger);
 }
 
@@ -202,10 +229,14 @@ ListenerStopResult S4Listeners::Stop() {
     phase3Trace_ = nullptr;
     markerObserver_ = nullptr;
     markerRenderer_ = nullptr;
+    campaignCapture_ = nullptr;
+    campaignAssociation_ = nullptr;
+    lastCampaignSnapshot_ = {};
     fixedMapMenuMemory_ = {};
     lastFixedMapMenuSnapshot_ = {};
     exactFixedMapPages_ = false;
     hasFixedMapMenuSnapshot_ = false;
+    hasCampaignSnapshot_ = false;
     pageCycle_.Reset();
     activeOrigin_ = {};
     activeSessionId_ = 0u;
@@ -279,6 +310,35 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const auto now = GetTickCount64();
     ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
+    const bool darkTribeActive =
+        api_ != nullptr &&
+        api_->IsCurrentlyOnScreen(kDarkTribeCampaignPage) != FALSE;
+    if (campaignAssociation_ != nullptr) {
+        campaignAssociation_->ObservePage(darkTribeActive);
+    }
+    if (campaignCapture_ != nullptr) {
+        const auto campaignSnapshot =
+            campaignCapture_->ObserveFrame(page, darkTribeActive);
+        if (campaignSnapshot.has_value()) {
+            if (campaignAssociation_ != nullptr) {
+                campaignAssociation_->ObserveSnapshot(
+                    campaignSnapshot.value());
+            }
+            if (logger_ != nullptr &&
+                (!hasCampaignSnapshot_ ||
+                 !EqualCampaignMenuSnapshot(lastCampaignSnapshot_,
+                                            campaignSnapshot.value()))) {
+                logger_->Write(
+                    campaignSnapshot->status ==
+                            CampaignMenuSnapshotStatus::Success
+                        ? LogLevel::Info
+                        : LogLevel::Warning,
+                    CampaignSnapshotRecord(campaignSnapshot.value()));
+                lastCampaignSnapshot_ = campaignSnapshot.value();
+                hasCampaignSnapshot_ = true;
+            }
+        }
+    }
     const auto cycleSnapshot = pageCycle_.Observe(page);
     if (cycleSnapshot.has_value()) {
         exactFixedMapPages_ = HasExactFixedMapPages(cycleSnapshot.value());
@@ -371,12 +431,20 @@ void S4Listeners::ObserveMapInit() {
     }
     inGameSeen_ = false;
     settlementStarted_ = false;
-    nativeReinsertPending_ = true;
+    nativeReinsertPending_ = nativeSubscriber_ != nullptr;
     if (victoryProbe_ != nullptr) {
         victoryProbe_->BeginSession(activeSessionId_);
     }
     if (completionAdmission_ != nullptr) {
         completionAdmission_->BeginSession(activeSessionId_, activeOrigin_);
+    }
+    if (campaignAssociation_ != nullptr &&
+        campaignAssociation_->BeginSession(activeSessionId_, activeOrigin_,
+                                           now) &&
+        logger_ != nullptr) {
+        logger_->Write(LogLevel::Info,
+                       "campaign-menu-association session-armed=" +
+                           std::to_string(activeSessionId_));
     }
     if (phase3Trace_ != nullptr) {
         phase3Trace_->Write(
@@ -440,6 +508,23 @@ void S4Listeners::ObserveTick(BOOL delayed) {
             coordinator_->ObserveTick(inGame, now, *bridge_);
         if (identity.has_value() &&
             identity->sessionId == activeSessionId_) {
+            if (campaignAssociation_ != nullptr) {
+                const auto association = campaignAssociation_->ObserveIdentity(
+                    identity.value(), now);
+                if (association.has_value() && logger_ != nullptr) {
+                    std::ostringstream record;
+                    record << "campaign-menu-association page="
+                           << association->page << " control="
+                           << association->control.controlId << " rect="
+                           << association->control.x << ','
+                           << association->control.y << ','
+                           << association->control.width << ','
+                           << association->control.height << " session="
+                           << association->sessionId << " relative="
+                           << Utf8(association->relative);
+                    logger_->Write(LogLevel::Info, record.str());
+                }
+            }
             activeOrigin_ = RefineActiveSessionOrigin(
                 activeSessionId_, activeOrigin_, identity->sessionId,
                 identity->relative);
@@ -557,6 +642,14 @@ void S4Listeners::ObserveMouse(DWORD button, INT x, INT y, DWORD message,
         return;
     }
     if (element != nullptr) {
+        if (campaignAssociation_ != nullptr &&
+            campaignAssociation_->ObserveClick(message, element, now)) {
+            std::ostringstream armed;
+            armed << "campaign-menu-click armed control=" << element->id
+                  << " rect=" << element->x << ',' << element->y << ','
+                  << element->w << ',' << element->h;
+            logger_->Write(LogLevel::Info, armed.str());
+        }
         if (origin_ != nullptr && message == WM_LBUTTONUP) {
             origin_->ObserveLoadTypeControl(element->id, now);
         }
@@ -608,6 +701,13 @@ void S4Listeners::ObserveGuiElement(LPS4GUIDRAWBLTPARAMS element) {
     const auto now = GetTickCount64();
     std::lock_guard<std::mutex> lock(mutex_);
     ++guiElementCount_;
+    if (campaignCapture_ != nullptr && campaignCapture_->Active()) {
+        CampaignMenuFeature feature{};
+        if (!CopyCampaignMenuFeature(element, feature) ||
+            !campaignCapture_->ObserveFeature(feature)) {
+            campaignCapture_->Invalidate();
+        }
+    }
     if (element != nullptr && settlement_ != nullptr &&
         settlement_->Active()) {
         SettlementFeature feature{};

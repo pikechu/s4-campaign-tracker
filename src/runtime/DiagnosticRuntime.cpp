@@ -52,24 +52,6 @@ std::string CompatibilityName(CompatibilityResult result) {
     return "unknown";
 }
 
-const char* StoreModeName(CompletionStoreMode mode) noexcept {
-    switch (mode) {
-        case CompletionStoreMode::Uninitialized:
-            return "uninitialized";
-        case CompletionStoreMode::WritableEmpty:
-            return "writable-empty";
-        case CompletionStoreMode::WritableLoaded:
-            return "writable-loaded";
-        case CompletionStoreMode::ReadOnlyBackup:
-            return "read-only-backup";
-        case CompletionStoreMode::ReadOnlyNormalizationFailed:
-            return "read-only-normalization-failed";
-        case CompletionStoreMode::ReadOnlyUnavailable:
-            return "read-only-unavailable";
-    }
-    return "unknown";
-}
-
 }  // namespace
 
 DiagnosticRuntime& RuntimeInstance() {
@@ -92,9 +74,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.6.3 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.7.0 pid="
            << GetCurrentProcessId()
-           << " mode=database-compatibility-recovery";
+           << " mode=dark-tribe-campaign-menu-forensics";
     logger_.Write(LogLevel::Info, header.str());
     const auto modules = EnumerateLoadedModules();
     const ModuleInfo* executable = nullptr;
@@ -130,12 +112,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         return false;
     }
 
-    fixedMapMenuMemory_ = AdmitFixedMapMenuMemory(*executable);
-    logger_.Write(fixedMapMenuMemory_.admitted ? LogLevel::Info
-                                               : LogLevel::Error,
-                  fixedMapMenuMemory_.admitted
-                      ? "internal-menu-adapter=admitted-read-only"
-                      : "internal-menu-adapter=disabled-admission-failed");
+    logger_.Write(LogLevel::Info,
+                  "phase-6a-read-only storage=disabled native-events=disabled "
+                  "markers=disabled internal-menu-adapter=disabled");
 
     constexpr DWORD kWaitStepMs = 100;
     constexpr DWORD kWaitLimitMs = 30'000;
@@ -176,137 +155,20 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         [this](std::string record) {
             phase3Trace_.Write(Phase3TraceChannel::Identity, record);
         });
-
-    constexpr DWORD kAdmissionWaitStepMs = 100u;
-    constexpr DWORD kAdmissionWaitLimitMs = 30'000u;
-    DWORD admissionWaited = 0u;
-    do {
-        nativeAdmission_ = NativeEventAdmission::Create(*executable);
-        if (nativeAdmission_ ||
-            nativeAdmission_.failure !=
-                NativeEventAdmissionFailure::EngineUnavailable) {
-            break;
-        }
-        Sleep(kAdmissionWaitStepMs);
-        admissionWaited += kAdmissionWaitStepMs;
-    } while (admissionWaited < kAdmissionWaitLimitMs);
-    if (!nativeAdmission_) {
-        logger_.Write(LogLevel::Error,
-                      "native event admission failed code=" +
-                          std::to_string(static_cast<unsigned>(
-                              nativeAdmission_.failure)));
-        AbortStart();
-        return false;
-    }
-    nativeRegistration_ =
-        std::make_unique<NativeEventRegistration>(nativeAdmission_);
-
     try {
-        fileOps_ = std::make_unique<Win32CompletionFileOps>();
-        store_ = std::make_unique<CompletionStore>(
-            *fileOps_, paths_->database, paths_->temporary, paths_->backup);
-        const auto load = store_->Load();
-        std::ostringstream storage;
-        storage << "completion-store mode=" << StoreModeName(load.mode)
-                << " records=" << load.recordCount
-                << " failure=" << static_cast<unsigned>(load.failure)
-                << " error=" << load.error;
-        const bool readOnlyWarning =
-            load.mode == CompletionStoreMode::ReadOnlyBackup ||
-            load.mode ==
-                CompletionStoreMode::ReadOnlyNormalizationFailed;
-        logger_.Write(readOnlyWarning ? LogLevel::Warning : LogLevel::Info,
-                      storage.str());
-        if (load.mode == CompletionStoreMode::ReadOnlyBackup) {
-            logger_.Write(
-                LogLevel::Warning,
-                "completion-store loaded backup read-only; automatic repair "
-                "and future writes are disabled; manual handling required");
-        }
-        if (load.mode ==
-            CompletionStoreMode::ReadOnlyNormalizationFailed) {
-            logger_.Write(
-                LogLevel::Warning,
-                "completion-store normalization failed; original data "
-                "loaded read-only; future writes are disabled; manual "
-                "handling required");
-        }
-        if (load.mode == CompletionStoreMode::Uninitialized ||
-            load.mode == CompletionStoreMode::ReadOnlyUnavailable) {
-            logger_.Write(
-                LogLevel::Error,
-                "completion-store unavailable; no automatic recovery or "
-                "write attempted; manual handling required");
-            AbortStart();
-            return false;
-        }
-
-        markerIndex_ = std::make_unique<CompletionMarkerIndex>();
-        markerIndex_->Publish(store_->Snapshot());
-        markerObserver_ =
-            std::make_unique<FixedMapRowObserver>(*markerIndex_);
-        markerSurface_ = std::make_unique<DirectDrawMarkerSurface>();
-        markerRenderer_ = std::make_unique<CompletionMarkerRenderer>(
-            *markerSurface_, [this](LogLevel level, std::string line) {
-                logger_.Write(level, line);
-            });
-        if (!markerSurface_->Initialize()) {
-            markerRenderer_->Disable();
-            logger_.Write(LogLevel::Error,
-                          "completion-marker-renderer initialization-failed");
-        }
-
-        worker_ = std::make_unique<CompletionWorker>(
-            *store_, [this](LogLevel level, std::string line) {
-                logger_.Write(level, line);
-            }, [this](CompletionDatabaseSnapshot snapshot) {
-                if (markerIndex_ != nullptr) {
-                    markerIndex_->Publish(snapshot);
-                }
-            });
-        if (!worker_->Start()) {
-            logger_.Write(LogLevel::Error,
-                          "completion-worker failed to start");
-            AbortStart();
-            return false;
-        }
-        completionCoordinator_ =
-            std::make_unique<CompletionCandidateCoordinator>(
-                [] { return CurrentUtcCompletionTime(); });
-        completionAdmission_ = std::make_unique<CompletionAdmission>(
-            *completionCoordinator_,
-            [this](CompletionCandidate candidate) {
-                const std::string stableId = candidate.record.stableId;
-                const bool accepted =
-                    worker_ != nullptr &&
-                    worker_->TryEnqueue(std::move(candidate));
-                logger_.Write(
-                    accepted ? LogLevel::Info : LogLevel::Warning,
-                    std::string("completion-admission ") +
-                        (accepted ? "accepted" : "rejected") +
-                        " stable-id=" + stableId);
-                return accepted;
-            });
+        campaignCapture_ = std::make_unique<CampaignMenuCapture>();
+        campaignAssociation_ =
+            std::make_unique<CampaignLaunchAssociation>();
     } catch (...) {
         logger_.Write(LogLevel::Error,
-                      "completion persistence initialization failed");
+                      "campaign menu diagnostic initialization failed");
         AbortStart();
         return false;
     }
 
     if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
-                          settlement_, nativeSubscriber_, victoryProbe_,
-                          *completionAdmission_, phase3Trace_,
-                          *markerObserver_, *markerRenderer_,
-                          fixedMapMenuMemory_)) {
-        AbortStart();
-        return false;
-    }
-    if (!nativeSubscriber_.Prepare(*nativeRegistration_, victoryProbe_)) {
-        const auto listenerResult = listeners_.Stop();
-        logger_.Write(LogLevel::Error,
-                      "native subscriber prepare failed listener-failures=" +
-                          std::to_string(listenerResult.failures));
+                          phase3Trace_, *campaignCapture_,
+                          *campaignAssociation_)) {
         AbortStart();
         return false;
     }
@@ -349,38 +211,15 @@ void DiagnosticRuntime::RequestControlledStop() noexcept {
 }
 
 bool DiagnosticRuntime::TryControlledStop() {
-    if (completionAdmission_ != nullptr) {
-        completionAdmission_->Disable();
-    }
-    nativeSubscriber_.RequestDetach();
-    constexpr DWORD kDetachWaitStepMs = 10u;
-    constexpr DWORD kDetachWaitLimitMs = 5'000u;
-    DWORD waited = 0u;
-    while (!nativeSubscriber_.Detached() && waited < kDetachWaitLimitMs) {
-        Sleep(kDetachWaitStepMs);
-        waited += kDetachWaitStepMs;
-    }
-    if (!nativeSubscriber_.Detached()) {
-        phase3Trace_.Write(Phase3TraceChannel::Decision,
-                           "controlled-stop-flush=failed");
-        logger_.Write(LogLevel::Warning,
-                      "native subscriber detach timed out; runtime retained");
-        return false;
-    }
-
     if (!listenersStopped_) {
         if (coordinator_ != nullptr) {
             coordinator_->Disable();
         }
         origin_.Disable();
-        settlement_.Disable();
-        if (markerObserver_ != nullptr) {
-            markerObserver_->Disable();
+        if (campaignCapture_ != nullptr) campaignCapture_->Disable();
+        if (campaignAssociation_ != nullptr) {
+            campaignAssociation_->Disable();
         }
-        if (markerRenderer_ != nullptr) {
-            markerRenderer_->Disable();
-        }
-        victoryProbe_.Disable();
         const auto result = listeners_.Stop();
         listenerStopFailures_ = result.failures;
         listenersStopped_ = true;
@@ -391,15 +230,6 @@ bool DiagnosticRuntime::TryControlledStop() {
         logger_.Write(LogLevel::Info, summary.str());
     }
 
-    if (worker_ != nullptr &&
-        !worker_->StopAndDrain(std::chrono::milliseconds(5000))) {
-        phase3Trace_.Write(Phase3TraceChannel::Decision,
-                           "controlled-stop-flush=failed");
-        logger_.Write(
-            LogLevel::Warning,
-            "completion worker drain timed out; persistence resources retained");
-        return false;
-    }
     Stop();
     return true;
 }
@@ -418,18 +248,8 @@ void DiagnosticRuntime::Stop() {
         Phase3TraceChannel::Decision,
         listenerStopFailures_ == 0u ? "controlled-stop-flush=success"
                                     : "controlled-stop-flush=failed");
-    completionAdmission_.reset();
-    completionCoordinator_.reset();
-    worker_.reset();
-    markerRenderer_.reset();
-    markerSurface_.reset();
-    markerObserver_.reset();
-    fixedMapMenuMemory_ = {};
-    markerIndex_.reset();
-    store_.reset();
-    fileOps_.reset();
-    nativeRegistration_.reset();
-    nativeAdmission_ = {};
+    campaignAssociation_.reset();
+    campaignCapture_.reset();
     coordinator_.reset();
     phase3Trace_.Close();
     logger_.Close();
@@ -442,35 +262,17 @@ void DiagnosticRuntime::Stop() {
 
 void DiagnosticRuntime::AbortStart() noexcept {
     try {
-        if (completionAdmission_ != nullptr) {
-            completionAdmission_->Disable();
-        }
-        if (markerObserver_ != nullptr) {
-            markerObserver_->Disable();
-        }
-        if (markerRenderer_ != nullptr) {
-            markerRenderer_->Disable();
+        if (campaignCapture_ != nullptr) campaignCapture_->Disable();
+        if (campaignAssociation_ != nullptr) {
+            campaignAssociation_->Disable();
         }
         listeners_.Stop();
-        if (worker_ != nullptr) {
-            worker_->StopAndDrain(std::chrono::milliseconds(5000));
-        }
-        completionAdmission_.reset();
-        completionCoordinator_.reset();
-        worker_.reset();
-        markerRenderer_.reset();
-        markerSurface_.reset();
-        markerObserver_.reset();
-        fixedMapMenuMemory_ = {};
-        markerIndex_.reset();
-        store_.reset();
-        fileOps_.reset();
+        campaignAssociation_.reset();
+        campaignCapture_.reset();
         if (api_ != nullptr) {
             api_->Release();
             api_ = nullptr;
         }
-        nativeRegistration_.reset();
-        nativeAdmission_ = {};
         coordinator_.reset();
         phase3Trace_.Close();
         logger_.Close();
