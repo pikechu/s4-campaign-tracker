@@ -251,18 +251,20 @@ main/backup bytes and timestamps remained unchanged through normal shutdown.
 See the [corrected path evidence](docs/research/phase-6c-1-descriptor-family-path-evidence.md)
 and [final audit](docs/research/phase-6c-1-descriptor-family-session-gate-candidate-audit.md).
 
-Phase 6D's revised all-campaign design is approved, but evidence closure and
-implementation are not. It first closes one unified descriptor matrix for all
-accessible Add-on, Mission CD, New World, New World 2, Original, and Dark Tribe
-missions, reusing the Phase 6B batch instead of testing campaign families one at
-a time. Only after that matrix has no accessible evidence gaps does one common
-candidate add the separate campaign index, exact descriptor-gated Campaign
-completion source, public snapshot observer, and accepted PNG renderer. Static
-and in-memory tests cover every descriptor; a later live pass samples layout
-families and at most one authorized victory rather than launching every
-mission. Deployment and any bounded completion-database read/one-record write
-still require their own explicit approvals. See the
-[Phase 6D design](docs/superpowers/specs/2026-07-16-phase-6d-campaign-completion-marker-index-and-rendering-design.md).
+Phase 6D's offline unified evidence pass is complete and remains NO-GO for
+implementation. Exact executable control flow closes 107 selectable campaign
+mission chains; 19 also have accepted public rectangles, while 88 need only a
+single gap-only rectangle sweep. The pass correctly assigns `mcd2_*` to the
+composed New World family and `md_*` to pages 16–19. It also proves that page 4
+contains one direct `md_bonus` mission control, so the navigation-only selector
+assumption must be corrected before implementation. No production code,
+installed archive, database, save, or process was changed. After the gap-only
+matrix is frozen, one common candidate can add the separate campaign index,
+exact descriptor-gated Campaign completion source, public snapshot observer,
+and accepted PNG renderer. Deployment and any bounded completion-database
+read/one-record write still require their own explicit approvals. See the
+[Phase 6D design](docs/superpowers/specs/2026-07-16-phase-6d-campaign-completion-marker-index-and-rendering-design.md)
+and [offline evidence](docs/research/phase-6d-all-campaign-offline-unified-evidence.md).
 
 Development feedback policy:
 
