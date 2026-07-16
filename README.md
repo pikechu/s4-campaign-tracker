@@ -190,11 +190,15 @@ Launch the game through Settlers United.
 ## Development Roadmap
 
 Current status: completion persistence and fixed-map marker rendering are
-implemented, and the Phase 5B internal-menu relative-identifier rendering
-adapter passed live validation. The existing invalid main completion database
-remains isolated in read-only-backup mode and still requires separate manual
-handling. See [the Phase 5B GO report](docs/research/phase-5b-internal-menu-relative-marker-rendering-report.md)
-for the reviewed build, guarded deployment, and live acceptance evidence.
+implemented and live-validated. Phase 5C restored compatibility with historical
+`0.5.0` records without rewriting them, then passed a four-record Phoenix
+victory, atomic-backup, same-process marker refresh, and normal-shutdown
+acceptance. See the [Phase 5C GO report](docs/research/phase-5c-database-compatibility-recovery-report.md).
+
+The next increment is Phase 6A, a structurally read-only Dark Tribe campaign
+menu diagnostic. It must establish a session-confirmed mapping from a public UI
+control to exact `identity.relative` before any campaign marker is designed.
+See the [Phase 6A design](docs/superpowers/specs/2026-07-16-phase-6a-dark-tribe-campaign-menu-forensics-design.md).
 
 Development feedback policy:
 
@@ -222,14 +226,14 @@ Research and planning documents:
 
 ### Phase 2 - Core System
 
-- [ ] Victory detection
-- [ ] Map identification
-- [ ] Completion database
+- [x] Victory detection
+- [x] Map identification
+- [x] Completion database
 
 ### Phase 3 - UI Integration
 
 - [ ] Campaign menu markers
-- [ ] Scenario list markers
+- [x] Scenario list markers
 - [ ] Support different campaign layouts
 
 ### Phase 4 - Release
