@@ -188,3 +188,34 @@ Corrected artifact audit:
 The corrected artifact is **STATIC GO** but is not deployed. Replacement
 requires the user to normally close both protected applications and explicitly
 approve deployment of this exact Phase 6D evidence-hash correction candidate.
+
+## Evidence-hash correction deployment
+
+The user normally closed both protected applications and explicitly approved
+the exact corrected candidate. Fresh preflight matched the fail-closed
+deployment, candidate, immutable original, installer metadata, database
+main/backup hashes and timestamps, and absence of all temporary siblings.
+
+The fixed-hash elevated correction deployment created and verified a new
+rollback snapshot at
+`research/backups/campaign-completion/2026-07-18-pre-v0.11.0-phase6d-evidence-hash-fix`.
+Because the packaged INI was already exact, the deployment replaced only the
+project ASI archive entry and did not rewrite the INI.
+
+Independent post-deployment verification recorded:
+
+| Item | Result |
+| --- | --- |
+| installed `Plugin_SU.zip` | `1,423,333` bytes; SHA-256 `f584df8f64b6abb90945ae4617bb3bc43098b2eb597655524408c82b6217b836` |
+| embedded corrected ASI | SHA-256 `3898b7b28b8321fb2434ff946dd2280ee08bbb4f854663197ab99455bd79be41`, exact corrected candidate |
+| live INI | `1,355` bytes; timestamp `2026-07-12T16:00:00.0000000Z`; SHA-256 `3e4bca3799f6a8ef5eb68dd8a42603b6ce241db5abe9145b22e2a57ef73a1b18`; not rewritten |
+| database main | `1,260` bytes; timestamp `2026-07-16T05:41:41.3482563Z`; SHA-256 `49b81aaffddd0380c6cfa69f870ad911d9b82f0ba55a213f305ad7955d4ff26e` |
+| database backup | `951` bytes; timestamp `2026-07-14T11:13:02.1756072Z`; SHA-256 `31edf4f486d7e0078efa23d958482ebc23ffadda2b555c73b5f49b2493756b1f` |
+
+Protected-process count remained zero and archive, INI, and database temporary
+siblings were absent. The machine-readable result is retained at
+`artifacts/phase6d-hash-fix-ff9ccaf/deployment-result.json`.
+
+The corrected deployment is complete. Dynamic admission and marker acceptance
+remain pending and retain all previously stated no-write and no-process-control
+boundaries.
