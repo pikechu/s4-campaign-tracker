@@ -347,6 +347,32 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     const auto now = GetTickCount64();
     ServiceNativeSubscription();
     std::lock_guard<std::mutex> lock(mutex_);
+    const bool inGame =
+        api_ != nullptr &&
+        api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
+    const bool mainMenu =
+        api_ != nullptr && page == S4_SCREEN_MAINMENU &&
+        api_->IsCurrentlyOnScreen(S4_SCREEN_MAINMENU) != FALSE &&
+        !inGame;
+    if (completionManager_ != nullptr) {
+        completionManager_->SetMainMenuAvailable(mainMenu);
+        const bool controlDown =
+            (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+        const bool shiftDown =
+            (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+        const bool mDown = (GetAsyncKeyState('M') & 0x8000) != 0;
+        if (managerHotkey_.Observe(
+                controlDown, shiftDown, mDown, mainMenu)) {
+            const bool requested = completionManager_->RequestOpen();
+            if (logger_ != nullptr) {
+                logger_->Write(
+                    requested ? LogLevel::Info : LogLevel::Warning,
+                    requested
+                        ? "completion manager open requested from main-menu UI frame"
+                        : "completion manager open request rejected");
+            }
+        }
+    }
     const DWORD campaignPage = ActiveCampaignCatalogOwner(api_);
     const bool campaignPageActive = campaignPage != S4_GUI_UNKNOWN;
     if (!campaignPageActive) {
@@ -545,21 +571,6 @@ void S4Listeners::ObserveTick(BOOL delayed) {
     }
     const bool inGame =
         api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
-    const bool mainMenu =
-        api_->IsCurrentlyOnScreen(S4_SCREEN_MAINMENU) != FALSE &&
-        !inGame;
-    if (completionManager_ != nullptr) {
-        completionManager_->SetMainMenuAvailable(mainMenu);
-        const bool controlDown =
-            (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
-        const bool shiftDown =
-            (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
-        const bool mDown = (GetAsyncKeyState('M') & 0x8000) != 0;
-        if (managerHotkey_.Observe(
-                controlDown, shiftDown, mDown, mainMenu)) {
-            completionManager_->RequestOpen();
-        }
-    }
     const auto now = GetTickCount64();
     if (campaignAssociation_ != nullptr) {
         campaignAssociation_->Expire(now);

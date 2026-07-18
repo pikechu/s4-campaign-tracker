@@ -190,13 +190,15 @@ Launch the game through Settlers United.
 ## Development Roadmap
 
 Current status: Phase 6E automatic campaign/fixed-map persistence and immediate
-marker rendering are live-validated. Phase 7 is implementing a native
-classified completion manager: from the main menu, `Ctrl+Shift+M` opens a
-window listing all 107 admitted campaign missions and installed fixed maps by
-family, with check/uncheck support through one revision-conflict-safe atomic
-database transaction. Random-map history remains visible but read-only and
-marker-hidden. Phase 7 has passed constructed local tests and remains
-undeployed pending Windows CI and artifact audit. See the
+marker rendering are live-validated. Phase 7 adds a native classified
+completion manager: from the main menu, `Ctrl+Shift+M` opens a window listing
+all 107 admitted campaign missions and installed fixed maps by family, with
+check/uncheck support through one revision-conflict-safe atomic database
+transaction. Random-map history remains visible but read-only and
+marker-hidden. Live acceptance of the initial `0.13.0` candidate found that
+menu hotkeys were sampled from game ticks, which do not run on the main menu.
+The `0.13.1` candidate moves that sampling to the public main-menu UI-frame
+callback and remains undeployed pending Windows CI and artifact audit. See the
 [Phase 7 design](docs/superpowers/specs/2026-07-18-phase-7-classified-completion-manager-design.md).
 
 Phase 5C restored compatibility with historical `0.5.0` records without

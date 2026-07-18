@@ -90,7 +90,7 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.13.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.13.1 pid="
            << GetCurrentProcessId()
            << " mode=phase-7-classified-completion-manager";
     logger_.Write(LogLevel::Info, header.str());

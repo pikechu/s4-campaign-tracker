@@ -91,7 +91,9 @@ bool CompletionManagerWindow::RequestOpen() noexcept {
 }
 
 void CompletionManagerWindow::SetMainMenuAvailable(bool available) noexcept {
-    mainMenuAvailable_.store(available, std::memory_order_release);
+    const bool previous =
+        mainMenuAvailable_.exchange(available, std::memory_order_acq_rel);
+    if (previous == available) return;
     if (threadId_ != 0u) {
         PostThreadMessageW(threadId_, kAvailabilityMessage,
                            available ? 1u : 0u, 0);

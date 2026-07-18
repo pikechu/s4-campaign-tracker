@@ -70,7 +70,7 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.13.0",
+             "Version=0.13.1",
              "DiagnosticMode=Phase7ClassifiedCompletionManager",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
@@ -145,7 +145,7 @@ int RunRuntimePolicyTests() {
                 "runtime descriptor evidence must use each full frozen window hash");
     }
 
-    Require(runtime.find("version=0.13.0") != std::string::npos &&
+    Require(runtime.find("version=0.13.1") != std::string::npos &&
                 runtime.find("mode=phase-7-classified-completion-manager") !=
                     std::string::npos,
             "runtime identifies the Phase 7 completion manager mode");
@@ -261,6 +261,29 @@ int RunRuntimePolicyTests() {
                 campaignDescriptors.find("identity.name") == std::string::npos &&
                 campaignDescriptors.find("display") == std::string::npos,
             "runtime classification and association never use display/save name");
+
+    const auto uiFrameBegin =
+        listeners.find("void S4Listeners::ObserveUiFrame(");
+    const auto mapInitBegin =
+        listeners.find("void S4Listeners::ObserveMapInit()");
+    const auto tickBegin =
+        listeners.find("void S4Listeners::ObserveTick(BOOL delayed)");
+    const auto mouseBegin =
+        listeners.find("void S4Listeners::ObserveMouse(", tickBegin);
+    const auto hotkeySample = listeners.find("GetAsyncKeyState(VK_CONTROL)");
+    Require(uiFrameBegin != std::string::npos &&
+                mapInitBegin != std::string::npos &&
+                tickBegin != std::string::npos &&
+                mouseBegin != std::string::npos &&
+                hotkeySample > uiFrameBegin &&
+                hotkeySample < mapInitBegin &&
+                listeners
+                        .substr(tickBegin, mouseBegin - tickBegin)
+                        .find("GetAsyncKeyState(") == std::string::npos &&
+                listeners.find("page == S4_SCREEN_MAINMENU", uiFrameBegin) <
+                    mapInitBegin,
+            "manager hotkey is sampled by the main-menu UI frame rather than game ticks");
+
     Require(campaignSessionAdmission.find(
                 "CampaignDescriptorValidationStatus::Matched") !=
                     std::string::npos &&
