@@ -368,9 +368,17 @@ int RunRuntimePolicyTests() {
             "ASI source block exists");
     Require(cmake.find("/utf-8") != std::string::npos,
             "MSVC parses native manager text as UTF-8");
-    Require(managerWindow.find(
-                "case WM_CREATE:\n            window_ = window;\n"
-                "            CreateControls();") != std::string::npos,
+    const auto managerCreateCase =
+        managerWindow.find("case WM_CREATE:");
+    const auto managerBindWindow =
+        managerWindow.find("window_ = window;", managerCreateCase);
+    const auto managerCreateControls =
+        managerWindow.find("CreateControls();", managerBindWindow);
+    Require(managerCreateCase != std::string::npos &&
+                managerBindWindow != std::string::npos &&
+                managerCreateControls != std::string::npos &&
+                managerCreateCase < managerBindWindow &&
+                managerBindWindow < managerCreateControls,
             "manager binds the created HWND before creating child controls");
     const auto asiSources = cmake.substr(asiBegin, asiEnd - asiBegin);
     Require(asiSources.find("src/campaign/CampaignMenuCapture.cpp") !=
