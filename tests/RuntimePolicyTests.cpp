@@ -69,18 +69,18 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.11.0",
-             "DiagnosticMode=Phase6DAllCampaignCompletionMarkers",
+             "Version=0.12.0",
+             "DiagnosticMode=Phase6ECampaignSessionPersistence",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
-             "LoadOriginRecovery=0", "NativeEventSubscription=0",
+             "LoadOriginRecovery=0", "NativeEventSubscription=1",
              "InternalVictoryHook=0", "HookCount=0", "CodePatchBytes=0",
              "GameDefaultGameEndCheckCalls=0", "LuaWrites=0",
-             "GameDataWrites=0", "CompletionDetection=0",
-             "CompletionStorage=0", "CompletionMarkers=1",
-             "CompletionDatabaseReadOnly=1",
-             "CompletionDatabaseWrites=0", "CampaignMarkers=1",
+             "GameDataWrites=0", "CompletionDetection=1",
+             "CompletionStorage=1", "CompletionMarkers=1",
+             "CompletionDatabaseReadOnly=0",
+             "CompletionDatabaseWrites=1", "CampaignMarkers=1",
              "CampaignMarkerFrameCapacity=36",
              "CampaignMenuPublicCapture=1",
              "CampaignMenuPages=3,4,5,6,11,12,13,14,15,16,17,18,19,20,21",
@@ -93,9 +93,11 @@ int RunRuntimePolicyTests() {
              "CampaignDescriptorIdentity=SameSessionRelativeExact",
              "CampaignDescriptorGroups=All107Closed",
              "CampaignDescriptorEvidenceGaps=None",
+             "CampaignSessionAdmission=ExactDescriptorSameSession",
+             "CampaignVictoryTransaction=OneExactLocalEvent609",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
-                "Phase 6D packaged policy field is missing");
+                "Phase 6E packaged policy field is missing");
     }
     Require(policy.find("CaptureTraceRoot=F:") == std::string::npos,
             "packaged trace root remains empty");
@@ -114,6 +116,8 @@ int RunRuntimePolicyTests() {
         root / "src" / "campaign" / "CampaignLaunchAssociation.cpp");
     const auto campaignDescriptors = ReadText(
         root / "src" / "campaign" / "CampaignDescriptorCatalog.cpp");
+    const auto campaignSessionAdmission = ReadText(
+        root / "src" / "campaign" / "CampaignSessionAdmission.cpp");
     for (const auto* frozenWindow : {
              "f096f8969a8304498b0cd053adbb6c5a7793e77eb317f9c591b4c41f67dcb36d",
              "09408e191881efa8ba44705bb66a358e3e83d3e362d288ffed6a3596e4b98971",
@@ -136,10 +140,10 @@ int RunRuntimePolicyTests() {
                 "runtime descriptor evidence must use each full frozen window hash");
     }
 
-    Require(runtime.find("version=0.11.0") != std::string::npos &&
-                runtime.find("mode=phase-6d-all-campaign-completion-markers") !=
+    Require(runtime.find("version=0.12.0") != std::string::npos &&
+                runtime.find("mode=phase-6e-campaign-session-persistence") !=
                     std::string::npos,
-            "runtime identifies the Phase 6D read-only marker mode");
+            "runtime identifies the Phase 6E campaign persistence mode");
     Require(runtime.find("kModuleInventoryRetryCount = 20u") !=
                     std::string::npos &&
                 runtime.find("kModuleInventoryRetryDelayMs = 100u") !=
@@ -156,13 +160,18 @@ int RunRuntimePolicyTests() {
                     std::string::npos &&
                 runtimeHeader.find("CampaignDescriptorCatalog campaignDescriptors_") !=
                     std::string::npos &&
-                runtimeHeader.find("ReadOnlyCompletionSource") !=
+                runtimeHeader.find("CompletionStore") !=
+                    std::string::npos &&
+                runtimeHeader.find("CampaignSessionAdmission") !=
+                    std::string::npos &&
+                runtimeHeader.find("CompletionWorker") != std::string::npos &&
+                runtimeHeader.find("NativeVictoryEventSubscriber") !=
                     std::string::npos &&
                 runtimeHeader.find("CampaignCompletionMarkerIndex") !=
                     std::string::npos &&
                 runtimeHeader.find("CampaignMarkerObserver") !=
                     std::string::npos,
-            "runtime owns bounded capture, immutable descriptors, and read-only marker state");
+            "runtime owns the exact campaign gate, persistence, and marker state");
     Require(runtime.find("std::make_unique<CampaignMenuCapture>()") !=
                     std::string::npos &&
                 runtime.find(
@@ -170,26 +179,24 @@ int RunRuntimePolicyTests() {
                     std::string::npos &&
                 runtime.find("AdmitCampaignDescriptorCatalog(*executable)") !=
                     std::string::npos &&
-                runtime.find("completionSource_->Load()") !=
+                runtime.find("store_->Load()") !=
                     std::string::npos &&
                 runtime.find("campaignMarkerIndex_.Publish(") !=
-                    std::string::npos,
-            "runtime constructs and publishes the read-only marker components");
+                    std::string::npos &&
+                runtime.find("worker_->TryEnqueue") != std::string::npos &&
+                runtime.find("nativeSubscriber_.Prepare") != std::string::npos,
+            "runtime constructs persistence, native victory, and both marker indexes");
 
     for (const auto* forbidden : {
-             "CompletionStore", "CompletionWorker", "CompletionAdmission",
-             "CompletionCandidateCoordinator", "NativeEventAdmission::Create",
-             "NativeEventRegistration", "NativeVictoryEventSubscriber",
-             "VictoryEventProbe",
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout"}) {
         Require((runtime + runtimeHeader).find(forbidden) == std::string::npos,
-                "Phase 6D runtime must not own a storage writer, native event, or Hook path");
+                "Phase 6E runtime must not own a process Hook path");
     }
-    Require(runtime.find("phase-6d-all-campaign-read-only storage-writes=disabled") !=
+    Require(runtime.find("phase-6e-campaign-session-persistence storage-writes=transactional") !=
                     std::string::npos &&
-                runtime.find("native-events=disabled markers=enabled") !=
+                runtime.find("native-event=609-exact markers=enabled") !=
                     std::string::npos,
-            "runtime logs the enforced read-only marker boundary");
+            "runtime logs the exact Phase 6E persistence boundary");
 
     Require(listenerHeader.find("CampaignMenuCapture& campaignCapture") !=
                     std::string::npos &&
@@ -202,9 +209,12 @@ int RunRuntimePolicyTests() {
                     "CampaignLaunchAssociation* campaignAssociation_") !=
                     std::string::npos &&
                 listenerHeader.find(
+                    "CampaignSessionAdmission* campaignSessionAdmission_") !=
+                    std::string::npos &&
+                listenerHeader.find(
                     "const CampaignDescriptorCatalog* campaignDescriptors_") !=
                     std::string::npos,
-            "listeners borrow but do not own campaign diagnostic state");
+            "listeners borrow but do not own campaign admission state");
     Require(listeners.find("ActiveCampaignCatalogOwner(api_)") !=
                     std::string::npos &&
                 listeners.find(
@@ -237,9 +247,23 @@ int RunRuntimePolicyTests() {
             "click, MapInit session, confirmed identity, and immutable descriptor form the chain");
     Require(listeners.find("identity->relative") != std::string::npos &&
                 listeners.find("identity->name") == std::string::npos &&
+                campaignSessionAdmission.find("identity.relative") !=
+                    std::string::npos &&
+                campaignSessionAdmission.find("identity.name") ==
+                    std::string::npos &&
                 campaignDescriptors.find("identity.name") == std::string::npos &&
                 campaignDescriptors.find("display") == std::string::npos,
             "runtime classification and association never use display/save name");
+    Require(campaignSessionAdmission.find(
+                "CampaignDescriptorValidationStatus::Matched") !=
+                    std::string::npos &&
+                campaignSessionAdmission.find(
+                    "std::strcmp(association.descriptorKey, descriptor->key)") !=
+                    std::string::npos &&
+                campaignSessionAdmission.find(
+                    "identity.relative != association.relative") !=
+                    std::string::npos,
+            "campaign admission requires exact descriptor and relative identity");
     Require(campaignDescriptors.find("association.relative !=") !=
                     std::string::npos &&
                 campaignDescriptors.find("S4_SCREEN_NEWWORLD") !=
@@ -292,13 +316,17 @@ int RunRuntimePolicyTests() {
     const auto captureDisable = runtime.find("campaignCapture_->Disable()");
     const auto associationDisable =
         runtime.find("campaignAssociation_->Disable()");
+    const auto admissionDisable =
+        runtime.find("campaignSessionAdmission_->Disable()");
     const auto listenerStop = runtime.find("listeners_.Stop()", associationDisable);
     Require(coordinatorDisable != std::string::npos &&
                 captureDisable != std::string::npos &&
                 associationDisable != std::string::npos &&
+                admissionDisable != std::string::npos &&
                 listenerStop != std::string::npos &&
                 coordinatorDisable < listenerStop && captureDisable < listenerStop &&
-                associationDisable < listenerStop,
+                associationDisable < listenerStop &&
+                admissionDisable < listenerStop,
             "borrowed diagnostic components are disabled before listener removal");
 
     const auto cmake = ReadText(root / "CMakeLists.txt");

@@ -6,6 +6,7 @@ int RunCaptureTraceTests();
 int RunCampaignLaunchAssociationTests();
 int RunCampaignDescriptorCatalogTests();
 int RunCampaignCompletionMarkerIndexTests();
+int RunCampaignSessionAdmissionTests();
 int RunCampaignMarkerObserverTests();
 int RunCampaignMenuCaptureTests();
 int RunFixedMapCaptureStateTests();
@@ -57,6 +58,7 @@ int main() {
         RunCampaignLaunchAssociationTests();
         RunCampaignDescriptorCatalogTests();
         RunCampaignCompletionMarkerIndexTests();
+        RunCampaignSessionAdmissionTests();
         RunCampaignMarkerObserverTests();
         RunCampaignMenuCaptureTests();
         RunFixedMapCaptureStateTests();

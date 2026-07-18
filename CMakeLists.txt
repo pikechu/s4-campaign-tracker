@@ -26,6 +26,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/campaign/CampaignLaunchAssociation.cpp
     src/campaign/CampaignDescriptorCatalog.cpp
     src/campaign/CampaignCompletionMarkerIndex.cpp
+    src/campaign/CampaignSessionAdmission.cpp
     src/campaign/CampaignMarkerObserver.cpp
     src/campaign/CampaignMenuCapture.cpp
     src/identity/ListAttribution.cpp
@@ -85,6 +86,7 @@ add_executable(campaign_completion_tests
   tests/CampaignLaunchAssociationTests.cpp
   tests/CampaignDescriptorCatalogTests.cpp
   tests/CampaignCompletionMarkerIndexTests.cpp
+  tests/CampaignSessionAdmissionTests.cpp
   tests/CampaignMarkerObserverTests.cpp
   tests/CampaignMenuCaptureTests.cpp
   tests/FixedMapCaptureStateTests.cpp
@@ -133,6 +135,7 @@ add_executable(campaign_completion_tests
   src/campaign/CampaignLaunchAssociation.cpp
   src/campaign/CampaignDescriptorCatalog.cpp
   src/campaign/CampaignCompletionMarkerIndex.cpp
+  src/campaign/CampaignSessionAdmission.cpp
   src/campaign/CampaignMarkerObserver.cpp
   src/campaign/CampaignMenuCapture.cpp
   src/diagnostics/Logger.cpp

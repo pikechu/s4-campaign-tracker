@@ -177,7 +177,11 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         Phase3Trace& phase3Trace,
                         CampaignMenuCapture& campaignCapture,
                         CampaignLaunchAssociation& campaignAssociation,
+                        CampaignSessionAdmission& campaignSessionAdmission,
                         const CampaignDescriptorCatalog& campaignDescriptors,
+                        NativeVictoryEventSubscriber& nativeSubscriber,
+                        VictoryEventProbe& victoryProbe,
+                        CompletionAdmission& completionAdmission,
                         FixedMapRowObserver& markerObserver,
                         CampaignMarkerObserver& campaignMarkerObserver,
                         CompletionMarkerRenderer& markerRenderer,
@@ -188,7 +192,11 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     phase3Trace_ = &phase3Trace;
     campaignCapture_ = &campaignCapture;
     campaignAssociation_ = &campaignAssociation;
+    campaignSessionAdmission_ = &campaignSessionAdmission;
     campaignDescriptors_ = &campaignDescriptors;
+    nativeSubscriber_ = &nativeSubscriber;
+    victoryProbe_ = &victoryProbe;
+    completionAdmission_ = &completionAdmission;
     markerObserver_ = &markerObserver;
     campaignMarkerObserver_ = &campaignMarkerObserver;
     markerRenderer_ = &markerRenderer;
@@ -253,6 +261,7 @@ ListenerStopResult S4Listeners::Stop() {
     markerRenderer_ = nullptr;
     campaignCapture_ = nullptr;
     campaignAssociation_ = nullptr;
+    campaignSessionAdmission_ = nullptr;
     campaignDescriptors_ = nullptr;
     lastCampaignSnapshot_ = {};
     fixedMapMenuMemory_ = {};
@@ -476,6 +485,10 @@ void S4Listeners::ObserveMapInit() {
     if (completionAdmission_ != nullptr) {
         completionAdmission_->BeginSession(activeSessionId_, activeOrigin_);
     }
+    if (campaignSessionAdmission_ != nullptr) {
+        campaignSessionAdmission_->BeginSession(activeSessionId_,
+                                                activeOrigin_);
+    }
     if (campaignAssociation_ != nullptr &&
         campaignAssociation_->BeginSession(activeSessionId_, activeOrigin_,
                                            now) &&
@@ -554,10 +567,26 @@ void S4Listeners::ObserveTick(BOOL delayed) {
             coordinator_->ObserveTick(inGame, now, *bridge_);
         if (identity.has_value() &&
             identity->sessionId == activeSessionId_) {
+            bool campaignPromoted = false;
             if (campaignAssociation_ != nullptr) {
                 const auto association = campaignAssociation_->ObserveIdentity(
                     identity.value(), now);
-                if (association.has_value() && logger_ != nullptr) {
+                if (association.has_value()) {
+                    const auto validation = campaignDescriptors_ != nullptr
+                        ? ValidateCampaignDescriptor(*campaignDescriptors_,
+                                                     association.value())
+                        : CampaignDescriptorValidation{
+                              CampaignDescriptorValidationStatus::CatalogNotAdmitted,
+                              nullptr};
+                    if (campaignSessionAdmission_ != nullptr) {
+                        const auto promoted = campaignSessionAdmission_->Observe(
+                            identity.value(), association.value(), validation);
+                        if (promoted.has_value()) {
+                            activeOrigin_ = promoted.value();
+                            campaignPromoted = true;
+                        }
+                    }
+                    if (logger_ != nullptr) {
                     std::ostringstream record;
                     record << "campaign-menu-association page="
                            << association->page << " control="
@@ -569,12 +598,6 @@ void S4Listeners::ObserveTick(BOOL delayed) {
                            << association->sessionId << " relative="
                            << Utf8(association->relative);
                     logger_->Write(LogLevel::Info, record.str());
-                    const auto validation = campaignDescriptors_ != nullptr
-                        ? ValidateCampaignDescriptor(*campaignDescriptors_,
-                                                     association.value())
-                        : CampaignDescriptorValidation{
-                              CampaignDescriptorValidationStatus::CatalogNotAdmitted,
-                              nullptr};
                     const char* status = "catalog-not-admitted";
                     switch (validation.status) {
                         case CampaignDescriptorValidationStatus::Matched:
@@ -613,11 +636,14 @@ void S4Listeners::ObserveTick(BOOL delayed) {
                             ? LogLevel::Info
                             : LogLevel::Warning,
                         descriptor.str());
+                    }
                 }
             }
-            activeOrigin_ = RefineActiveSessionOrigin(
-                activeSessionId_, activeOrigin_, identity->sessionId,
-                identity->relative);
+            if (!campaignPromoted) {
+                activeOrigin_ = RefineActiveSessionOrigin(
+                    activeSessionId_, activeOrigin_, identity->sessionId,
+                    identity->relative);
+            }
             if (completionAdmission_ != nullptr) {
                 completionAdmission_->ObserveIdentity(identity.value(),
                                                        activeOrigin_);

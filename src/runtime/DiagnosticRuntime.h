@@ -5,7 +5,10 @@
 #include "campaign/CampaignMenuCapture.h"
 #include "campaign/CampaignCompletionMarkerIndex.h"
 #include "campaign/CampaignMarkerObserver.h"
-#include "completion/ReadOnlyCompletionSource.h"
+#include "campaign/CampaignSessionAdmission.h"
+#include "completion/CompletionAdmission.h"
+#include "completion/CompletionStore.h"
+#include "completion/CompletionWorker.h"
 #include "completion/Win32CompletionFileOps.h"
 #include "diagnostics/Logger.h"
 #include "diagnostics/Phase3Trace.h"
@@ -16,9 +19,13 @@
 #include "marker/CompletionMarkerRenderer.h"
 #include "marker/DirectDrawMarkerSurface.h"
 #include "marker/FixedMapRowObserver.h"
+#include "native/NativeEventAdmission.h"
+#include "native/NativeEventRegistration.h"
+#include "native/NativeVictoryEventSubscriber.h"
 #include "runtime/PluginPaths.h"
 #include "runtime/S4Listeners.h"
 #include "victory/LaunchOrigin.h"
+#include "victory/VictoryEventProbe.h"
 
 #include <windows.h>
 
@@ -47,20 +54,28 @@ private:
     std::unique_ptr<CampaignMenuCapture> campaignCapture_;
     std::unique_ptr<CampaignLaunchAssociation> campaignAssociation_;
     CampaignDescriptorCatalog campaignDescriptors_{};
-    Win32CompletionFileOps completionFiles_;
-    std::unique_ptr<ReadOnlyCompletionSource> completionSource_;
+    std::unique_ptr<Win32CompletionFileOps> fileOps_;
+    std::unique_ptr<CompletionStore> store_;
     CompletionMarkerIndex markerIndex_;
     CampaignCompletionMarkerIndex campaignMarkerIndex_;
     std::unique_ptr<FixedMapRowObserver> markerObserver_;
     std::unique_ptr<CampaignMarkerObserver> campaignMarkerObserver_;
     std::unique_ptr<DirectDrawMarkerSurface> markerSurface_;
     std::unique_ptr<CompletionMarkerRenderer> markerRenderer_;
+    std::unique_ptr<CompletionWorker> worker_;
+    std::unique_ptr<CompletionCandidateCoordinator> completionCoordinator_;
+    std::unique_ptr<CompletionAdmission> completionAdmission_;
+    std::unique_ptr<CampaignSessionAdmission> campaignSessionAdmission_;
     FixedMapMenuMemoryView fixedMapMenuMemory_{};
     S4Listeners listeners_;
     S4LuaApi luaApi_;
     S4LuaMapBridge luaBridge_{luaApi_};
     std::unique_ptr<MapIdentityCoordinator> coordinator_;
     LaunchOriginTracker origin_;
+    NativeEventAdmission nativeAdmission_{};
+    std::unique_ptr<NativeEventRegistration> nativeRegistration_;
+    NativeVictoryEventSubscriber nativeSubscriber_;
+    VictoryEventProbe victoryProbe_;
     S4API api_ = nullptr;
     std::optional<PluginPaths> paths_;
     std::filesystem::path stopRequestPath_;

@@ -1,4 +1,7 @@
 #include "completion/CompletionWorker.h"
+#include "campaign/CampaignCompletionMarkerIndex.h"
+#include "campaign/CampaignDescriptorCatalog.h"
+#include "marker/CompletionMarkerIndex.h"
 
 #include <chrono>
 #include <condition_variable>
@@ -219,6 +222,36 @@ int RunCompletionWorkerTests() {
                     publications.front().records.front().stableId ==
                         "map:test-70",
                 "committed transaction publishes the replacement snapshot once");
+    }
+
+    {
+        ControllableStore store;
+        CompletionMarkerIndex fixedIndex;
+        CampaignCompletionMarkerIndex campaignIndex;
+        CampaignDescriptorCatalog catalog{};
+        catalog.executableAdmitted = true;
+        catalog.groups.fill(true);
+        const auto& descriptor = AllCampaignDescriptors()[16u];
+        CompletionWorker worker(
+            store, [](LogLevel, std::string) {},
+            [&fixedIndex, &campaignIndex, &catalog](
+                CompletionDatabaseSnapshot snapshot) {
+                fixedIndex.Publish(snapshot);
+                campaignIndex.Publish(snapshot, catalog);
+            });
+        auto candidate = Candidate(73u);
+        candidate.record.stableId =
+            BuildStableMapId(descriptor.relative).value();
+        candidate.record.relativeId =
+            WideToStrictUtf8(descriptor.relative).value();
+        candidate.record.launchSource = LaunchSource::Campaign;
+        Require(worker.Start() &&
+                    worker.TryEnqueue(std::move(candidate)) &&
+                    worker.StopAndDrain(5s),
+                "campaign publication worker must drain");
+        Require(campaignIndex.Match(descriptor) ==
+                    CampaignMarkerMatchStatus::Unique,
+                "committed campaign victory refreshes its marker index in-process");
     }
 
     for (const auto& stableId : {
