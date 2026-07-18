@@ -99,3 +99,47 @@ Deployment must use the audited hashes above and the established guarded
 rollback procedure. A later live acceptance may read the database only within
 its separately approved bound and does not authorize a completion write or
 victory transaction.
+
+## Guarded deployment
+
+The user normally closed both protected applications and explicitly approved
+deployment of this exact audited Phase 6D candidate. Fresh preflight confirmed:
+
+- protected-process count `0`;
+- installed Phase 6D gap-only archive SHA-256
+  `ea15116f8b84996c4c72e037d6b41782c4921f91224eec24c6acdc1d40e9ac67`;
+- live `0.10.0` INI SHA-256
+  `4a9835f5ea2228aea2780e2d393f001d87e09c35dd87f6525969cc69a0b01e38`;
+- candidate ASI and INI exactly matched the audited hashes above;
+- immutable original archive remained
+  `807e58bc92e20afbda4a99d7abdfcd05b87eb230fbb630e4330b487b6ba8c265`;
+- database main/backup hashes and timestamps exactly matched the preceding
+  normal-shutdown postflight;
+- no authorized temporary sibling existed.
+
+The fixed-hash elevated deployment script created and verified the complete
+rollback snapshot at
+`research/backups/campaign-completion/2026-07-18-pre-v0.11.0-phase6d-all-campaign-markers`.
+The guarded installer replaced only the project ASI archive entry, and the
+project INI was replaced atomically in its existing project-owned directory.
+
+Independent post-deployment verification recorded:
+
+| Item | Result |
+| --- | --- |
+| installed `Plugin_SU.zip` | `1,423,317` bytes; SHA-256 `80b16393c2cf5f719c2046ea18b3542606c634c38e2a4bc4c6ea018d6463ffb4` |
+| embedded ASI | SHA-256 `720566b1b0c8bab874a61b879f0f0c1a796562e7a4abede4437d79e5cc342d17`, exact candidate |
+| live INI | `1,355` bytes; SHA-256 `3e4bca3799f6a8ef5eb68dd8a42603b6ce241db5abe9145b22e2a57ef73a1b18`, exact candidate |
+| database main | `1,260` bytes; timestamp `2026-07-16T05:41:41.3482563Z`; SHA-256 `49b81aaffddd0380c6cfa69f870ad911d9b82f0ba55a213f305ad7955d4ff26e` |
+| database backup | `951` bytes; timestamp `2026-07-14T11:13:02.1756072Z`; SHA-256 `31edf4f486d7e0078efa23d958482ebc23ffadda2b555c73b5f49b2493756b1f` |
+
+The installed archive contains all nine immutable original entries plus exactly
+one project ASI and no missing original entry. Installer metadata now records
+the deployed archive and embedded-ASI hashes. Protected-process count remained
+zero; archive, INI, and database temporary siblings were absent. The
+machine-readable result is retained at
+`artifacts/phase6d-all-markers-2de918f/deployment-result.json`.
+
+Deployment is complete. Dynamic marker acceptance remains pending. It does not
+authorize a victory, database write, save access, campaign-progress mutation,
+or process control.
