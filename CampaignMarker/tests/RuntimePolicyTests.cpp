@@ -66,6 +66,7 @@ int RunRuntimePolicyTests() {
             "executable hash mutation fails closed");
 
     const auto root = std::filesystem::path(__FILE__).parent_path().parent_path();
+    const auto workspaceRoot = root.parent_path();
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
@@ -357,7 +358,7 @@ int RunRuntimePolicyTests() {
 
     const auto packageScript = ReadText(root / "tools" / "package_debug.ps1");
     const auto workflow = ReadText(
-        root / ".github" / "workflows" / "build-debug-asi.yml");
+        workspaceRoot / ".github" / "workflows" / "build-debug-asi.yml");
     Require(packageScript.find(
                 "Join-Path $plugins \"CampaignCompletion\"") !=
                     std::string::npos &&
