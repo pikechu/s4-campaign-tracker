@@ -69,8 +69,8 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.12.0",
-             "DiagnosticMode=Phase6ECampaignSessionPersistence",
+             "Version=0.13.0",
+             "DiagnosticMode=Phase7ClassifiedCompletionManager",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
@@ -95,9 +95,13 @@ int RunRuntimePolicyTests() {
              "CampaignDescriptorEvidenceGaps=None",
              "CampaignSessionAdmission=ExactDescriptorSameSession",
              "CampaignVictoryTransaction=OneExactLocalEvent609",
+             "Enabled=1", "OpenHotkey=Ctrl+Shift+M",
+             "ClassifiedCampaigns=1", "ClassifiedFixedMaps=1",
+             "ManualAtomicApply=1", "RandomRecordsReadOnly=1",
+             "RevisionConflictProtection=1",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
-                "Phase 6E packaged policy field is missing");
+                "Phase 7 packaged policy field is missing");
     }
     Require(policy.find("CaptureTraceRoot=F:") == std::string::npos,
             "packaged trace root remains empty");
@@ -140,10 +144,10 @@ int RunRuntimePolicyTests() {
                 "runtime descriptor evidence must use each full frozen window hash");
     }
 
-    Require(runtime.find("version=0.12.0") != std::string::npos &&
-                runtime.find("mode=phase-6e-campaign-session-persistence") !=
+    Require(runtime.find("version=0.13.0") != std::string::npos &&
+                runtime.find("mode=phase-7-classified-completion-manager") !=
                     std::string::npos,
-            "runtime identifies the Phase 6E campaign persistence mode");
+            "runtime identifies the Phase 7 completion manager mode");
     Require(runtime.find("kModuleInventoryRetryCount = 20u") !=
                     std::string::npos &&
                 runtime.find("kModuleInventoryRetryDelayMs = 100u") !=
@@ -190,13 +194,15 @@ int RunRuntimePolicyTests() {
     for (const auto* forbidden : {
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout"}) {
         Require((runtime + runtimeHeader).find(forbidden) == std::string::npos,
-                "Phase 6E runtime must not own a process Hook path");
+                "Phase 7 runtime must not own a process Hook path");
     }
-    Require(runtime.find("phase-6e-campaign-session-persistence storage-writes=transactional") !=
+    Require(runtime.find("phase-7-classified-completion-manager storage-writes=transactional") !=
                     std::string::npos &&
-                runtime.find("native-event=609-exact markers=enabled") !=
+                runtime.find("manual-apply=revision-conflict-safe") !=
+                    std::string::npos &&
+                runtime.find("native-event=609-exact") !=
                     std::string::npos,
-            "runtime logs the exact Phase 6E persistence boundary");
+            "runtime logs the exact Phase 7 persistence boundary");
 
     Require(listenerHeader.find("CampaignMenuCapture& campaignCapture") !=
                     std::string::npos &&

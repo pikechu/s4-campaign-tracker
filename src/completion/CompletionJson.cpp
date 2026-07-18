@@ -42,8 +42,8 @@ bool IsAllowedLaunchSource(LaunchSource source) noexcept {
 }
 
 bool IsAllowedPluginVersion(std::string_view version) noexcept {
-    constexpr std::array<std::string_view, 3u> allowed{
-        "0.4.0", "0.5.0", kCompletionPluginVersion};
+    constexpr std::array<std::string_view, 4u> allowed{
+        "0.4.0", "0.5.0", "0.6.0", kCompletionPluginVersion};
     return std::find(allowed.begin(), allowed.end(), version) !=
            allowed.end();
 }
@@ -80,7 +80,8 @@ CompletionJsonFailure ValidateRecord(
             return failure;
         }
     }
-    if (record.recordSource != kCompletionRecordSource ||
+    if ((record.recordSource != kCompletionRecordSource &&
+         record.recordSource != kManualCompletionRecordSource) ||
         record.gameVersion != kCompletionGameVersion ||
         !IsAllowedPluginVersion(record.pluginVersion) ||
         !IsValidUtcCompletionTime(record.completedAtUtc) ||

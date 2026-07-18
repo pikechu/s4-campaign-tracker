@@ -96,11 +96,30 @@ int RunCompletionJsonTests() {
                 historical.snapshot.records.front().pluginVersion ==
                     "0.5.0",
             "decoder must preserve the reviewed 0.5.0 persistence version");
-    const auto current = DecodeCompletionJson(
+    const auto phase6 = DecodeCompletionJson(
         ReplaceOnce(ValidJson(), "\"plugin_version\":\"0.4.0\"",
                     "\"plugin_version\":\"0.6.0\""));
+    Require(phase6 && phase6.snapshot.records.size() == 1u,
+            "decoder must accept the reviewed 0.6.0 persistence version");
+    const auto current = DecodeCompletionJson(
+        ReplaceOnce(ValidJson(), "\"plugin_version\":\"0.4.0\"",
+                    "\"plugin_version\":\"0.7.0\""));
     Require(current && current.snapshot.records.size() == 1u,
             "decoder must accept the current persistence writer version");
+    const auto manual = DecodeCompletionJson(
+        ReplaceOnce(ValidJson(),
+                    "\"record_source\":\"native-event-609\"",
+                    "\"record_source\":\"manual-manager\""));
+    Require(manual && manual.snapshot.records.size() == 1u &&
+                manual.snapshot.records.front().recordSource ==
+                    "manual-manager",
+            "the exact Phase 7 manual record source is admitted");
+    RequireFailure(
+        ReplaceOnce(ValidJson(),
+                    "\"record_source\":\"native-event-609\"",
+                    "\"record_source\":\"manual\""),
+        CompletionJsonFailure::InvalidRecord,
+        "all other record sources remain rejected");
     const auto liveBytes = test_fixtures::LiveThreeRecordDatabase();
     const auto live = DecodeCompletionJson(liveBytes);
     const auto liveRoundTrip = live

@@ -19,6 +19,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/completion/CompletionAdmission.cpp
     src/completion/CompletionCandidateCoordinator.cpp
     src/completion/CompletionJson.cpp
+    src/completion/ManualCompletionTransaction.cpp
     src/completion/ReadOnlyCompletionSource.cpp
     src/completion/CompletionStore.cpp
     src/completion/CompletionWorker.cpp
@@ -42,6 +43,9 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/marker/DirectDrawMarkerSurface.cpp
     src/marker/FixedMapMenuReader.cpp
     src/marker/FixedMapRowObserver.cpp
+    src/manager/CompletionManagerCatalog.cpp
+    src/manager/CompletionManagerWindow.cpp
+    src/manager/FixedMapDiscovery.cpp
     src/native/NativeEventAdmission.cpp
     src/native/NativeEventRegistration.cpp
     src/native/NativeVictoryEventSubscriber.cpp
@@ -71,7 +75,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
   target_link_options(CampaignCompletionDebug PRIVATE /INCREMENTAL:NO)
   target_link_libraries(CampaignCompletionDebug PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/third_party/S4ModApi/S4ModApi.lib"
-    Version Advapi32 Crypt32 Psapi Gdi32 Gdiplus Ole32
+    Version Advapi32 Crypt32 Psapi Gdi32 Gdiplus Ole32 Comctl32
   )
   set_target_properties(CampaignCompletionDebug PROPERTIES
     OUTPUT_NAME "CampaignCompletionDebug"
@@ -118,6 +122,10 @@ add_executable(campaign_completion_tests
   tests/CompletionCandidateCoordinatorTests.cpp
   tests/CompletionJsonTests.cpp
   tests/CompletionStoreTests.cpp
+  tests/CompletionManagerCatalogTests.cpp
+  tests/CompletionManagerHotkeyTests.cpp
+  tests/ManualCompletionTransactionTests.cpp
+  tests/FixedMapDiscoveryTests.cpp
   tests/ReadOnlyCompletionSourceTests.cpp
   tests/Win32CompletionFileOpsTests.cpp
   tests/CompletionWorkerTests.cpp
@@ -147,6 +155,7 @@ add_executable(campaign_completion_tests
   src/completion/CompletionCandidateCoordinator.cpp
   src/completion/CompletionJson.cpp
   src/completion/CompletionStore.cpp
+  src/completion/ManualCompletionTransaction.cpp
   src/completion/ReadOnlyCompletionSource.cpp
   src/completion/CompletionWorker.cpp
   src/completion/Win32CompletionFileOps.cpp
@@ -168,6 +177,8 @@ add_executable(campaign_completion_tests
   src/marker/FixedMapMenuReader.cpp
   src/marker/FixedMapRowObserver.cpp
   src/marker/FixedMapRowCalibration.cpp
+  src/manager/CompletionManagerCatalog.cpp
+  src/manager/FixedMapDiscovery.cpp
   src/runtime/CallbackGate.cpp
   src/runtime/ListenerRemoval.cpp
   src/runtime/PageObservation.cpp

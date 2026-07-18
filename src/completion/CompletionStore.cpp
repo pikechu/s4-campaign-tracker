@@ -222,6 +222,7 @@ CompletionAddResult CompletionStore::CommitSnapshot(
         snapshot_ = std::move(verified.snapshot);
         stableIds_ = std::move(candidateIds);
         mode_ = CompletionStoreMode::WritableLoaded;
+        ++revision_;
         return {CompletionAddStatus::Committed,
                 CompletionTransactionStage::None, ERROR_SUCCESS};
     } catch (...) {
@@ -240,6 +241,61 @@ CompletionDatabaseSnapshot CompletionStore::Snapshot() const {
     return snapshot_;
 }
 
+CompletionStoreSnapshot CompletionStore::SnapshotWithRevision() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return {snapshot_, revision_, mode_};
+}
+
+ManualCompletionApplyResult CompletionStore::ApplyManual(
+    const ManualCompletionRequest& request) noexcept {
+    std::lock_guard<std::mutex> lock(mutex_);
+    try {
+        if (mode_ != CompletionStoreMode::WritableEmpty &&
+            mode_ != CompletionStoreMode::WritableLoaded) {
+            return {ManualCompletionApplyStatus::ReadOnly,
+                    CompletionTransactionStage::None,
+                    ERROR_ACCESS_DENIED, revision_};
+        }
+        const auto candidate = BuildManualCompletionCandidate(
+            snapshot_, revision_, request);
+        switch (candidate.status) {
+            case ManualCompletionStatus::Conflict:
+                return {ManualCompletionApplyStatus::Conflict,
+                        CompletionTransactionStage::None,
+                        ERROR_REVISION_MISMATCH, revision_};
+            case ManualCompletionStatus::Invalid:
+                return {ManualCompletionApplyStatus::Invalid,
+                        CompletionTransactionStage::Encode,
+                        ERROR_INVALID_DATA, revision_};
+            case ManualCompletionStatus::Unchanged:
+                return {ManualCompletionApplyStatus::Unchanged,
+                        CompletionTransactionStage::None,
+                        ERROR_SUCCESS, revision_};
+            case ManualCompletionStatus::Changed:
+                break;
+        }
+
+        std::set<std::string> candidateIds;
+        for (const auto& record : candidate.snapshot.records) {
+            candidateIds.insert(record.stableId);
+        }
+        const auto committed = CommitSnapshot(
+            std::move(candidate.snapshot), std::move(candidateIds),
+            mode_ == CompletionStoreMode::WritableLoaded);
+        if (committed.status == CompletionAddStatus::Committed) {
+            return {ManualCompletionApplyStatus::Committed,
+                    CompletionTransactionStage::None,
+                    ERROR_SUCCESS, revision_};
+        }
+        return {ManualCompletionApplyStatus::Failed, committed.stage,
+                committed.error, revision_};
+    } catch (...) {
+        return {ManualCompletionApplyStatus::Failed,
+                CompletionTransactionStage::Encode,
+                ERROR_OUTOFMEMORY, revision_};
+    }
+}
+
 void CompletionStore::Publish(CompletionDatabaseSnapshot snapshot) {
     std::set<std::string> ids;
     for (const auto& record : snapshot.records) {
@@ -247,6 +303,7 @@ void CompletionStore::Publish(CompletionDatabaseSnapshot snapshot) {
     }
     snapshot_ = std::move(snapshot);
     stableIds_ = std::move(ids);
+    ++revision_;
 }
 
 }  // namespace campaign_completion

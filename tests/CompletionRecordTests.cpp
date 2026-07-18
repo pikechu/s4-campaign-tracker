@@ -16,7 +16,7 @@ void Require(bool condition, const char* message) {
 int RunCompletionRecordTests() {
     using namespace campaign_completion;
 
-    Require(kCompletionPluginVersion == "0.6.0",
+    Require(kCompletionPluginVersion == "0.7.0",
             "completion records carry the marker-rendering version");
 
     const auto canonical =
@@ -96,10 +96,10 @@ int RunCompletionRecordTests() {
 
     CompletionRecord record{};
     Require(record.recordSource == "native-event-609",
-            "record source must remain fixed for version 0.6.0");
+            "automatic record source must remain the native event");
     Require(record.gameVersion == "2.50.1516.0",
             "game version must be persisted exactly");
-    Require(record.pluginVersion == "0.6.0",
+    Require(record.pluginVersion == "0.7.0",
             "plugin version must be persisted exactly");
     return 0;
 }

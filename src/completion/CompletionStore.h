@@ -2,7 +2,9 @@
 
 #include "completion/CompletionFileOps.h"
 #include "completion/CompletionJson.h"
+#include "completion/ManualCompletionTransaction.h"
 
+#include <cstdint>
 #include <filesystem>
 #include <mutex>
 #include <set>
@@ -38,6 +40,29 @@ struct CompletionAddResult final {
     DWORD error = ERROR_SUCCESS;
 };
 
+struct CompletionStoreSnapshot final {
+    CompletionDatabaseSnapshot database;
+    std::uint64_t revision = 0u;
+    CompletionStoreMode mode = CompletionStoreMode::Uninitialized;
+};
+
+enum class ManualCompletionApplyStatus : std::uint8_t {
+    Committed,
+    Unchanged,
+    Conflict,
+    ReadOnly,
+    Invalid,
+    Failed,
+};
+
+struct ManualCompletionApplyResult final {
+    ManualCompletionApplyStatus status =
+        ManualCompletionApplyStatus::Failed;
+    CompletionTransactionStage stage = CompletionTransactionStage::None;
+    DWORD error = ERROR_SUCCESS;
+    std::uint64_t revision = 0u;
+};
+
 class ICompletionStore {
 public:
     virtual ~ICompletionStore() = default;
@@ -57,6 +82,9 @@ public:
         const CompletionRecord& record) noexcept override;
     CompletionStoreMode Mode() const noexcept;
     CompletionDatabaseSnapshot Snapshot() const override;
+    CompletionStoreSnapshot SnapshotWithRevision() const;
+    ManualCompletionApplyResult ApplyManual(
+        const ManualCompletionRequest& request) noexcept;
 
 private:
     CompletionAddResult CommitSnapshot(
@@ -73,6 +101,7 @@ private:
     CompletionDatabaseSnapshot snapshot_;
     std::set<std::string> stableIds_;
     CompletionStoreMode mode_ = CompletionStoreMode::Uninitialized;
+    std::uint64_t revision_ = 0u;
 };
 
 }  // namespace campaign_completion

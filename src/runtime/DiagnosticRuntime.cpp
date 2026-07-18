@@ -90,9 +90,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.12.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.13.0 pid="
            << GetCurrentProcessId()
-           << " mode=phase-6e-campaign-session-persistence";
+           << " mode=phase-7-classified-completion-manager";
     logger_.Write(LogLevel::Info, header.str());
     constexpr DWORD kModuleInventoryRetryCount = 20u;
     constexpr DWORD kModuleInventoryRetryDelayMs = 100u;
@@ -170,8 +170,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
 
     logger_.Write(
         LogLevel::Info,
-        "phase-6e-campaign-session-persistence storage-writes=transactional "
-        "native-event=609-exact markers=enabled internal-menu-adapter=read-only");
+        "phase-7-classified-completion-manager storage-writes=transactional "
+        "manual-apply=revision-conflict-safe native-event=609-exact "
+        "markers=enabled internal-menu-adapter=read-only");
 
     constexpr DWORD kWaitStepMs = 100;
     constexpr DWORD kWaitLimitMs = 30'000;
@@ -290,6 +291,45 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         if (!worker_->Start()) {
             throw std::runtime_error("completion worker failed to start");
         }
+        completionManager_ = std::make_unique<CompletionManagerWindow>(
+            module,
+            [this] {
+                CompletionManagerView view{};
+                if (store_ == nullptr || paths_ == std::nullopt) {
+                    return view;
+                }
+                const auto stored = store_->SnapshotWithRevision();
+                const auto discovered = DiscoverFixedMaps(
+                    paths_->pluginDirectory.parent_path());
+                view.revision = stored.revision;
+                view.storeMode = stored.mode;
+                view.discoveryStatus = discovered.status;
+                view.catalog = BuildCompletionManagerCatalog(
+                    campaignDescriptors_, discovered.maps,
+                    stored.database);
+                return view;
+            },
+            [this](const ManualCompletionRequest& request) {
+                if (store_ == nullptr) {
+                    return ManualCompletionApplyResult{
+                        ManualCompletionApplyStatus::Failed,
+                        CompletionTransactionStage::None,
+                        ERROR_INVALID_HANDLE, 0u};
+                }
+                const auto result = store_->ApplyManual(request);
+                if (result.status ==
+                    ManualCompletionApplyStatus::Committed) {
+                    const auto snapshot = store_->Snapshot();
+                    markerIndex_.Publish(snapshot);
+                    campaignMarkerIndex_.Publish(
+                        snapshot, campaignDescriptors_);
+                }
+                return result;
+            });
+        if (!completionManager_->Start()) {
+            throw std::runtime_error(
+                "completion manager UI thread failed to start");
+        }
         completionCoordinator_ =
             std::make_unique<CompletionCandidateCoordinator>(
                 [] { return CurrentUtcCompletionTime(); });
@@ -320,7 +360,8 @@ bool DiagnosticRuntime::Start(HMODULE module) {
                           campaignDescriptors_, nativeSubscriber_,
                           victoryProbe_, *completionAdmission_,
                           *markerObserver_, *campaignMarkerObserver_,
-                          *markerRenderer_, fixedMapMenuMemory_)) {
+                          *markerRenderer_, fixedMapMenuMemory_,
+                          completionManager_.get())) {
         AbortStart();
         return false;
     }
@@ -368,6 +409,14 @@ void DiagnosticRuntime::RequestControlledStop() noexcept {
 }
 
 bool DiagnosticRuntime::TryControlledStop() {
+    if (completionManager_ != nullptr) {
+        completionManager_->SetMainMenuAvailable(false);
+        if (!completionManager_->Stop(std::chrono::milliseconds(5000))) {
+            logger_.Write(LogLevel::Warning,
+                          "completion manager stop timed out; runtime retained");
+            return false;
+        }
+    }
     if (completionAdmission_ != nullptr) completionAdmission_->Disable();
     if (campaignSessionAdmission_ != nullptr) {
         campaignSessionAdmission_->Disable();
@@ -441,6 +490,7 @@ void DiagnosticRuntime::Stop() {
     completionAdmission_.reset();
     completionCoordinator_.reset();
     worker_.reset();
+    completionManager_.reset();
     markerRenderer_.reset();
     if (markerSurface_ != nullptr) markerSurface_->Shutdown();
     markerSurface_.reset();
@@ -477,6 +527,17 @@ void DiagnosticRuntime::AbortStart() noexcept {
             campaignMarkerObserver_->Disable();
         }
         if (markerRenderer_ != nullptr) markerRenderer_->Disable();
+        if (completionManager_ != nullptr) {
+            completionManager_->SetMainMenuAvailable(false);
+            if (!completionManager_->Stop(
+                    std::chrono::milliseconds(5000))) {
+                logger_.Write(
+                    LogLevel::Warning,
+                    "completion manager abort stop timed out; "
+                    "runtime resources retained");
+                return;
+            }
+        }
         victoryProbe_.Disable();
         listeners_.Stop();
         if (worker_ != nullptr) {
@@ -485,6 +546,7 @@ void DiagnosticRuntime::AbortStart() noexcept {
         completionAdmission_.reset();
         completionCoordinator_.reset();
         worker_.reset();
+        completionManager_.reset();
         markerRenderer_.reset();
         if (markerSurface_ != nullptr) markerSurface_->Shutdown();
         markerSurface_.reset();

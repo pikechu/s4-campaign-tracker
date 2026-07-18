@@ -15,6 +15,7 @@
 #include "marker/CompletionMarkerRenderer.h"
 #include "marker/FixedMapMenuReader.h"
 #include "marker/FixedMapRowObserver.h"
+#include "manager/CompletionManagerHotkey.h"
 #include "native/NativeVictoryEventSubscriber.h"
 #include "runtime/CallbackGate.h"
 #include "runtime/ListenerRemoval.h"
@@ -30,6 +31,8 @@
 #include <vector>
 
 namespace campaign_completion {
+
+class CompletionManagerWindow;
 
 class RateLimiter final {
 public:
@@ -71,7 +74,8 @@ public:
                FixedMapRowObserver& markerObserver,
                CampaignMarkerObserver& campaignMarkerObserver,
                CompletionMarkerRenderer& markerRenderer,
-               FixedMapMenuMemoryView fixedMapMenuMemory);
+               FixedMapMenuMemoryView fixedMapMenuMemory,
+               CompletionManagerWindow* completionManager = nullptr);
     ListenerStopResult Stop();
 
 private:
@@ -142,6 +146,7 @@ private:
     FixedMapRowObserver* markerObserver_ = nullptr;
     CampaignMarkerObserver* campaignMarkerObserver_ = nullptr;
     CompletionMarkerRenderer* markerRenderer_ = nullptr;
+    CompletionManagerWindow* completionManager_ = nullptr;
     CampaignMenuCapture* campaignCapture_ = nullptr;
     CampaignLaunchAssociation* campaignAssociation_ = nullptr;
     CampaignSessionAdmission* campaignSessionAdmission_ = nullptr;
@@ -168,6 +173,7 @@ private:
     bool exactFixedMapPages_ = false;
     bool hasFixedMapMenuSnapshot_ = false;
     bool hasCampaignSnapshot_ = false;
+    CompletionManagerHotkey managerHotkey_;
     std::atomic<NativeSubscriptionState> lastNativeState_{
         NativeSubscriptionState::Idle};
 

@@ -1,5 +1,6 @@
 #include "runtime/S4Listeners.h"
 
+#include "manager/CompletionManagerWindow.h"
 #include "victory/MapSessionPolicy.h"
 
 #include <windows.h>
@@ -185,7 +186,8 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         FixedMapRowObserver& markerObserver,
                         CampaignMarkerObserver& campaignMarkerObserver,
                         CompletionMarkerRenderer& markerRenderer,
-                        FixedMapMenuMemoryView fixedMapMenuMemory) {
+                        FixedMapMenuMemoryView fixedMapMenuMemory,
+                        CompletionManagerWindow* completionManager) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
     origin_ = &origin;
@@ -200,6 +202,7 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     markerObserver_ = &markerObserver;
     campaignMarkerObserver_ = &campaignMarkerObserver;
     markerRenderer_ = &markerRenderer;
+    completionManager_ = completionManager;
     fixedMapMenuMemory_ = fixedMapMenuMemory;
     return StartPublicListeners(api, logger);
 }
@@ -259,6 +262,8 @@ ListenerStopResult S4Listeners::Stop() {
     markerObserver_ = nullptr;
     campaignMarkerObserver_ = nullptr;
     markerRenderer_ = nullptr;
+    completionManager_ = nullptr;
+    managerHotkey_.Reset();
     campaignCapture_ = nullptr;
     campaignAssociation_ = nullptr;
     campaignSessionAdmission_ = nullptr;
@@ -540,6 +545,21 @@ void S4Listeners::ObserveTick(BOOL delayed) {
     }
     const bool inGame =
         api_->IsCurrentlyOnScreen(S4_SCREEN_INGAME) != FALSE;
+    const bool mainMenu =
+        api_->IsCurrentlyOnScreen(S4_SCREEN_MAINMENU) != FALSE &&
+        !inGame;
+    if (completionManager_ != nullptr) {
+        completionManager_->SetMainMenuAvailable(mainMenu);
+        const bool controlDown =
+            (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+        const bool shiftDown =
+            (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+        const bool mDown = (GetAsyncKeyState('M') & 0x8000) != 0;
+        if (managerHotkey_.Observe(
+                controlDown, shiftDown, mDown, mainMenu)) {
+            completionManager_->RequestOpen();
+        }
+    }
     const auto now = GetTickCount64();
     if (campaignAssociation_ != nullptr) {
         campaignAssociation_->Expire(now);

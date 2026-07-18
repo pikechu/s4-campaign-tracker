@@ -19,6 +19,7 @@
 #include "marker/CompletionMarkerRenderer.h"
 #include "marker/DirectDrawMarkerSurface.h"
 #include "marker/FixedMapRowObserver.h"
+#include "manager/CompletionManagerWindow.h"
 #include "native/NativeEventAdmission.h"
 #include "native/NativeEventRegistration.h"
 #include "native/NativeVictoryEventSubscriber.h"
@@ -63,6 +64,7 @@ private:
     std::unique_ptr<DirectDrawMarkerSurface> markerSurface_;
     std::unique_ptr<CompletionMarkerRenderer> markerRenderer_;
     std::unique_ptr<CompletionWorker> worker_;
+    std::unique_ptr<CompletionManagerWindow> completionManager_;
     std::unique_ptr<CompletionCandidateCoordinator> completionCoordinator_;
     std::unique_ptr<CompletionAdmission> completionAdmission_;
     std::unique_ptr<CampaignSessionAdmission> campaignSessionAdmission_;

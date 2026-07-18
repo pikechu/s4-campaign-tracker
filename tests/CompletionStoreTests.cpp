@@ -430,5 +430,80 @@ int RunCompletionStoreTests() {
                     result.stage == CompletionTransactionStage::Encode,
                 "invalid record must fail before file I/O");
     }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded,
+                "manual transaction fixture must load main");
+        const auto opened = store.SnapshotWithRevision();
+        auto added = Record("b");
+        added.recordSource = std::string(kManualCompletionRecordSource);
+        ManualCompletionRequest request{};
+        request.baselineRevision = opened.revision;
+        request.entries = {
+            {opened.database.records.front().stableId,
+             opened.database.records.front(), false, true},
+            {added.stableId, added, true, true},
+        };
+        files.ResetOperationCounts();
+        const auto result = store.ApplyManual(request);
+        const auto committed = store.SnapshotWithRevision();
+        Require(result.status == ManualCompletionApplyStatus::Committed &&
+                    result.revision == opened.revision + 1u &&
+                    committed.revision == result.revision &&
+                    committed.database.records.size() == 1u &&
+                    committed.database.records.front().stableId ==
+                        added.stableId &&
+                    committed.database.records.front().recordSource ==
+                        kManualCompletionRecordSource &&
+                    files.writeCalls == 1u && files.replaceCalls == 1u,
+                "manual changes must commit as one atomic replacement");
+
+        files.ResetOperationCounts();
+        const auto stale = store.ApplyManual(request);
+        Require(stale.status == ManualCompletionApplyStatus::Conflict &&
+                    stale.revision == committed.revision &&
+                    files.writeCalls == 0u &&
+                    files.replaceCalls == 0u,
+                "stale manager revision must not write");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::WritableLoaded,
+                "manual failure fixture must load main");
+        const auto opened = store.SnapshotWithRevision();
+        ManualCompletionRequest request{};
+        request.baselineRevision = opened.revision;
+        request.entries = {
+            {opened.database.records.front().stableId,
+             opened.database.records.front(), false, true},
+        };
+        files.replaceFailure = CompletionTransactionStage::ReplaceMain;
+        const auto result = store.ApplyManual(request);
+        const auto retained = store.SnapshotWithRevision();
+        Require(result.status == ManualCompletionApplyStatus::Failed &&
+                    result.stage == CompletionTransactionStage::ReplaceMain &&
+                    retained.revision == opened.revision &&
+                    retained.database.records.size() == 1u,
+                "failed manual transaction must preserve revision and snapshot");
+    }
+    {
+        FakeFileOps files;
+        files.files[L"main"] = "{broken";
+        files.files[L"backup"] = Database(Record("a"));
+        auto store = MakeStore(files);
+        Require(store.Load().mode == CompletionStoreMode::ReadOnlyBackup,
+                "manual read-only fixture must load backup");
+        const auto opened = store.SnapshotWithRevision();
+        ManualCompletionRequest request{};
+        request.baselineRevision = opened.revision;
+        const auto result = store.ApplyManual(request);
+        Require(result.status == ManualCompletionApplyStatus::ReadOnly &&
+                    files.writeCalls == 0u,
+                "manual manager must not write in backup mode");
+    }
     return 0;
 }
