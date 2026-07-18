@@ -231,47 +231,47 @@ CampaignDescriptorEvidence InspectCampaignDescriptorEvidence(
     result.addOn =
         result.addOn &&
         MatchFileWindow(executable, 0x695F0u, 5952u,
-            "f096f896d81bc890c1655976eb830beac929b6396369f7c85b755a9945cb36d") &&
+            "f096f8969a8304498b0cd053adbb6c5a7793e77eb317f9c591b4c41f67dcb36d") &&
         MatchFileWindow(executable, 0x10D1A0u, 8960u,
-            "09408e19ee24df80e6c5dac5cb6dabd2be9a07798793254f7d4b76379098971") &&
+            "09408e191881efa8ba44705bb66a358e3e83d3e362d288ffed6a3596e4b98971") &&
         MatchFileWindow(executable, 0x22490u, 415u,
-            "9459c9d05561fce909b1998ec4e5bf207884bd4024f013b38990fa6ff512799");
+            "9459c9d0fc6c027ec736eb9bf9b3c0ddf6642edc0e8957919406bc8f81812799");
     result.missionCd =
         result.missionCd &&
         MatchFileWindow(executable, 0x95230u, 5136u,
-            "147f9db6610dc81e5879a79cba595383b6adf74173502a9bbcf7a28d6b90b3") &&
+            "147f9db65cbdd0b09fba7a0001cb15c96bea8cba4855226c6ebfca98c59b90b3") &&
         MatchFileWindow(executable, 0x123750u, 7104u,
-            "c3471442b6fb5876ea999d12aa6f941d553a0a9571b53da7b0f53890e1141b") &&
+            "c34714420d42d8f680705dd2d88dd158eb92ace78bcbe2b601a7eba8788e141b") &&
         MatchFileWindow(executable, 0x22EB0u, 415u,
-            "63278d299e47c494f8f3f3b11184307149c22f8a7b42d2978ab3b35f7af8b8");
+            "63278d29a609391708defde9fbbf28fd9c09d9f8a1ac9521fd8beab849aef8b8");
     result.newWorld =
         MatchFileWindow(executable, 0x94670u, 1040u,
-            "85f8bbd6896442a253a244288619f3b22d804b21cab2ec418c0b24f3e01e47") &&
+            "85f8bbd64886596ca14e3e9f5e624c91b30785331e2e4b243abedf33455d1e47") &&
         MatchFileWindow(executable, 0x1228F0u, 3376u,
-            "12d6217cc0832a5d181b22ad91bb4dc45732fb9a6748264e6347801e0a372a") &&
+            "12d6217ca1e1354ac4ff4b9b2d8dbf521c743bcdf5e3205f20c090b59d38372a") &&
         MatchFileWindow(executable, 0x22D80u, 297u,
-            "d37b56be34dc9797f28f9102c734be53efe76fa48320107e022c95070a2756");
+            "d37b56be5c1509afac177a56b17f9a9849b1ebf25cc696de848fb6d74a1c5c56");
     result.newWorld2 =
         MatchFileWindow(executable, 0xAF380u, 2752u,
-            "e1374d0dac959150a597ae1274ca6ce5d772007f9d6583de10a5ab97374b50") &&
+            "e1374d0d00cdd2d2280ea963907cf6f9692198c449862fd59895e80e2e3c4b50") &&
         MatchFileWindow(executable, 0x127EE0u, 3556u,
-            "085950439ced65fcfe77890d75c71ebf4ed7a139832a9cbff7bc1e14029471") &&
+            "08595043d6f859af73f4f92311023d60b1da1ebaf86f80c2e47b556741945471") &&
         MatchFileWindow(executable, 0x230A0u, 297u,
-            "3c56162605cd48a5fbec9671cc6e4da09468f7393ccaa04d0ddf1b46048ce88");
+            "3c561626b14678bf2a94d76097c44b785a91dd520a0e6d4438cecb6e1576ce88");
     result.original =
         result.original &&
         MatchFileWindow(executable, 0x7B550u, 1072u,
-            "ded0825cc4bb08bf435a1edcebd65f8976ba36e1bf6b5d8fc86242a9e069b3") &&
+            "ded0825cc53c46669bc2b8ba8e2bf19085b81129554609e81d035ce724d769b3") &&
         MatchFileWindow(executable, 0x10FA10u, 3751u,
-            "685185045a9cecf74145807fec9f6bab0602ee32d5ae1518a003bd55855722") &&
+            "685185042a2f72803083ffc09df07b225812a2a8569704e78e3908b9e3e95722") &&
         MatchFileWindow(executable, 0x227F0u, 384u,
-            "96a78fc19aa9be5f9623069fdb508706b15126cb06c7cce5ed9719866ab978");
+            "96a78fc162b178d98a4733fc758b0cc1fb1e73ba75ce51bd26b5a4308a6bd978");
     result.darkTribe =
         result.darkTribe &&
         MatchFileWindow(executable, 0x7CBB0u, 561u,
-            "44b14df62b75a2ad35278623b184f2b6700161c9bf41237c866177b779e016") &&
+            "44b14df6007177e510e7f68311f7827ead6cf7d9f3ae8271f9daa60cfeeae016") &&
         MatchFileWindow(executable, 0x7CEEBu, 677u,
-            "e0a84e0903b45b5ca577cc117c599fead9b16617e35f061007b6f96285df34");
+            "e0a84e09d81d061ea4a948ee3a97c86dbfc6d74f14a1ce8f138a6ef17964df34");
     return result;
 }
 

@@ -114,6 +114,27 @@ int RunRuntimePolicyTests() {
         root / "src" / "campaign" / "CampaignLaunchAssociation.cpp");
     const auto campaignDescriptors = ReadText(
         root / "src" / "campaign" / "CampaignDescriptorCatalog.cpp");
+    for (const auto* frozenWindow : {
+             "f096f8969a8304498b0cd053adbb6c5a7793e77eb317f9c591b4c41f67dcb36d",
+             "09408e191881efa8ba44705bb66a358e3e83d3e362d288ffed6a3596e4b98971",
+             "9459c9d0fc6c027ec736eb9bf9b3c0ddf6642edc0e8957919406bc8f81812799",
+             "147f9db65cbdd0b09fba7a0001cb15c96bea8cba4855226c6ebfca98c59b90b3",
+             "c34714420d42d8f680705dd2d88dd158eb92ace78bcbe2b601a7eba8788e141b",
+             "63278d29a609391708defde9fbbf28fd9c09d9f8a1ac9521fd8beab849aef8b8",
+             "85f8bbd64886596ca14e3e9f5e624c91b30785331e2e4b243abedf33455d1e47",
+             "12d6217ca1e1354ac4ff4b9b2d8dbf521c743bcdf5e3205f20c090b59d38372a",
+             "d37b56be5c1509afac177a56b17f9a9849b1ebf25cc696de848fb6d74a1c5c56",
+             "e1374d0d00cdd2d2280ea963907cf6f9692198c449862fd59895e80e2e3c4b50",
+             "08595043d6f859af73f4f92311023d60b1da1ebaf86f80c2e47b556741945471",
+             "3c561626b14678bf2a94d76097c44b785a91dd520a0e6d4438cecb6e1576ce88",
+             "ded0825cc53c46669bc2b8ba8e2bf19085b81129554609e81d035ce724d769b3",
+             "685185042a2f72803083ffc09df07b225812a2a8569704e78e3908b9e3e95722",
+             "96a78fc162b178d98a4733fc758b0cc1fb1e73ba75ce51bd26b5a4308a6bd978",
+             "44b14df6007177e510e7f68311f7827ead6cf7d9f3ae8271f9daa60cfeeae016",
+             "e0a84e09d81d061ea4a948ee3a97c86dbfc6d74f14a1ce8f138a6ef17964df34"}) {
+        Require(campaignDescriptors.find(frozenWindow) != std::string::npos,
+                "runtime descriptor evidence must use each full frozen window hash");
+    }
 
     Require(runtime.find("version=0.11.0") != std::string::npos &&
                 runtime.find("mode=phase-6d-all-campaign-completion-markers") !=
