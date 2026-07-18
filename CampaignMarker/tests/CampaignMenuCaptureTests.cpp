@@ -136,6 +136,8 @@ int RunCampaignMenuCaptureTests() {
     raw.containerType = 9u;
     raw.x = 12u;
     raw.y = 34u;
+    raw.xOffset = 56u;
+    raw.yOffset = 78u;
     raw.width = 120u;
     raw.height = 30u;
     raw.mainTexture = 42u;
@@ -154,6 +156,7 @@ int RunCampaignMenuCaptureTests() {
             "public GUI fields copy into owned storage");
     label[0] = 'X';
     Require(copied.hasText && copied.text.length == 11u &&
+                copied.xOffset == 56u && copied.yOffset == 78u &&
                 std::string_view(copied.text.bytes.data(), copied.text.length) ==
                     "Mission One",
             "copied text is pointer-free and survives source mutation");

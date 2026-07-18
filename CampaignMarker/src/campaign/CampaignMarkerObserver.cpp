@@ -1,6 +1,7 @@
 #include "campaign/CampaignMarkerObserver.h"
 
 #include <array>
+#include <limits>
 
 namespace campaign_completion {
 namespace {
@@ -11,12 +12,22 @@ CampaignControlIdentity IdentityFor(
             feature.height};
 }
 
-bool ValidBounds(const CampaignMenuFeature& feature) noexcept {
-    return feature.surfaceWidth != 0u && feature.surfaceHeight != 0u &&
-           static_cast<DWORD>(feature.x) + feature.width <=
-               feature.surfaceWidth &&
-           static_cast<DWORD>(feature.y) + feature.height <=
-               feature.surfaceHeight;
+bool TranslateBounds(const CampaignMenuFeature& feature, WORD& x,
+                     WORD& y) noexcept {
+    const DWORD translatedX =
+        static_cast<DWORD>(feature.x) + feature.xOffset;
+    const DWORD translatedY =
+        static_cast<DWORD>(feature.y) + feature.yOffset;
+    if (feature.surfaceWidth == 0u || feature.surfaceHeight == 0u ||
+        translatedX > (std::numeric_limits<WORD>::max)() ||
+        translatedY > (std::numeric_limits<WORD>::max)() ||
+        translatedX + feature.width > feature.surfaceWidth ||
+        translatedY + feature.height > feature.surfaceHeight) {
+        return false;
+    }
+    x = static_cast<WORD>(translatedX);
+    y = static_cast<WORD>(translatedY);
+    return true;
 }
 
 }  // namespace
@@ -60,7 +71,9 @@ void CampaignMarkerObserver::ObserveSnapshot(
                     CampaignMarkerMatchStatus::Unique) {
                 continue;
             }
-            if (!ValidBounds(feature) ||
+            WORD translatedX = 0u;
+            WORD translatedY = 0u;
+            if (!TranslateBounds(feature, translatedX, translatedY) ||
                 next.count >= next.commands.size()) {
                 std::lock_guard<std::mutex> lock(mutex_);
                 ClearLocked();
@@ -76,8 +89,8 @@ void CampaignMarkerObserver::ObserveSnapshot(
             }
             seen[next.count] = descriptor;
             next.commands[next.count++] = {
-                feature.surfaceWidth, feature.surfaceHeight, feature.x,
-                feature.y, feature.width, feature.height};
+                feature.surfaceWidth, feature.surfaceHeight, translatedX,
+                translatedY, feature.width, feature.height};
         }
         next.generation = snapshot.generation;
         std::lock_guard<std::mutex> lock(mutex_);

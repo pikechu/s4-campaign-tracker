@@ -205,8 +205,12 @@ deployed `0.13.2` candidate fixes both without changing the database
 transaction or identity policy. Live acceptance confirmed the controls and
 catalog, then requested an English-only interface and exposed that an
 unchanged Apply result was immediately overwritten by refresh guidance. The
-`0.13.3` candidate uses English-only manager text, enables Apply only for
-pending checkbox changes, and preserves the resulting status message. See the
+audited `0.13.3` candidate uses English-only manager text, enables Apply only
+for pending checkbox changes, and preserves the resulting status message.
+Live New World evidence then proved that composite-map campaign controls use
+container-relative geometry. The `0.13.4` candidate supersedes `0.13.3` and
+adds the public GUI container `xOffset/yOffset` before drawing campaign
+markers, while retaining local geometry for exact identity admission. See the
 [Phase 7 design](docs/superpowers/specs/2026-07-18-phase-7-classified-completion-manager-design.md).
 
 Phase 5C restored compatibility with historical `0.5.0` records without

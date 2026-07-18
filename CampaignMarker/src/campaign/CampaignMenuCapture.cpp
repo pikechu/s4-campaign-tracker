@@ -107,6 +107,8 @@ bool CopyCampaignMenuFeature(LPS4GUIDRAWBLTPARAMS source,
         candidate.containerType = source->containerType;
         candidate.x = source->x;
         candidate.y = source->y;
+        candidate.xOffset = source->xOffset;
+        candidate.yOffset = source->yOffset;
         candidate.width = source->width;
         candidate.height = source->height;
         candidate.mainTexture = source->mainTexture;
@@ -140,7 +142,8 @@ bool EqualCampaignMenuFeature(const CampaignMenuFeature& left,
            left.surfaceHeight == right.surfaceHeight &&
            left.gfxCollection == right.gfxCollection &&
            left.containerType == right.containerType && left.x == right.x &&
-           left.y == right.y && left.width == right.width &&
+           left.y == right.y && left.xOffset == right.xOffset &&
+           left.yOffset == right.yOffset && left.width == right.width &&
            left.height == right.height &&
            left.mainTexture == right.mainTexture &&
            left.valueLink == right.valueLink &&

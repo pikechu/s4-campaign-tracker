@@ -71,7 +71,7 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.13.3",
+             "Version=0.13.4",
              "DiagnosticMode=Phase7ClassifiedCompletionManager",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
@@ -146,7 +146,7 @@ int RunRuntimePolicyTests() {
                 "runtime descriptor evidence must use each full frozen window hash");
     }
 
-    Require(runtime.find("version=0.13.3") != std::string::npos &&
+    Require(runtime.find("version=0.13.4") != std::string::npos &&
                 runtime.find("mode=phase-7-classified-completion-manager") !=
                     std::string::npos,
             "runtime identifies the Phase 7 completion manager mode");
@@ -240,6 +240,12 @@ int RunRuntimePolicyTests() {
                 listeners.find("campaignCapture_->Invalidate()") !=
                     std::string::npos,
             "only exact static mission controls use bounded copy and malformed callbacks fail closed");
+    Require(campaignCapture.find("candidate.xOffset = source->xOffset") !=
+                    std::string::npos &&
+                campaignCapture.find(
+                    "candidate.yOffset = source->yOffset") !=
+                    std::string::npos,
+            "campaign capture retains the public GUI container offsets");
     Require(listeners.find(
                 "campaignAssociation_->ObserveClick(message, element,") !=
                     std::string::npos &&

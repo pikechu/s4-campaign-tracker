@@ -43,6 +43,8 @@ struct CampaignMenuFeature final {
     WORD containerType = 0u;
     WORD x = 0u;
     WORD y = 0u;
+    WORD xOffset = 0u;
+    WORD yOffset = 0u;
     WORD width = 0u;
     WORD height = 0u;
     WORD mainTexture = 0u;

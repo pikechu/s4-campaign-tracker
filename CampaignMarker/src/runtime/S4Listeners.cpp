@@ -149,7 +149,8 @@ std::string CampaignSnapshotRecord(const CampaignMenuSnapshot& snapshot) {
     for (std::size_t index = 0u; index < snapshot.count; ++index) {
         const auto& feature = snapshot.features[index];
         output << " feature=" << index << ':' << feature.valueLink << ','
-               << feature.x << ',' << feature.y << ',' << feature.width << ','
+               << feature.x << ',' << feature.y << ',' << feature.xOffset
+               << ',' << feature.yOffset << ',' << feature.width << ','
                << feature.height << ',' << feature.mainTexture << ','
                << feature.buttonPressedTexture << ',' << feature.tooltipLink
                << ',' << feature.tooltipLinkExtra << ',' << feature.imageStyle

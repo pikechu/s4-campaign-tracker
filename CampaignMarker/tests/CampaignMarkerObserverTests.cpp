@@ -50,6 +50,8 @@ int RunCampaignMarkerObserverTests() {
         feature.valueLink = descriptor.control.controlId;
         feature.x = descriptor.control.x;
         feature.y = descriptor.control.y;
+        feature.xOffset = 1u;
+        feature.yOffset = 1u;
         feature.width = descriptor.control.width;
         feature.height = descriptor.control.height;
     }
@@ -60,6 +62,11 @@ int RunCampaignMarkerObserverTests() {
         observer.TakeFrame(S4_SCREEN_NEWWORLD2, S4_SCREEN_NEWWORLD2);
     Require(frame.count == 36u,
             "all-completed composite page draws without truncation or hover");
+    Require(frame.commands[0].x ==
+                    static_cast<WORD>(composite.features[0].x + 1u) &&
+                frame.commands[0].y ==
+                    static_cast<WORD>(composite.features[0].y + 1u),
+            "campaign markers add the public GUI container offset");
     Require(observer.TakeFrame(S4_SCREEN_NEWWORLD, S4_SCREEN_NEWWORLD2).count ==
                 0u,
             "a non-owner callback cannot draw the retained campaign frame");
@@ -68,6 +75,13 @@ int RunCampaignMarkerObserverTests() {
     Require(observer.TakeFrame(S4_SCREEN_NEWWORLD2,
                                S4_GUI_UNKNOWN).count == 0u,
             "leaving campaign pages clears retained commands");
+
+    auto outOfBounds = composite;
+    outOfBounds.features[0].xOffset = 800u;
+    observer.ObserveSnapshot(outOfBounds);
+    Require(observer.TakeFrame(S4_SCREEN_NEWWORLD2,
+                               S4_SCREEN_NEWWORLD2).count == 0u,
+            "translated campaign geometry outside the surface fails closed");
 
     auto invalid = composite;
     invalid.status = CampaignMenuSnapshotStatus::Invalid;
