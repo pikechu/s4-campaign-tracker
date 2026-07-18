@@ -15,6 +15,7 @@
 namespace campaign_completion {
 
 inline constexpr std::size_t kMaximumVisibleFixedRows = 6u;
+inline constexpr std::size_t kMaximumMarkerCommands = 36u;
 
 struct FixedMapRowObservation final {
     DWORD surfaceWidth = 0u;
@@ -39,7 +40,7 @@ struct MarkerDrawCommand final {
 };
 
 struct MarkerFrameCommands final {
-    std::array<MarkerDrawCommand, kMaximumVisibleFixedRows> commands{};
+    std::array<MarkerDrawCommand, kMaximumMarkerCommands> commands{};
     std::size_t count = 0u;
     std::uint64_t generation = 0u;
 };

@@ -4,6 +4,7 @@
 #include "campaign/CampaignLaunchAssociation.h"
 #include "campaign/CampaignDescriptorCatalog.h"
 #include "campaign/CampaignMenuCapture.h"
+#include "campaign/CampaignMarkerObserver.h"
 #include "completion/CompletionAdmission.h"
 #include "diagnostics/Logger.h"
 #include "diagnostics/Phase3Trace.h"
@@ -61,7 +62,11 @@ public:
                Phase3Trace& phase3Trace,
                CampaignMenuCapture& campaignCapture,
                CampaignLaunchAssociation& campaignAssociation,
-               const CampaignDescriptorCatalog& campaignDescriptors);
+               const CampaignDescriptorCatalog& campaignDescriptors,
+               FixedMapRowObserver& markerObserver,
+               CampaignMarkerObserver& campaignMarkerObserver,
+               CompletionMarkerRenderer& markerRenderer,
+               FixedMapMenuMemoryView fixedMapMenuMemory);
     ListenerStopResult Stop();
 
 private:
@@ -130,6 +135,7 @@ private:
     CompletionAdmission* completionAdmission_ = nullptr;
     Phase3Trace* phase3Trace_ = nullptr;
     FixedMapRowObserver* markerObserver_ = nullptr;
+    CampaignMarkerObserver* campaignMarkerObserver_ = nullptr;
     CompletionMarkerRenderer* markerRenderer_ = nullptr;
     CampaignMenuCapture* campaignCapture_ = nullptr;
     CampaignLaunchAssociation* campaignAssociation_ = nullptr;

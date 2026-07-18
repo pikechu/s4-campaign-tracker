@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -25,6 +26,9 @@ enum class CompatibilityResult {
 
 std::vector<ModuleInfo> EnumerateLoadedModules();
 std::optional<std::string> Sha256File(const std::filesystem::path& path);
+std::optional<std::string> Sha256FileRange(
+    const std::filesystem::path& path, std::uint64_t offset,
+    std::size_t length);
 std::string FileVersion(const std::filesystem::path& path);
 CompatibilityResult CheckTargetExecutable(const ModuleInfo& executable);
 

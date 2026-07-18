@@ -221,10 +221,11 @@ an identity or database key. A successful snapshot atomically replaces the
 retained owner frame. Invalid, ambiguous, over-capacity, or non-campaign state
 clears it. Hover/effects-only updates retain the same identity and geometry.
 
-Size the neutral marker frame from the frozen matrix's maximum simultaneously
-visible mission controls, with a compile-time bound no smaller than 16. Dark
-Tribe's 12 controls must not truncate. `FixedMapRowObserver` remains limited to
-its six accepted rows.
+Size the neutral marker frame to the frozen matrix's exact maximum of 36
+simultaneously visible mission controls. The composed page 6 exposes all 20
+New World and 16 New World 2 controls in one owner frame; neither it nor Dark
+Tribe's 12 controls may truncate. `FixedMapRowObserver` remains limited to its
+six accepted rows.
 
 Reuse the accepted embedded PNG, `DirectDrawMarkerSurface`, and checked
 `BuildMarkerCheckGeometry`. The marker remains anchored at each mission
@@ -258,8 +259,10 @@ The production candidate restores only previously accepted components plus:
 - the campaign completion index;
 - the all-campaign public observer and shared renderer scheduling.
 
-Startup publishes an owned compatible store snapshot without writing it. An
-unchanged database causes no normalization or commit. Campaign completion is
+Startup reads only the main database once through the existing 4 MiB bounded
+file interface and publishes the owned compatible snapshot without writing it.
+Missing, unavailable, or malformed main data fails closed to an empty snapshot;
+there is no backup read, normalization, creation, or commit. Campaign completion is
 written only after a later explicitly authorized live victory reaches the exact
 gate. Shutdown disables admission and observers, drains the bounded worker,
 removes listeners in reverse order, and releases renderer/store objects without

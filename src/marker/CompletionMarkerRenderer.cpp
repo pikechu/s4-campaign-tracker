@@ -65,7 +65,7 @@ MarkerRenderStatus CompletionMarkerRenderer::Render(
         if (!surface_.Describe(destination, extent)) {
             return Fail(MarkerRenderFailureStage::Describe, nowMs);
         }
-        std::array<MarkerCheckGeometry, kMaximumVisibleFixedRows> geometry{};
+        std::array<MarkerCheckGeometry, kMaximumMarkerCommands> geometry{};
         for (std::size_t index = 0u; index < frame.count; ++index) {
             const auto built = BuildMarkerCheckGeometry(
                 frame.commands[index], pillarboxWidth, extent.width,

@@ -69,16 +69,19 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.10.0",
-             "DiagnosticMode=Phase6DGapOnlyCampaignCatalog",
-             "InternalMenuReadOnly=0", "InternalMenuWrites=0",
+             "Version=0.11.0",
+             "DiagnosticMode=Phase6DAllCampaignCompletionMarkers",
+             "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
              "PublicSettlementUiProbe=0", "LaunchOriginTracking=1",
              "LoadOriginRecovery=0", "NativeEventSubscription=0",
              "InternalVictoryHook=0", "HookCount=0", "CodePatchBytes=0",
              "GameDefaultGameEndCheckCalls=0", "LuaWrites=0",
              "GameDataWrites=0", "CompletionDetection=0",
-             "CompletionStorage=0", "CompletionMarkers=0",
+             "CompletionStorage=0", "CompletionMarkers=1",
+             "CompletionDatabaseReadOnly=1",
+             "CompletionDatabaseWrites=0", "CampaignMarkers=1",
+             "CampaignMarkerFrameCapacity=36",
              "CampaignMenuPublicCapture=1",
              "CampaignMenuPages=3,4,5,6,11,12,13,14,15,16,17,18,19,20,21",
              "CampaignMenuAssociation=SettlersUnitedLua",
@@ -88,8 +91,8 @@ int RunRuntimePolicyTests() {
              "CampaignLaunchLeaseMs=30000",
              "CampaignDescriptorCatalog=ImmutableStaticReadOnly",
              "CampaignDescriptorIdentity=SameSessionRelativeExact",
-             "CampaignDescriptorGroups=ExistingPhase6C1Unchanged",
-             "CampaignDescriptorEvidenceGaps=PublicRectanglesOnly",
+             "CampaignDescriptorGroups=All107Closed",
+             "CampaignDescriptorEvidenceGaps=None",
              "IdentitySource=SettlersUnitedLua", "CaptureTraceRoot="}) {
         Require(policy.find(required) != std::string::npos,
                 "Phase 6D packaged policy field is missing");
@@ -112,10 +115,10 @@ int RunRuntimePolicyTests() {
     const auto campaignDescriptors = ReadText(
         root / "src" / "campaign" / "CampaignDescriptorCatalog.cpp");
 
-    Require(runtime.find("version=0.10.0") != std::string::npos &&
-                runtime.find("mode=phase-6d-gap-only-campaign-catalog") !=
+    Require(runtime.find("version=0.11.0") != std::string::npos &&
+                runtime.find("mode=phase-6d-all-campaign-completion-markers") !=
                     std::string::npos,
-            "runtime identifies the Phase 6D diagnostic mode");
+            "runtime identifies the Phase 6D read-only marker mode");
     Require(runtime.find("kModuleInventoryRetryCount = 20u") !=
                     std::string::npos &&
                 runtime.find("kModuleInventoryRetryDelayMs = 100u") !=
@@ -131,32 +134,41 @@ int RunRuntimePolicyTests() {
                     "std::unique_ptr<CampaignLaunchAssociation>") !=
                     std::string::npos &&
                 runtimeHeader.find("CampaignDescriptorCatalog campaignDescriptors_") !=
+                    std::string::npos &&
+                runtimeHeader.find("ReadOnlyCompletionSource") !=
+                    std::string::npos &&
+                runtimeHeader.find("CampaignCompletionMarkerIndex") !=
+                    std::string::npos &&
+                runtimeHeader.find("CampaignMarkerObserver") !=
                     std::string::npos,
-            "runtime owns bounded capture, association, and immutable descriptors");
+            "runtime owns bounded capture, immutable descriptors, and read-only marker state");
     Require(runtime.find("std::make_unique<CampaignMenuCapture>()") !=
                     std::string::npos &&
                 runtime.find(
                     "std::make_unique<CampaignLaunchAssociation>()") !=
                     std::string::npos &&
                 runtime.find("AdmitCampaignDescriptorCatalog(*executable)") !=
+                    std::string::npos &&
+                runtime.find("completionSource_->Load()") !=
+                    std::string::npos &&
+                runtime.find("campaignMarkerIndex_.Publish(") !=
                     std::string::npos,
-            "runtime constructs the read-only diagnostic components");
+            "runtime constructs and publishes the read-only marker components");
 
     for (const auto* forbidden : {
-             "Win32CompletionFileOps", "CompletionStore",
-             "CompletionWorker", "CompletionAdmission",
+             "CompletionStore", "CompletionWorker", "CompletionAdmission",
              "CompletionCandidateCoordinator", "NativeEventAdmission::Create",
              "NativeEventRegistration", "NativeVictoryEventSubscriber",
-             "VictoryEventProbe", "CompletionMarkerIndex",
-             "FixedMapRowObserver", "DirectDrawMarkerSurface",
-             "CompletionMarkerRenderer", "AdmitFixedMapMenuMemory",
+             "VictoryEventProbe",
              "FixedMapLoadHook", "HlibCallPatchBackend", "HookSiteLayout"}) {
         Require((runtime + runtimeHeader).find(forbidden) == std::string::npos,
-                "Phase 6D runtime must not own a writer, native event, marker, or Hook path");
+                "Phase 6D runtime must not own a storage writer, native event, or Hook path");
     }
-    Require(runtime.find("phase-6d-gap-only-read-only storage=disabled") !=
+    Require(runtime.find("phase-6d-all-campaign-read-only storage-writes=disabled") !=
+                    std::string::npos &&
+                runtime.find("native-events=disabled markers=enabled") !=
                     std::string::npos,
-            "runtime logs the enforced read-only construction boundary");
+            "runtime logs the enforced read-only marker boundary");
 
     Require(listenerHeader.find("CampaignMenuCapture& campaignCapture") !=
                     std::string::npos &&

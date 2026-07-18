@@ -6,18 +6,21 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <string_view>
 
 namespace campaign_completion {
 
 enum class CampaignDescriptorGroup : std::uint8_t {
     AddOn,
-    MdRoman,
-    Original,
-    DarkTribe,
+    MissionCd,
     NewWorld,
     NewWorld2,
+    Original,
+    DarkTribe,
     Count,
 };
+
+inline constexpr std::size_t kPhase6DCampaignDescriptorCount = 107u;
 
 struct CampaignDescriptorRecord final {
     const char* key = nullptr;
@@ -25,13 +28,15 @@ struct CampaignDescriptorRecord final {
     DWORD page = S4_GUI_UNKNOWN;
     CampaignControlIdentity control{};
     std::uint8_t ordinal = 0u;
-    std::uint8_t formatterSlot = 0u;
+    std::uint8_t transitionKind = 0u;
     const wchar_t* relative = nullptr;
 };
 
 struct CampaignDescriptorEvidence final {
     bool addOn = false;
-    bool mdRoman = false;
+    bool missionCd = false;
+    bool newWorld = false;
+    bool newWorld2 = false;
     bool original = false;
     bool darkTribe = false;
 };
@@ -72,5 +77,11 @@ CampaignDescriptorValidation ValidateCampaignDescriptor(
 const CampaignDescriptorRecord* FindAdmittedCampaignDescriptor(
     const CampaignDescriptorCatalog& catalog, DWORD page,
     const CampaignControlIdentity& control) noexcept;
+const CampaignDescriptorRecord* FindAdmittedCampaignDescriptorRelative(
+    const CampaignDescriptorCatalog& catalog,
+    std::wstring_view relative) noexcept;
+const std::array<CampaignDescriptorRecord,
+                 kPhase6DCampaignDescriptorCount>&
+AllCampaignDescriptors() noexcept;
 
 }  // namespace campaign_completion

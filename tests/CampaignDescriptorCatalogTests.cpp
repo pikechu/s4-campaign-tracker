@@ -1,6 +1,9 @@
 #include "campaign/CampaignDescriptorCatalog.h"
 
+#include <set>
 #include <stdexcept>
+#include <string>
+#include <utility>
 
 namespace {
 
@@ -24,19 +27,38 @@ int RunCampaignDescriptorCatalogTests() {
 
     CampaignDescriptorEvidence evidence{};
     evidence.addOn = true;
-    evidence.mdRoman = true;
     evidence.original = true;
     evidence.darkTribe = true;
+    evidence.missionCd = true;
+    evidence.newWorld = true;
+    evidence.newWorld2 = true;
     const auto catalog = AdmitCampaignDescriptorCatalog(ApprovedModule(), evidence);
     Require(catalog.executableAdmitted, "exact executable admits the catalog");
     Require(catalog.GroupAdmitted(CampaignDescriptorGroup::AddOn) &&
-                catalog.GroupAdmitted(CampaignDescriptorGroup::MdRoman) &&
+                catalog.GroupAdmitted(CampaignDescriptorGroup::MissionCd) &&
                 catalog.GroupAdmitted(CampaignDescriptorGroup::Original) &&
-                catalog.GroupAdmitted(CampaignDescriptorGroup::DarkTribe),
-            "independent frozen groups are admitted");
-    Require(!catalog.GroupAdmitted(CampaignDescriptorGroup::NewWorld) &&
-                !catalog.GroupAdmitted(CampaignDescriptorGroup::NewWorld2),
-            "unproven New World groups remain disabled");
+                catalog.GroupAdmitted(CampaignDescriptorGroup::DarkTribe) &&
+                catalog.GroupAdmitted(CampaignDescriptorGroup::NewWorld) &&
+                catalog.GroupAdmitted(CampaignDescriptorGroup::NewWorld2),
+            "all independently frozen groups are admitted");
+
+    const auto& descriptors = AllCampaignDescriptors();
+    Require(descriptors.size() == 107u,
+            "the frozen matrix publishes every campaign descriptor");
+    std::set<std::string> keys;
+    std::set<std::pair<DWORD, WORD>> controls;
+    for (const auto& descriptor : descriptors) {
+        Require(descriptor.key != nullptr && descriptor.relative != nullptr &&
+                    descriptor.control.width != 0u &&
+                    descriptor.control.height != 0u &&
+                    catalog.GroupAdmitted(descriptor.group),
+                "every frozen descriptor is complete and admitted");
+        Require(keys.emplace(descriptor.key).second,
+                "descriptor keys are globally unique");
+        Require(controls.emplace(descriptor.page,
+                                 descriptor.control.controlId).second,
+                "page/control keys are globally unique");
+    }
 
     CampaignMenuAssociation association{};
     association.page = S4_SCREEN_ADDON_TROJAN;
@@ -97,12 +119,12 @@ int RunCampaignDescriptorCatalogTests() {
                 CampaignDescriptorValidationStatus::Matched,
             "accepted Dark Tribe same-session anchor remains reusable");
 
-    association.page = S4_SCREEN_NEWWORLD;
+    association.page = S4_SCREEN_NEWWORLD2;
     association.control = {1u, 1u, 1u, 1u, 1u};
     association.relative = L"Map\\Campaign\\md_roman1.map";
     Require(ValidateCampaignDescriptor(catalog, association).status ==
-                CampaignDescriptorValidationStatus::GroupNotAdmitted,
-            "an evidence gap cannot be classified from a plausible path");
+                CampaignDescriptorValidationStatus::ControlUnknown,
+            "an unknown composite-page control cannot be classified from a plausible path");
 
     auto wrongModule = ApprovedModule();
     wrongModule.sha256.back() = '0';
@@ -112,7 +134,7 @@ int RunCampaignDescriptorCatalogTests() {
                     CampaignDescriptorValidationStatus::CatalogNotAdmitted,
             "executable mismatch rejects every descriptor");
 
-    evidence.mdRoman = false;
+    evidence.missionCd = false;
     const auto localFailure =
         AdmitCampaignDescriptorCatalog(ApprovedModule(), evidence);
     association.page = S4_SCREEN_MISSIONCD_ROMAN;

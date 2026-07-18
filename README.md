@@ -256,15 +256,13 @@ flow closes 107 selectable campaign
 mission chains; 19 also have accepted public rectangles, while 88 need only a
 single gap-only rectangle sweep. The pass correctly assigns `mcd2_*` to the
 composed New World family and `md_*` to pages 16–19. It also proves that page 4
-contains one direct `md_bonus` mission control. The `0.10.0` read-only gap-only
-catalog candidate now primes the public campaign owner before the first UI
-frame and retains only exact statically proven mission-control IDs, including
-page-4 control 1919. Deployment remains unapproved; the installed archive,
-database, save, and game process remain unchanged. After the gap-only matrix is
-frozen, one common candidate can add the separate campaign index,
-exact descriptor-gated Campaign completion source, public snapshot observer,
-and accepted PNG renderer. Deployment and any bounded completion-database
-read/one-record write still require their own explicit approvals. See the
+contains one direct `md_bonus` mission control. The live gap-only sweep has now
+closed all 107 public rectangles with zero geometry gaps. The in-development
+`0.11.0` candidate uses that immutable matrix, a separate exact Campaign index,
+one bounded main-database read, the public snapshot observer, and the accepted
+PNG renderer. It keeps completion detection, storage writes, native events,
+Lua writes, and game-data writes disabled. Deployment remains unapproved; the
+installed archive, database, save, and game process remain unchanged. See the
 [Phase 6D design](docs/superpowers/specs/2026-07-16-phase-6d-campaign-completion-marker-index-and-rendering-design.md)
 and [offline evidence](docs/research/phase-6d-all-campaign-offline-unified-evidence.md).
 The audited gap-only candidate is recorded in the

@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <iomanip>
 #include <iterator>
+#include <stdexcept>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -75,9 +76,9 @@ bool DiagnosticRuntime::Start(HMODULE module) {
     }
 
     std::ostringstream header;
-    header << "CampaignCompletionDebug bootstrap version=0.10.0 pid="
+    header << "CampaignCompletionDebug bootstrap version=0.11.0 pid="
            << GetCurrentProcessId()
-           << " mode=phase-6d-gap-only-campaign-catalog";
+           << " mode=phase-6d-all-campaign-completion-markers";
     logger_.Write(LogLevel::Info, header.str());
     constexpr DWORD kModuleInventoryRetryCount = 20u;
     constexpr DWORD kModuleInventoryRetryDelayMs = 100u;
@@ -136,21 +137,27 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         << " addon="
         << (campaignDescriptors_.GroupAdmitted(CampaignDescriptorGroup::AddOn)
                 ? "admitted" : "disabled")
-        << " mdroman="
+        << " missioncd="
         << (campaignDescriptors_.GroupAdmitted(
-                CampaignDescriptorGroup::MdRoman) ? "admitted" : "disabled")
+                CampaignDescriptorGroup::MissionCd) ? "admitted" : "disabled")
+        << " newworld="
+        << (campaignDescriptors_.GroupAdmitted(
+                CampaignDescriptorGroup::NewWorld) ? "admitted" : "disabled")
+        << " newworld2="
+        << (campaignDescriptors_.GroupAdmitted(
+                CampaignDescriptorGroup::NewWorld2) ? "admitted" : "disabled")
         << " original="
         << (campaignDescriptors_.GroupAdmitted(
                 CampaignDescriptorGroup::Original) ? "admitted" : "disabled")
         << " dark="
         << (campaignDescriptors_.GroupAdmitted(
-                CampaignDescriptorGroup::DarkTribe) ? "admitted" : "disabled")
-        << " newworld=disabled newworld2=disabled";
+                CampaignDescriptorGroup::DarkTribe) ? "admitted" : "disabled");
     logger_.Write(LogLevel::Info, descriptorAdmission.str());
 
-    logger_.Write(LogLevel::Info,
-                  "phase-6d-gap-only-read-only storage=disabled native-events=disabled "
-                  "markers=disabled internal-menu-adapter=disabled");
+    logger_.Write(
+        LogLevel::Info,
+        "phase-6d-all-campaign-read-only storage-writes=disabled "
+        "native-events=disabled markers=enabled internal-menu-adapter=read-only");
 
     constexpr DWORD kWaitStepMs = 100;
     constexpr DWORD kWaitLimitMs = 30'000;
@@ -195,16 +202,45 @@ bool DiagnosticRuntime::Start(HMODULE module) {
         campaignCapture_ = std::make_unique<CampaignMenuCapture>();
         campaignAssociation_ =
             std::make_unique<CampaignLaunchAssociation>();
+        completionSource_ = std::make_unique<ReadOnlyCompletionSource>(
+            completionFiles_, paths_->database);
+        const auto loaded = completionSource_->Load();
+        markerIndex_.Publish(loaded.snapshot);
+        const auto campaignSummary =
+            campaignMarkerIndex_.Publish(loaded.snapshot, campaignDescriptors_);
+        markerObserver_ =
+            std::make_unique<FixedMapRowObserver>(markerIndex_);
+        campaignMarkerObserver_ = std::make_unique<CampaignMarkerObserver>(
+            campaignDescriptors_, campaignMarkerIndex_);
+        markerSurface_ = std::make_unique<DirectDrawMarkerSurface>();
+        if (!markerSurface_->Initialize()) {
+            throw std::runtime_error("marker surface initialization failed");
+        }
+        markerRenderer_ = std::make_unique<CompletionMarkerRenderer>(
+            *markerSurface_, [this](LogLevel level, std::string line) {
+                logger_.Write(level, line);
+            });
+        fixedMapMenuMemory_ = AdmitFixedMapMenuMemory(*executable);
+        std::ostringstream markerAdmission;
+        markerAdmission << "completion-database-read-only status="
+                        << static_cast<unsigned>(loaded.status)
+                        << " records=" << loaded.snapshot.records.size()
+                        << " campaign-admitted=" << campaignSummary.admitted
+                        << " campaign-rejected=" << campaignSummary.rejected
+                        << " campaign-ambiguous=" << campaignSummary.ambiguous;
+        logger_.Write(LogLevel::Info, markerAdmission.str());
     } catch (...) {
         logger_.Write(LogLevel::Error,
-                      "campaign menu diagnostic initialization failed");
+                      "read-only campaign marker initialization failed");
         AbortStart();
         return false;
     }
 
     if (!listeners_.Start(api_, logger_, *coordinator_, luaBridge_, origin_,
                           phase3Trace_, *campaignCapture_,
-                          *campaignAssociation_, campaignDescriptors_)) {
+                          *campaignAssociation_, campaignDescriptors_,
+                          *markerObserver_, *campaignMarkerObserver_,
+                          *markerRenderer_, fixedMapMenuMemory_)) {
         AbortStart();
         return false;
     }
@@ -256,6 +292,11 @@ bool DiagnosticRuntime::TryControlledStop() {
         if (campaignAssociation_ != nullptr) {
             campaignAssociation_->Disable();
         }
+        if (markerObserver_ != nullptr) markerObserver_->Disable();
+        if (campaignMarkerObserver_ != nullptr) {
+            campaignMarkerObserver_->Disable();
+        }
+        if (markerRenderer_ != nullptr) markerRenderer_->Disable();
         const auto result = listeners_.Stop();
         listenerStopFailures_ = result.failures;
         listenersStopped_ = true;
@@ -286,6 +327,13 @@ void DiagnosticRuntime::Stop() {
                                     : "controlled-stop-flush=failed");
     campaignAssociation_.reset();
     campaignCapture_.reset();
+    markerRenderer_.reset();
+    if (markerSurface_ != nullptr) markerSurface_->Shutdown();
+    markerSurface_.reset();
+    campaignMarkerObserver_.reset();
+    markerObserver_.reset();
+    completionSource_.reset();
+    fixedMapMenuMemory_ = {};
     campaignDescriptors_ = {};
     coordinator_.reset();
     phase3Trace_.Close();
@@ -303,7 +351,19 @@ void DiagnosticRuntime::AbortStart() noexcept {
         if (campaignAssociation_ != nullptr) {
             campaignAssociation_->Disable();
         }
+        if (markerObserver_ != nullptr) markerObserver_->Disable();
+        if (campaignMarkerObserver_ != nullptr) {
+            campaignMarkerObserver_->Disable();
+        }
+        if (markerRenderer_ != nullptr) markerRenderer_->Disable();
         listeners_.Stop();
+        markerRenderer_.reset();
+        if (markerSurface_ != nullptr) markerSurface_->Shutdown();
+        markerSurface_.reset();
+        campaignMarkerObserver_.reset();
+        markerObserver_.reset();
+        completionSource_.reset();
+        fixedMapMenuMemory_ = {};
         campaignAssociation_.reset();
         campaignCapture_.reset();
         campaignDescriptors_ = {};

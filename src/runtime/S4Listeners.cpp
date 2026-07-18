@@ -177,7 +177,11 @@ bool S4Listeners::Start(S4API api, Logger& logger,
                         Phase3Trace& phase3Trace,
                         CampaignMenuCapture& campaignCapture,
                         CampaignLaunchAssociation& campaignAssociation,
-                        const CampaignDescriptorCatalog& campaignDescriptors) {
+                        const CampaignDescriptorCatalog& campaignDescriptors,
+                        FixedMapRowObserver& markerObserver,
+                        CampaignMarkerObserver& campaignMarkerObserver,
+                        CompletionMarkerRenderer& markerRenderer,
+                        FixedMapMenuMemoryView fixedMapMenuMemory) {
     coordinator_ = &coordinator;
     bridge_ = &bridge;
     origin_ = &origin;
@@ -185,6 +189,10 @@ bool S4Listeners::Start(S4API api, Logger& logger,
     campaignCapture_ = &campaignCapture;
     campaignAssociation_ = &campaignAssociation;
     campaignDescriptors_ = &campaignDescriptors;
+    markerObserver_ = &markerObserver;
+    campaignMarkerObserver_ = &campaignMarkerObserver;
+    markerRenderer_ = &markerRenderer;
+    fixedMapMenuMemory_ = fixedMapMenuMemory;
     return StartPublicListeners(api, logger);
 }
 
@@ -241,6 +249,7 @@ ListenerStopResult S4Listeners::Stop() {
     completionAdmission_ = nullptr;
     phase3Trace_ = nullptr;
     markerObserver_ = nullptr;
+    campaignMarkerObserver_ = nullptr;
     markerRenderer_ = nullptr;
     campaignCapture_ = nullptr;
     campaignAssociation_ = nullptr;
@@ -333,12 +342,19 @@ void S4Listeners::ObserveUiFrame(DWORD page,
     if (campaignAssociation_ != nullptr) {
         campaignAssociation_->ObservePage(campaignPage);
     }
+    if (campaignMarkerObserver_ != nullptr) {
+        campaignMarkerObserver_->ObservePage(campaignPage);
+    }
     if (campaignCapture_ != nullptr) {
         const auto campaignSnapshot =
             campaignCapture_->ObserveFrame(campaignPage, campaignPageActive);
         if (campaignSnapshot.has_value()) {
             if (campaignAssociation_ != nullptr) {
                 campaignAssociation_->ObserveSnapshot(
+                    campaignSnapshot.value());
+            }
+            if (campaignMarkerObserver_ != nullptr) {
+                campaignMarkerObserver_->ObserveSnapshot(
                     campaignSnapshot.value());
             }
             if (logger_ != nullptr &&
@@ -369,8 +385,13 @@ void S4Listeners::ObserveUiFrame(DWORD page,
         }
     }
     ObserveInternalMenu(page);
-    if (markerObserver_ != nullptr && markerRenderer_ != nullptr) {
-        const auto frame = markerObserver_->TakeFrame(page);
+    if (markerRenderer_ != nullptr) {
+        auto frame = campaignMarkerObserver_ != nullptr
+            ? campaignMarkerObserver_->TakeFrame(page, campaignPage)
+            : MarkerFrameCommands{};
+        if (frame.count == 0u && markerObserver_ != nullptr) {
+            frame = markerObserver_->TakeFrame(page);
+        }
         markerRenderer_->Render(surface, pillarboxWidth, frame, now);
     }
     if (origin_ != nullptr) {

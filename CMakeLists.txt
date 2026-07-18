@@ -19,11 +19,14 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/dllmain.cpp")
     src/completion/CompletionAdmission.cpp
     src/completion/CompletionCandidateCoordinator.cpp
     src/completion/CompletionJson.cpp
+    src/completion/ReadOnlyCompletionSource.cpp
     src/completion/CompletionStore.cpp
     src/completion/CompletionWorker.cpp
     src/completion/Win32CompletionFileOps.cpp
     src/campaign/CampaignLaunchAssociation.cpp
     src/campaign/CampaignDescriptorCatalog.cpp
+    src/campaign/CampaignCompletionMarkerIndex.cpp
+    src/campaign/CampaignMarkerObserver.cpp
     src/campaign/CampaignMenuCapture.cpp
     src/identity/ListAttribution.cpp
     src/identity/LuaMapSession.cpp
@@ -81,6 +84,8 @@ add_executable(campaign_completion_tests
   tests/CaptureTraceTests.cpp
   tests/CampaignLaunchAssociationTests.cpp
   tests/CampaignDescriptorCatalogTests.cpp
+  tests/CampaignCompletionMarkerIndexTests.cpp
+  tests/CampaignMarkerObserverTests.cpp
   tests/CampaignMenuCaptureTests.cpp
   tests/FixedMapCaptureStateTests.cpp
   tests/FixedMapIdentityProbeTests.cpp
@@ -111,6 +116,7 @@ add_executable(campaign_completion_tests
   tests/CompletionCandidateCoordinatorTests.cpp
   tests/CompletionJsonTests.cpp
   tests/CompletionStoreTests.cpp
+  tests/ReadOnlyCompletionSourceTests.cpp
   tests/Win32CompletionFileOpsTests.cpp
   tests/CompletionWorkerTests.cpp
   tests/CompletionRuntimeFlowTests.cpp
@@ -126,6 +132,8 @@ add_executable(campaign_completion_tests
   src/diagnostics/CaptureTrace.cpp
   src/campaign/CampaignLaunchAssociation.cpp
   src/campaign/CampaignDescriptorCatalog.cpp
+  src/campaign/CampaignCompletionMarkerIndex.cpp
+  src/campaign/CampaignMarkerObserver.cpp
   src/campaign/CampaignMenuCapture.cpp
   src/diagnostics/Logger.cpp
   src/diagnostics/ModuleInventory.cpp
@@ -136,6 +144,7 @@ add_executable(campaign_completion_tests
   src/completion/CompletionCandidateCoordinator.cpp
   src/completion/CompletionJson.cpp
   src/completion/CompletionStore.cpp
+  src/completion/ReadOnlyCompletionSource.cpp
   src/completion/CompletionWorker.cpp
   src/completion/Win32CompletionFileOps.cpp
   src/hook/HookSiteLayout.cpp

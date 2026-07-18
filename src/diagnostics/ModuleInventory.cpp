@@ -96,6 +96,59 @@ std::optional<std::string> Sha256File(const std::filesystem::path& path) {
     return output.str();
 }
 
+std::optional<std::string> Sha256FileRange(
+    const std::filesystem::path& path, std::uint64_t offset,
+    std::size_t length) {
+    if (length == 0u) return std::nullopt;
+    HANDLE file = CreateFileW(path.c_str(), GENERIC_READ, FILE_SHARE_READ,
+                              nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
+                              nullptr);
+    if (file == INVALID_HANDLE_VALUE) return std::nullopt;
+    LARGE_INTEGER position{};
+    position.QuadPart = static_cast<LONGLONG>(offset);
+    if (SetFilePointerEx(file, position, nullptr, FILE_BEGIN) == FALSE) {
+        CloseHandle(file);
+        return std::nullopt;
+    }
+    HCRYPTPROV provider = 0;
+    HCRYPTHASH hash = 0;
+    bool success =
+        CryptAcquireContextW(&provider, nullptr, nullptr, PROV_RSA_AES,
+                             CRYPT_VERIFYCONTEXT) != FALSE &&
+        CryptCreateHash(provider, CALG_SHA_256, 0, 0, &hash) != FALSE;
+    std::array<BYTE, 64 * 1024> buffer{};
+    std::size_t remaining = length;
+    while (success && remaining != 0u) {
+        const DWORD requested = static_cast<DWORD>(
+            (std::min)(remaining, buffer.size()));
+        DWORD read = 0u;
+        if (ReadFile(file, buffer.data(), requested, &read, nullptr) == FALSE ||
+            read != requested ||
+            CryptHashData(hash, buffer.data(), read, 0) == FALSE) {
+            success = false;
+            break;
+        }
+        remaining -= read;
+    }
+    std::array<BYTE, 32u> digest{};
+    DWORD digestSize = static_cast<DWORD>(digest.size());
+    if (!success ||
+        CryptGetHashParam(hash, HP_HASHVAL, digest.data(), &digestSize, 0) ==
+            FALSE) {
+        success = false;
+    }
+    if (hash != 0) CryptDestroyHash(hash);
+    if (provider != 0) CryptReleaseContext(provider, 0);
+    CloseHandle(file);
+    if (!success || digestSize != digest.size()) return std::nullopt;
+    std::ostringstream output;
+    output << std::hex << std::setfill('0');
+    for (const auto byte : digest) {
+        output << std::setw(2) << static_cast<unsigned>(byte);
+    }
+    return output.str();
+}
+
 std::string FileVersion(const std::filesystem::path& path) {
     DWORD ignored = 0;
     const DWORD size = GetFileVersionInfoSizeW(path.c_str(), &ignored);

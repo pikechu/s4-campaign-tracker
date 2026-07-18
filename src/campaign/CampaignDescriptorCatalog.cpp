@@ -14,62 +14,10 @@ constexpr std::size_t GroupIndex(CampaignDescriptorGroup group) noexcept {
     return static_cast<std::size_t>(group);
 }
 
-constexpr CampaignDescriptorRecord kDescriptors[]{
-    {"addon-trojan-01", CampaignDescriptorGroup::AddOn,
-     S4_SCREEN_ADDON_TROJAN, {91u, 320u, 200u, 175u, 30u}, 0u, 0x0Fu,
-     L"Map\\Campaign\\ao_trojan01.map"},
-    {"addon-mayan-01", CampaignDescriptorGroup::AddOn,
-     S4_SCREEN_ADDON_MAYAN, {34u, 480u, 177u, 175u, 30u}, 0u, 0x0Du,
-     L"Map\\Campaign\\ao_maya1.map"},
-    {"md-roman-01", CampaignDescriptorGroup::MdRoman,
-     S4_SCREEN_MISSIONCD_ROMAN, {1903u, 237u, 148u, 175u, 30u}, 0u, 0x05u,
-     L"Map\\Campaign\\md_roman1.map"},
-    {"md-roman-02", CampaignDescriptorGroup::MdRoman,
-     S4_SCREEN_MISSIONCD_ROMAN, {1904u, 237u, 195u, 175u, 30u}, 1u, 0x05u,
-     L"Map\\Campaign\\md_roman2.map"},
-    {"original-viking-02", CampaignDescriptorGroup::Original,
-     S4_SCREEN_SINGLEPLAYER_CAMPAIGN, {2039u, 420u, 150u, 175u, 30u}, 1u,
-     0x01u, L"Map\\Campaign\\viking02.map"},
-    {"original-viking-03", CampaignDescriptorGroup::Original,
-     S4_SCREEN_SINGLEPLAYER_CAMPAIGN, {2040u, 420u, 190u, 175u, 30u}, 2u,
-     0x01u, L"Map\\Campaign\\viking03.map"},
-    {"dark-01", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2081u, 500u, 104u, 175u, 30u}, 0u,
-     0x03u, L"Map\\Campaign\\dark01.map"},
-    {"dark-02", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2082u, 500u, 136u, 175u, 30u}, 1u,
-     0x03u, L"Map\\Campaign\\dark02.map"},
-    {"dark-03", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2083u, 500u, 168u, 175u, 30u}, 2u,
-     0x03u, L"Map\\Campaign\\dark03.map"},
-    {"dark-04", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2084u, 500u, 200u, 175u, 30u}, 3u,
-     0x03u, L"Map\\Campaign\\dark04.map"},
-    {"dark-05", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2085u, 500u, 232u, 175u, 30u}, 4u,
-     0x03u, L"Map\\Campaign\\dark05.map"},
-    {"dark-06", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2086u, 500u, 264u, 175u, 30u}, 5u,
-     0x03u, L"Map\\Campaign\\dark06.map"},
-    {"dark-07", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2087u, 500u, 296u, 175u, 30u}, 6u,
-     0x03u, L"Map\\Campaign\\dark07.map"},
-    {"dark-08", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2088u, 500u, 328u, 175u, 30u}, 7u,
-     0x03u, L"Map\\Campaign\\dark08.map"},
-    {"dark-09", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2089u, 500u, 360u, 175u, 30u}, 8u,
-     0x03u, L"Map\\Campaign\\dark09.map"},
-    {"dark-10", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2090u, 500u, 392u, 175u, 30u}, 9u,
-     0x03u, L"Map\\Campaign\\dark10.map"},
-    {"dark-11", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2091u, 500u, 424u, 175u, 30u}, 10u,
-     0x03u, L"Map\\Campaign\\dark11.map"},
-    {"dark-12", CampaignDescriptorGroup::DarkTribe,
-     S4_SCREEN_SINGLEPLAYER_DARKTRIBE, {2092u, 500u, 456u, 175u, 30u}, 11u,
-     0x03u, L"Map\\Campaign\\dark12.map"},
-};
+constexpr std::array<CampaignDescriptorRecord,
+                     kPhase6DCampaignDescriptorCount> kDescriptors{{
+#include "campaign/Phase6DDescriptorTable.inc"
+}};
 
 bool SameControlId(const CampaignDescriptorRecord& record,
                    const CampaignMenuAssociation& association) noexcept {
@@ -91,8 +39,12 @@ CampaignDescriptorGroup GroupForPage(DWORD page) noexcept {
         case S4_SCREEN_ADDON_VIKING:
         case S4_SCREEN_ADDON_SETTLE:
             return CampaignDescriptorGroup::AddOn;
+        case S4_SCREEN_MISSIONCD:
         case S4_SCREEN_MISSIONCD_ROMAN:
-            return CampaignDescriptorGroup::MdRoman;
+        case S4_SCREEN_MISSIONCD_VIKING:
+        case S4_SCREEN_MISSIONCD_MAYAN:
+        case S4_SCREEN_MISSIONCD_CONFL:
+            return CampaignDescriptorGroup::MissionCd;
         case S4_SCREEN_SINGLEPLAYER_CAMPAIGN:
             return CampaignDescriptorGroup::Original;
         case S4_SCREEN_SINGLEPLAYER_DARKTRIBE:
@@ -181,6 +133,18 @@ bool MatchRelocatedRvaTable(
     return true;
 }
 
+bool MatchFileWindow(const ModuleInfo& executable, std::uint64_t offset,
+                     std::size_t length,
+                     std::string_view expected) noexcept {
+    try {
+        const auto actual =
+            Sha256FileRange(executable.path, offset, length);
+        return actual.has_value() && *actual == expected;
+    } catch (...) {
+        return false;
+    }
+}
+
 }  // namespace
 
 bool CampaignDescriptorCatalog::GroupAdmitted(
@@ -202,7 +166,7 @@ CampaignDescriptorEvidence InspectCampaignDescriptorEvidence(
         Match(executable, 0x0006A25Bu,
               std::array<BYTE, 12u>{0x0F, 0xB7, 0x45, 0x0C, 0x83, 0xC0,
                                     0xDF, 0x83, 0xF8, 0x04, 0x0F, 0x87});
-    result.mdRoman =
+    result.missionCd =
         Match(executable, 0x000961F6u,
               std::array<BYTE, 8u>{0x85, 0xC9, 0x0F, 0x84, 0x08, 0x01,
                                    0x00, 0x00}) &&
@@ -264,6 +228,50 @@ CampaignDescriptorEvidence InspectCampaignDescriptorEvidence(
                                    0x00, 0x00}) &&
         Match(executable, 0x0007DAEBu,
               std::array<BYTE, 4u>{0x0F, 0xB7, 0x45, 0x0C});
+    result.addOn =
+        result.addOn &&
+        MatchFileWindow(executable, 0x695F0u, 5952u,
+            "f096f896d81bc890c1655976eb830beac929b6396369f7c85b755a9945cb36d") &&
+        MatchFileWindow(executable, 0x10D1A0u, 8960u,
+            "09408e19ee24df80e6c5dac5cb6dabd2be9a07798793254f7d4b76379098971") &&
+        MatchFileWindow(executable, 0x22490u, 415u,
+            "9459c9d05561fce909b1998ec4e5bf207884bd4024f013b38990fa6ff512799");
+    result.missionCd =
+        result.missionCd &&
+        MatchFileWindow(executable, 0x95230u, 5136u,
+            "147f9db6610dc81e5879a79cba595383b6adf74173502a9bbcf7a28d6b90b3") &&
+        MatchFileWindow(executable, 0x123750u, 7104u,
+            "c3471442b6fb5876ea999d12aa6f941d553a0a9571b53da7b0f53890e1141b") &&
+        MatchFileWindow(executable, 0x22EB0u, 415u,
+            "63278d299e47c494f8f3f3b11184307149c22f8a7b42d2978ab3b35f7af8b8");
+    result.newWorld =
+        MatchFileWindow(executable, 0x94670u, 1040u,
+            "85f8bbd6896442a253a244288619f3b22d804b21cab2ec418c0b24f3e01e47") &&
+        MatchFileWindow(executable, 0x1228F0u, 3376u,
+            "12d6217cc0832a5d181b22ad91bb4dc45732fb9a6748264e6347801e0a372a") &&
+        MatchFileWindow(executable, 0x22D80u, 297u,
+            "d37b56be34dc9797f28f9102c734be53efe76fa48320107e022c95070a2756");
+    result.newWorld2 =
+        MatchFileWindow(executable, 0xAF380u, 2752u,
+            "e1374d0dac959150a597ae1274ca6ce5d772007f9d6583de10a5ab97374b50") &&
+        MatchFileWindow(executable, 0x127EE0u, 3556u,
+            "085950439ced65fcfe77890d75c71ebf4ed7a139832a9cbff7bc1e14029471") &&
+        MatchFileWindow(executable, 0x230A0u, 297u,
+            "3c56162605cd48a5fbec9671cc6e4da09468f7393ccaa04d0ddf1b46048ce88");
+    result.original =
+        result.original &&
+        MatchFileWindow(executable, 0x7B550u, 1072u,
+            "ded0825cc4bb08bf435a1edcebd65f8976ba36e1bf6b5d8fc86242a9e069b3") &&
+        MatchFileWindow(executable, 0x10FA10u, 3751u,
+            "685185045a9cecf74145807fec9f6bab0602ee32d5ae1518a003bd55855722") &&
+        MatchFileWindow(executable, 0x227F0u, 384u,
+            "96a78fc19aa9be5f9623069fdb508706b15126cb06c7cce5ed9719866ab978");
+    result.darkTribe =
+        result.darkTribe &&
+        MatchFileWindow(executable, 0x7CBB0u, 561u,
+            "44b14df62b75a2ad35278623b184f2b6700161c9bf41237c866177b779e016") &&
+        MatchFileWindow(executable, 0x7CEEBu, 677u,
+            "e0a84e0903b45b5ca577cc117c599fead9b16617e35f061007b6f96285df34");
     return result;
 }
 
@@ -281,8 +289,12 @@ CampaignDescriptorCatalog AdmitCampaignDescriptorCatalog(
         CheckTargetExecutable(executable) == CompatibilityResult::Compatible;
     if (!result.executableAdmitted) return result;
     result.groups[GroupIndex(CampaignDescriptorGroup::AddOn)] = evidence.addOn;
-    result.groups[GroupIndex(CampaignDescriptorGroup::MdRoman)] =
-        evidence.mdRoman;
+    result.groups[GroupIndex(CampaignDescriptorGroup::MissionCd)] =
+        evidence.missionCd;
+    result.groups[GroupIndex(CampaignDescriptorGroup::NewWorld)] =
+        evidence.newWorld;
+    result.groups[GroupIndex(CampaignDescriptorGroup::NewWorld2)] =
+        evidence.newWorld2;
     result.groups[GroupIndex(CampaignDescriptorGroup::Original)] =
         evidence.original;
     result.groups[GroupIndex(CampaignDescriptorGroup::DarkTribe)] =
@@ -296,11 +308,6 @@ CampaignDescriptorValidation ValidateCampaignDescriptor(
     if (!catalog.executableAdmitted) {
         return {CampaignDescriptorValidationStatus::CatalogNotAdmitted,
                 nullptr};
-    }
-    const auto group = GroupForPage(association.page);
-    if (group != CampaignDescriptorGroup::Count &&
-        !catalog.GroupAdmitted(group)) {
-        return {CampaignDescriptorValidationStatus::GroupNotAdmitted, nullptr};
     }
     for (const auto& record : kDescriptors) {
         if (!SameControlId(record, association)) continue;
@@ -319,6 +326,11 @@ CampaignDescriptorValidation ValidateCampaignDescriptor(
         }
         return {CampaignDescriptorValidationStatus::Matched, &record};
     }
+    const auto group = GroupForPage(association.page);
+    if (group != CampaignDescriptorGroup::Count &&
+        !catalog.GroupAdmitted(group)) {
+        return {CampaignDescriptorValidationStatus::GroupNotAdmitted, nullptr};
+    }
     return {CampaignDescriptorValidationStatus::ControlUnknown, nullptr};
 }
 
@@ -334,6 +346,28 @@ const CampaignDescriptorRecord* FindAdmittedCampaignDescriptor(
         }
     }
     return nullptr;
+}
+
+const CampaignDescriptorRecord* FindAdmittedCampaignDescriptorRelative(
+    const CampaignDescriptorCatalog& catalog,
+    std::wstring_view relative) noexcept {
+    if (!catalog.executableAdmitted || relative.empty()) return nullptr;
+    const CampaignDescriptorRecord* match = nullptr;
+    for (const auto& record : kDescriptors) {
+        if (!catalog.GroupAdmitted(record.group) || record.relative == nullptr ||
+            relative != std::wstring_view(record.relative)) {
+            continue;
+        }
+        if (match != nullptr) return nullptr;
+        match = &record;
+    }
+    return match;
+}
+
+const std::array<CampaignDescriptorRecord,
+                 kPhase6DCampaignDescriptorCount>&
+AllCampaignDescriptors() noexcept {
+    return kDescriptors;
 }
 
 }  // namespace campaign_completion

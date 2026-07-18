@@ -45,7 +45,7 @@ campaign_completion::CampaignDescriptorCatalog Catalog() {
         "3b561269fb7ce4c281959f8f0db691cebf7cd36a04ad3594461b94290c5d3816";
     campaign_completion::CampaignDescriptorEvidence evidence{};
     evidence.addOn = true;
-    evidence.mdRoman = true;
+    evidence.missionCd = true;
     evidence.original = true;
     evidence.darkTribe = true;
     return campaign_completion::AdmitCampaignDescriptorCatalog(module,
