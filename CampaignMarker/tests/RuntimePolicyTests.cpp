@@ -2,6 +2,7 @@
 #include "runtime/CallbackGate.h"
 #include "runtime/S4Listeners.h"
 
+#include <algorithm>
 #include <atomic>
 #include <filesystem>
 #include <fstream>
@@ -70,7 +71,7 @@ int RunRuntimePolicyTests() {
     const auto policy =
         ReadText(root / "config" / "CampaignCompletionDebug.ini");
     for (const auto* required : {
-             "Version=0.13.2",
+             "Version=0.13.3",
              "DiagnosticMode=Phase7ClassifiedCompletionManager",
              "InternalMenuReadOnly=1", "InternalMenuWrites=0",
              "InternalMenuRendering=0", "PublicMarkerFallback=0",
@@ -145,7 +146,7 @@ int RunRuntimePolicyTests() {
                 "runtime descriptor evidence must use each full frozen window hash");
     }
 
-    Require(runtime.find("version=0.13.2") != std::string::npos &&
+    Require(runtime.find("version=0.13.3") != std::string::npos &&
                 runtime.find("mode=phase-7-classified-completion-manager") !=
                     std::string::npos,
             "runtime identifies the Phase 7 completion manager mode");
@@ -362,6 +363,8 @@ int RunRuntimePolicyTests() {
     const auto cmake = ReadText(root / "CMakeLists.txt");
     const auto managerWindow = ReadText(
         root / "src" / "manager" / "CompletionManagerWindow.cpp");
+    const auto managerCatalog = ReadText(
+        root / "src" / "manager" / "CompletionManagerCatalog.cpp");
     const auto asiBegin = cmake.find("add_library(CampaignCompletionDebug");
     const auto asiEnd = cmake.find("target_include_directories", asiBegin);
     Require(asiBegin != std::string::npos && asiEnd != std::string::npos,
@@ -380,6 +383,31 @@ int RunRuntimePolicyTests() {
                 managerCreateCase < managerBindWindow &&
                 managerBindWindow < managerCreateControls,
             "manager binds the created HWND before creating child controls");
+    Require(std::all_of(
+                managerWindow.begin(), managerWindow.end(),
+                [](unsigned char unit) { return unit < 0x80u; }),
+            "completion manager UI source remains English-only ASCII");
+    Require(managerCatalog.find("Campaigns / Great Crusades") !=
+                    std::string::npos &&
+                managerCatalog.find("Campaigns / New World 2") ==
+                    std::string::npos,
+            "the New World 2 descriptor group uses its public Great Crusades label");
+    const auto catalogSuccess = managerWindow.find(
+        "current_.catalog.status == "
+        "CompletionManagerCatalogStatus::Success");
+    const auto pendingGate =
+        managerWindow.find("HasPendingChanges()", catalogSuccess);
+    const auto checkboxRead =
+        managerWindow.find("ListView_GetCheckState");
+    const auto checkboxEnableUpdate =
+        managerWindow.find("UpdateEnabledState();", checkboxRead);
+    Require(catalogSuccess != std::string::npos &&
+                pendingGate != std::string::npos &&
+                checkboxRead != std::string::npos &&
+                checkboxEnableUpdate != std::string::npos &&
+                catalogSuccess < pendingGate &&
+                checkboxRead < checkboxEnableUpdate,
+            "Apply is enabled only after an editable checkbox changes");
     const auto asiSources = cmake.substr(asiBegin, asiEnd - asiBegin);
     Require(asiSources.find("src/campaign/CampaignMenuCapture.cpp") !=
                     std::string::npos &&

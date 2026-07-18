@@ -57,6 +57,7 @@ private:
     void PopulateList();
     void ApplyChanges();
     void UpdateEnabledState();
+    bool HasPendingChanges() const noexcept;
     bool EntryVisible(const CompletionManagerEntry& entry) const noexcept;
     CompletionRecord BuildManualRecord(
         const CompletionManagerEntry& entry) const;

@@ -201,8 +201,12 @@ The deployed `0.13.1` candidate moves that sampling to the public main-menu
 UI-frame callback. Live acceptance then exposed two presentation defects:
 MSVC had not been told to decode the Chinese source as UTF-8, and child
 controls were created before the manager stored its real parent HWND. The
-`0.13.2` candidate fixes both without changing the database transaction or
-identity policy. See the
+deployed `0.13.2` candidate fixes both without changing the database
+transaction or identity policy. Live acceptance confirmed the controls and
+catalog, then requested an English-only interface and exposed that an
+unchanged Apply result was immediately overwritten by refresh guidance. The
+`0.13.3` candidate uses English-only manager text, enables Apply only for
+pending checkbox changes, and preserves the resulting status message. See the
 [Phase 7 design](docs/superpowers/specs/2026-07-18-phase-7-classified-completion-manager-design.md).
 
 Phase 5C restored compatibility with historical `0.5.0` records without

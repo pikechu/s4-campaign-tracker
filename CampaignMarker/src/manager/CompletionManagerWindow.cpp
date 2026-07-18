@@ -40,19 +40,21 @@ bool Writable(CompletionStoreMode mode) noexcept {
 const wchar_t* ResultText(ManualCompletionApplyStatus status) noexcept {
     switch (status) {
         case ManualCompletionApplyStatus::Committed:
-            return L"已应用：标识状态已原子保存。";
+            return L"Applied: marker states were saved atomically.";
         case ManualCompletionApplyStatus::Unchanged:
-            return L"没有需要保存的更改。";
+            return L"No changes to save.";
         case ManualCompletionApplyStatus::Conflict:
-            return L"数据库在窗口打开后发生变化，已刷新；请重新确认。";
+            return L"The database changed while this window was open. "
+                   L"The view was refreshed; please review your changes.";
         case ManualCompletionApplyStatus::ReadOnly:
-            return L"数据库当前为只读状态，不能应用。";
+            return L"The database is read-only; changes cannot be applied.";
         case ManualCompletionApplyStatus::Invalid:
-            return L"更改未通过身份或数据校验。";
+            return L"The changes failed identity or data validation.";
         case ManualCompletionApplyStatus::Failed:
-            return L"保存失败；原数据库和内存标识均保持不变。";
+            return L"Save failed; the database and in-memory markers "
+                   L"remain unchanged.";
     }
-    return L"未知结果。";
+    return L"Unknown result.";
 }
 
 }  // namespace
@@ -168,7 +170,8 @@ bool CompletionManagerWindow::CreateManagerWindow() noexcept {
         type.lpszClassName = kWindowClass;
         RegisterClassExW(&type);
         window_ = CreateWindowExW(
-            WS_EX_APPWINDOW, kWindowClass, L"战役/地图完成标识管理器",
+            WS_EX_APPWINDOW, kWindowClass,
+            L"Campaign and Map Completion Manager",
             WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
             CW_USEDEFAULT, CW_USEDEFAULT, 980, 680, nullptr, nullptr,
             module_, this);
@@ -256,6 +259,7 @@ LRESULT CompletionManagerWindow::HandleMessage(
                                 checks_[index] =
                                     ListView_GetCheckState(
                                         list_, changed->iItem) != FALSE;
+                                UpdateEnabledState();
                             } else {
                                 populating_ = true;
                                 ListView_SetCheckState(
@@ -296,25 +300,25 @@ void CompletionManagerWindow::CreateControls() {
                    LVS_EX_DOUBLEBUFFER);
     LVCOLUMNW column{};
     column.mask = LVCF_TEXT | LVCF_WIDTH;
-    column.pszText = const_cast<wchar_t*>(L"名称");
+    column.pszText = const_cast<wchar_t*>(L"Name");
     column.cx = 260;
     ListView_InsertColumn(list_, 0, &column);
-    column.pszText = const_cast<wchar_t*>(L"精确地图身份");
+    column.pszText = const_cast<wchar_t*>(L"Exact map identity");
     column.cx = 410;
     ListView_InsertColumn(list_, 1, &column);
     status_ = CreateWindowExW(
         0, L"STATIC", L"", WS_CHILD | WS_VISIBLE | SS_LEFT,
         0, 0, 0, 0, window_, nullptr, module_, nullptr);
     refreshButton_ = CreateWindowExW(
-        0, L"BUTTON", L"刷新", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        0, L"BUTTON", L"Refresh", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         0, 0, 0, 0, window_, reinterpret_cast<HMENU>(kRefreshId),
         module_, nullptr);
     applyButton_ = CreateWindowExW(
-        0, L"BUTTON", L"应用", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
+        0, L"BUTTON", L"Apply", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
         0, 0, 0, 0, window_, reinterpret_cast<HMENU>(kApplyId),
         module_, nullptr);
     closeButton_ = CreateWindowExW(
-        0, L"BUTTON", L"关闭", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        0, L"BUTTON", L"Close", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         0, 0, 0, 0, window_, reinterpret_cast<HMENU>(kCloseId),
         module_, nullptr);
     RebuildTree();
@@ -323,8 +327,9 @@ void CompletionManagerWindow::CreateControls() {
 void CompletionManagerWindow::RebuildTree() {
     TreeView_DeleteAllItems(tree_);
     const auto campaigns =
-        InsertTreeItem(tree_, TVI_ROOT, L"战役", kCampaignFilter);
-    const auto maps = InsertTreeItem(tree_, TVI_ROOT, L"地图", kMapFilter);
+        InsertTreeItem(tree_, TVI_ROOT, L"Campaigns", kCampaignFilter);
+    const auto maps =
+        InsertTreeItem(tree_, TVI_ROOT, L"Maps", kMapFilter);
     constexpr std::array<CompletionManagerCategory, 14u> campaignCategories{{
         CompletionManagerCategory::CampaignAddOnTrojan,
         CompletionManagerCategory::CampaignAddOnRoman,
@@ -357,11 +362,11 @@ void CompletionManagerWindow::RebuildTree() {
             static_cast<LPARAM>(category) + 1);
     }
     InsertTreeItem(
-        tree_, TVI_ROOT, L"历史 / 当前不可用",
+        tree_, TVI_ROOT, L"Historical / Currently unavailable",
         static_cast<LPARAM>(
             CompletionManagerCategory::HistoricalUnavailable) + 1);
     InsertTreeItem(
-        tree_, TVI_ROOT, L"随机地图（只读，不显示标识）",
+        tree_, TVI_ROOT, L"Random maps (read-only, markers hidden)",
         static_cast<LPARAM>(
             CompletionManagerCategory::RandomMarkerHidden) + 1);
     TreeView_Expand(tree_, campaigns, TVE_EXPAND);
@@ -379,15 +384,19 @@ void CompletionManagerWindow::RefreshView() {
         checks_ = initialChecks_;
         PopulateList();
         if (!Writable(current_.storeMode)) {
-            SetStatus(L"数据库为只读状态：可以查看，但不能修改。");
+            SetStatus(L"The database is read-only: viewing is available, "
+                      L"but editing is disabled.");
         } else if (current_.discoveryStatus !=
                    FixedMapDiscoveryStatus::Success) {
-            SetStatus(L"地图目录未完整通过校验：应用已禁用。");
+            SetStatus(L"The map directories did not pass complete "
+                      L"validation; Apply is disabled.");
         } else if (current_.catalog.status !=
                    CompletionManagerCatalogStatus::Success) {
-            SetStatus(L"目录中存在身份冲突：应用已禁用。");
+            SetStatus(L"The catalog contains an identity conflict; "
+                      L"Apply is disabled.");
         } else {
-            SetStatus(L"勾选或取消后点击“应用”；关闭窗口会放弃未应用更改。");
+            SetStatus(L"Select or clear a marker, then click Apply. "
+                      L"Closing discards unapplied changes.");
         }
         UpdateEnabledState();
     } catch (...) {
@@ -395,7 +404,7 @@ void CompletionManagerWindow::RefreshView() {
         initialChecks_.clear();
         checks_.clear();
         PopulateList();
-        SetStatus(L"刷新失败。");
+        SetStatus(L"Refresh failed.");
         UpdateEnabledState();
     }
 }
@@ -421,8 +430,8 @@ void CompletionManagerWindow::PopulateList() {
         const auto& entry = current_.catalog.entries[index];
         if (!EntryVisible(entry)) continue;
         std::wstring label = entry.displayName;
-        if (!entry.available) label += L"  [当前不可用]";
-        if (!entry.editable) label += L"  [只读]";
+        if (!entry.available) label += L"  [Currently unavailable]";
+        if (!entry.editable) label += L"  [Read-only]";
         LVITEMW item{};
         item.mask = LVIF_TEXT | LVIF_PARAM;
         item.iItem = ListView_GetItemCount(list_);
@@ -471,14 +480,15 @@ void CompletionManagerWindow::ApplyChanges() {
                  checks_[index], entry.editable});
         }
         const auto result = apply_(request);
-        SetStatus(ResultText(result.status));
         if (result.status == ManualCompletionApplyStatus::Committed ||
             result.status == ManualCompletionApplyStatus::Unchanged ||
             result.status == ManualCompletionApplyStatus::Conflict) {
             RefreshView();
         }
+        SetStatus(ResultText(result.status));
     } catch (...) {
-        SetStatus(L"构建更改请求失败；未写入数据库。");
+        SetStatus(L"Failed to build the change request; "
+                  L"the database was not written.");
     }
 }
 
@@ -487,10 +497,15 @@ void CompletionManagerWindow::UpdateEnabledState() {
         mainMenuAvailable_.load(std::memory_order_acquire) &&
         Writable(current_.storeMode) &&
         current_.discoveryStatus == FixedMapDiscoveryStatus::Success &&
-        current_.catalog.status == CompletionManagerCatalogStatus::Success;
+        current_.catalog.status == CompletionManagerCatalogStatus::Success &&
+        HasPendingChanges();
     if (applyButton_ != nullptr) {
         EnableWindow(applyButton_, enabled ? TRUE : FALSE);
     }
+}
+
+bool CompletionManagerWindow::HasPendingChanges() const noexcept {
+    return checks_ != initialChecks_;
 }
 
 void CompletionManagerWindow::SetStatus(const wchar_t* text) {

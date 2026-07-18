@@ -241,7 +241,7 @@ const wchar_t* CompletionManagerCategoryLabel(
         case CompletionManagerCategory::CampaignNewWorld:
             return L"Campaigns / New World";
         case CompletionManagerCategory::CampaignNewWorld2:
-            return L"Campaigns / New World 2";
+            return L"Campaigns / Great Crusades";
         case CompletionManagerCategory::CampaignOriginal:
             return L"Campaigns / Original";
         case CompletionManagerCategory::CampaignDarkTribe:
