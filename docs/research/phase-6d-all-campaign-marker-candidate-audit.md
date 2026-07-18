@@ -143,3 +143,48 @@ machine-readable result is retained at
 Deployment is complete. Dynamic marker acceptance remains pending. It does not
 authorize a victory, database write, save access, campaign-progress mutation,
 or process control.
+
+## Fail-closed startup and evidence-hash correction
+
+The first user-driven `0.11.0` startup loaded the exact deployed ASI and passed
+the full executable compatibility gate. The bounded main-database read loaded
+four records, while all six campaign descriptor groups correctly failed closed
+and admitted zero campaign records. The database main/backup hashes and
+timestamps remained unchanged and no temporary sibling appeared.
+
+Diagnosis found no offset, length, executable, or file-reading defect. The 17
+runtime constants had retained the correct frozen hash prefixes and suffixes
+but contained non-authoritative middle text transcribed from an abbreviated
+handoff. Direct file-window hashing matched every complete SHA-256 already
+published in the frozen Phase 6A/6B/6D research documents.
+
+Correction checkpoint
+`ff9ccaf7780f95cb974f3fba33dc0ecd279be5eb` changes only those 17 constants
+to the complete authoritative values and adds a policy regression enumerating
+all of them. It does not change offsets, lengths, descriptor mappings, identity
+rules, database behavior, renderer behavior, or any permission boundary.
+
+Corrected authoritative CI:
+
+- workflow run `29636512386`;
+- job `88059697363`;
+- started `2026-07-18T07:53:16Z`;
+- completed `2026-07-18T07:55:40Z`;
+- result PASS for Win32 build, policy and mutation gates, full tests,
+  packaging, PE32/export verification, and artifact upload.
+
+Corrected artifact audit:
+
+- artifact ID `8427287968`;
+- wrapper size `264571` bytes and SHA-256
+  `4cc18349f481278c40aa2ed34287231325edbbe4260d1eb8162928756f6f4ca8`;
+- candidate ZIP size `264493` bytes and SHA-256
+  `16245b7cc282938b7082c3ba98ca3e7092d1d5ad232af4aaa5c7708f6d2813de`;
+- corrected ASI size `485376` bytes and SHA-256
+  `3898b7b28b8321fb2434ff946dd2280ee08bbb4f854663197ab99455bd79be41`;
+- packaged INI remains the exact audited `1355`-byte file with SHA-256
+  `3e4bca3799f6a8ef5eb68dd8a42603b6ce241db5abe9145b22e2a57ef73a1b18`.
+
+The corrected artifact is **STATIC GO** but is not deployed. Replacement
+requires the user to normally close both protected applications and explicitly
+approve deployment of this exact Phase 6D evidence-hash correction candidate.
