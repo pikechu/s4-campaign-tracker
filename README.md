@@ -267,6 +267,8 @@ and accepted PNG renderer. Deployment and any bounded completion-database
 read/one-record write still require their own explicit approvals. See the
 [Phase 6D design](docs/superpowers/specs/2026-07-16-phase-6d-campaign-completion-marker-index-and-rendering-design.md)
 and [offline evidence](docs/research/phase-6d-all-campaign-offline-unified-evidence.md).
+The audited gap-only candidate is recorded in the
+[candidate audit](docs/research/phase-6d-gap-only-campaign-catalog-candidate-audit.md).
 
 Development feedback policy:
 
